@@ -59,46 +59,64 @@ pub struct SearchParams {
     pub corr_major_w: i32,
     pub corr_cont2_w: i32,
     pub dual_threshold: i32,
+    pub lmr_ttpv_w: i32,
+    pub lmr_cut_w: i32,
+    pub lmr_imp_w: i32,
+    pub lmr_ttcap_w: i32,
+    pub lmr_corr_w: i32,
+    pub rfp_ttpv: i32,
+    pub hist_bonus_mult: i32,
+    pub hist_malus_mult: i32,
+    pub pawn_hist_w: i32,
 }
 
 impl Default for SearchParams {
     fn default() -> Self {
-        // Multi-stage SPSA-tuned: 8,400 UHO games (v5, 18k nodes) + 5,600 UHO games (v6, 28k nodes)
+        // Multi-stage SPSA-tuned: v5 (8.4k UHO) + v6 (5.6k UHO) + v7 38-param (8.4k UHO, 22k nodes)
         Self {
             rfp_mult: 71,
-            rfp_improving: 58,
-            razor_mult: 238,
-            nmp_base: 290,
-            nmp_depth_div: 378,
+            rfp_improving: 56,
+            razor_mult: 240,
+            nmp_base: 303,
+            nmp_depth_div: 367,
             nmp_eval_div: 204,
-            probcut_margin: 205,
+            probcut_margin: 211,
             futility_mult: 107,
-            futility_base: 79,
-            lmp_base: 345,
-            see_quiet_prune: 16,
-            see_cap_prune: 80,
-            hist_prune_mult: 2628,
-            lmr_base: 79,
-            lmr_div: 227,
-            lmr_hist_div: 5727,
-            lmr_deeper_margin: 64,
+            futility_base: 78,
+            lmp_base: 328,
+            see_quiet_prune: 15,
+            see_cap_prune: 87,
+            hist_prune_mult: 2702,
+            lmr_base: 74,
+            lmr_div: 236,
+            lmr_hist_div: 5724,
+            lmr_deeper_margin: 67,
             se_depth_mult: 22,
-            se_double_margin: 33,
+            se_double_margin: 30,
             asp_delta: 17,
-            qs_delta_margin: 226,
-            corr_pawn_w: 37,
-            corr_np_w: 26,
-            corr_cont_w: 23,
-            eval_scale_pct: 72,
-            corr_minor_w: 25,
-            corr_major_w: 23,
-            corr_cont2_w: 17,
-            dual_threshold: 771,
+            qs_delta_margin: 234,
+            corr_pawn_w: 32,
+            corr_np_w: 28,
+            corr_cont_w: 20,
+            eval_scale_pct: 70,
+            corr_minor_w: 21,
+            corr_major_w: 21,
+            corr_cont2_w: 19,
+            dual_threshold: 791,
+            lmr_ttpv_w: 472,
+            lmr_cut_w: 874,
+            lmr_imp_w: 826,
+            lmr_ttcap_w: 685,
+            lmr_corr_w: 488,
+            rfp_ttpv: 54,
+            hist_bonus_mult: 294,
+            hist_malus_mult: 229,
+            pawn_hist_w: 101,
         }
     }
 }
 
-pub const NUM_PARAMS: usize = 29;
+pub const NUM_PARAMS: usize = 38;
 
 pub struct ParamMeta {
     pub name: &'static str,
@@ -282,6 +300,60 @@ pub const PARAM_META: [ParamMeta; NUM_PARAMS] = [
         max: 1200.0,
         c_end: 45.0,
     },
+    ParamMeta {
+        name: "lmr_ttpv_w",
+        min: 100.0,
+        max: 1200.0,
+        c_end: 65.0,
+    },
+    ParamMeta {
+        name: "lmr_cut_w",
+        min: 300.0,
+        max: 1500.0,
+        c_end: 75.0,
+    },
+    ParamMeta {
+        name: "lmr_imp_w",
+        min: 200.0,
+        max: 1400.0,
+        c_end: 75.0,
+    },
+    ParamMeta {
+        name: "lmr_ttcap_w",
+        min: 100.0,
+        max: 1300.0,
+        c_end: 75.0,
+    },
+    ParamMeta {
+        name: "lmr_corr_w",
+        min: 0.0,
+        max: 1024.0,
+        c_end: 65.0,
+    },
+    ParamMeta {
+        name: "rfp_ttpv",
+        min: 0.0,
+        max: 140.0,
+        c_end: 10.0,
+    },
+    ParamMeta {
+        name: "hist_bonus_mult",
+        min: 120.0,
+        max: 450.0,
+        c_end: 20.0,
+    },
+    ParamMeta {
+        name: "hist_malus_mult",
+        min: 100.0,
+        max: 420.0,
+        c_end: 20.0,
+    },
+    ParamMeta {
+        name: "pawn_hist_w",
+        min: 25.0,
+        max: 200.0,
+        c_end: 12.0,
+    },
 ];
 
 impl SearchParams {
@@ -316,6 +388,15 @@ impl SearchParams {
             self.corr_major_w as f64,
             self.corr_cont2_w as f64,
             self.dual_threshold as f64,
+            self.lmr_ttpv_w as f64,
+            self.lmr_cut_w as f64,
+            self.lmr_imp_w as f64,
+            self.lmr_ttcap_w as f64,
+            self.lmr_corr_w as f64,
+            self.rfp_ttpv as f64,
+            self.hist_bonus_mult as f64,
+            self.hist_malus_mult as f64,
+            self.pawn_hist_w as f64,
         ]
     }
 
@@ -351,6 +432,15 @@ impl SearchParams {
             corr_major_w: c(26),
             corr_cont2_w: c(27),
             dual_threshold: c(28),
+            lmr_ttpv_w: c(29),
+            lmr_cut_w: c(30),
+            lmr_imp_w: c(31),
+            lmr_ttcap_w: c(32),
+            lmr_corr_w: c(33),
+            rfp_ttpv: c(34),
+            hist_bonus_mult: c(35),
+            hist_malus_mult: c(36),
+            pawn_hist_w: c(37),
         }
     }
 
@@ -397,14 +487,17 @@ pub enum Bound {
     Exact = 3,
 }
 
-/// Unpacked Transposition Table entry.
+const NO_EVAL: i16 = i16::MIN;
+
+/// Unpacked Transposition Table entry (fits in a single 64-bit atomic word + 64-bit XOR key).
 #[derive(Clone, Copy, Default)]
 pub struct TtEntry {
     pub key: u64,
     pub best_move: Move,
     pub score: i16,
     pub depth: i8,
-    pub flags: u8, // bits 0..2 = Bound, bits 2..8 = age (6 bits)
+    pub flags: u8, // bits 0..2 = Bound, bit 2 = tt_pv, bits 3..8 = age (5 bits)
+    pub static_eval: i16,
 }
 
 impl TtEntry {
@@ -418,19 +511,24 @@ impl TtEntry {
         }
     }
     #[inline(always)]
+    fn tt_pv(self) -> bool {
+        (self.flags & 4) != 0
+    }
+    #[inline(always)]
     fn age(self) -> u8 {
-        self.flags >> 2
+        self.flags >> 3
     }
     #[inline(always)]
-    fn pack_flags(b: Bound, age: u8) -> u8 {
-        (b as u8) | ((age & 63) << 2)
+    fn pack_flags(b: Bound, tt_pv: bool, age: u8) -> u8 {
+        (b as u8) | (u8::from(tt_pv) << 2) | ((age & 31) << 3)
     }
     #[inline(always)]
-    fn pack_data(best_move: Move, score: i16, depth: i8, flags: u8) -> u64 {
+    fn pack_data(best_move: Move, score: i16, depth: i8, flags: u8, static_eval: i16) -> u64 {
         (best_move.0 as u64)
             | (((score as u16) as u64) << 16)
             | (((depth as u8) as u64) << 32)
             | ((flags as u64) << 40)
+            | (((static_eval as u16) as u64) << 48)
     }
     #[inline(always)]
     fn unpack(key: u64, data: u64) -> Self {
@@ -440,6 +538,7 @@ impl TtEntry {
             score: ((data >> 16) & 0xFFFF) as u16 as i16,
             depth: ((data >> 32) & 0xFF) as u8 as i8,
             flags: ((data >> 40) & 0xFF) as u8,
+            static_eval: ((data >> 48) & 0xFFFF) as u16 as i16,
         }
     }
 }
@@ -507,7 +606,7 @@ impl TranspositionTable {
 
     pub fn new_search(&self) {
         let prev = self.age.load(Ordering::Relaxed);
-        self.age.store(prev.wrapping_add(1) & 63, Ordering::Relaxed);
+        self.age.store(prev.wrapping_add(1) & 31, Ordering::Relaxed);
     }
 
     #[inline(always)]
@@ -542,6 +641,7 @@ impl TranspositionTable {
     }
 
     #[inline(always)]
+    #[allow(clippy::too_many_arguments)]
     pub fn store(
         &self,
         hash: u64,
@@ -550,6 +650,8 @@ impl TranspositionTable {
         bound: Bound,
         best_move: Move,
         ply: usize,
+        tt_pv: bool,
+        static_eval: i16,
     ) {
         let idx = (hash as usize) & self.mask;
         let cluster = unsafe { self.clusters.get_unchecked(idx) };
@@ -575,7 +677,7 @@ impl TranspositionTable {
                 replace_entry = e;
                 break;
             }
-            let age_diff = cur_age.wrapping_sub(e.age()) & 63;
+            let age_diff = cur_age.wrapping_sub(e.age()) & 31;
             let quality = (e.depth as i32) - 8 * (age_diff as i32);
             if quality < worst_val {
                 worst_val = quality;
@@ -595,11 +697,18 @@ impl TranspositionTable {
             } else {
                 best_move
             };
+            let ev = if static_eval == NO_EVAL && same_key {
+                replace_entry.static_eval
+            } else {
+                static_eval
+            };
+            let pv_flag = tt_pv || (same_key && replace_entry.tt_pv());
             let new_data = TtEntry::pack_data(
                 mv,
                 stored_score,
                 depth.clamp(-1, 127) as i8,
-                TtEntry::pack_flags(bound, cur_age),
+                TtEntry::pack_flags(bound, pv_flag, cur_age),
+                ev,
             );
             let slot = &cluster.entries[replace_i];
             slot.data.store(new_data, Ordering::Relaxed);
@@ -944,6 +1053,8 @@ pub struct Searcher {
     killers: [[Move; 2]; MAX_PLY],
     // Threat-aware butterfly history: [side][from][to][(from_attacked << 1) | to_attacked]
     history: Box<[[[[i16; 4]; 64]; 64]; 2]>,
+    // Pawn-structure quiet history: [pawn_hash & 511][piece][to]
+    pawn_hist: Box<[[[i16; 64]; 6]; 512]>,
     cap_hist: Box<[[[i32; 6]; 64]; 12]>,
     cont_hist: Box<[[[[i16; 64]; 6]; 64]; 6]>,
     follow_hist: Box<[[[[i16; 64]; 6]; 64]; 6]>,
@@ -975,12 +1086,13 @@ pub struct Searcher {
 }
 
 fn build_lmr_table(params: &SearchParams) -> [[i32; 64]; 64] {
+    // 1024-scale fixed-point LMR table for smooth fractional adjustments
     let base = params.lmr_base as f64 / 100.0;
     let div = (params.lmr_div as f64 / 100.0).max(0.5);
     let mut lmr = [[0i32; 64]; 64];
     for d in 1..64 {
         for m in 1..64 {
-            lmr[d][m] = (base + (d as f64).ln() * (m as f64).ln() / div) as i32;
+            lmr[d][m] = ((base + (d as f64).ln() * (m as f64).ln() / div) * 1024.0) as i32;
         }
     }
     lmr
@@ -1025,6 +1137,7 @@ impl Searcher {
             small_acc,
             killers: [[Move::NONE; 2]; MAX_PLY],
             history: Box::new([[[[0; 4]; 64]; 64]; 2]),
+            pawn_hist: Box::new([[[0; 64]; 6]; 512]),
             cap_hist: Box::new([[[0; 6]; 64]; 12]),
             cont_hist: Box::new([[[[0; 64]; 6]; 64]; 6]),
             follow_hist: Box::new([[[[0; 64]; 6]; 64]; 6]),
@@ -1091,6 +1204,11 @@ impl Searcher {
                 for t in f.iter_mut() {
                     *t = [0; 4];
                 }
+            }
+        }
+        for p in self.pawn_hist.iter_mut() {
+            for pc in p.iter_mut() {
+                pc.fill(0);
             }
         }
         for a in self.cap_hist.iter_mut() {
@@ -1318,6 +1436,9 @@ impl Searcher {
         let mut best_score = 0;
         let mut best_pv = vec![best_move];
         let mut completed_depth = 0;
+        let mut bm_stability = 0u32;
+        let mut prev_best_move = Move::NONE;
+        let mut prev_best_score = 0i32;
         let max_d = limits.max_depth.min((MAX_PLY - 4) as i32);
         let is_clock_mode = matches!((limits.soft_ms, limits.hard_ms), (Some(s), Some(h)) if h > s);
         let is_main = self.thread_id == 0;
@@ -1399,6 +1520,19 @@ impl Searcher {
             }
 
             if is_main {
+                if best_move == prev_best_move {
+                    bm_stability = bm_stability.saturating_add(1);
+                } else {
+                    bm_stability = 0;
+                    prev_best_move = best_move;
+                }
+                let score_drop = if depth >= 5 {
+                    prev_best_score - best_score
+                } else {
+                    0
+                };
+                prev_best_score = best_score;
+
                 if best_score.abs() >= MATE_BOUND && depth >= 4 {
                     break;
                 }
@@ -1410,8 +1544,24 @@ impl Searcher {
                         let bm_nodes =
                             self.root_nodes[best_move.from() as usize][best_move.to() as usize];
                         let frac = bm_nodes as f64 / self.nodes as f64;
-                        let scale = (1.45 - frac).clamp(0.45, 1.50);
-                        (soft as f64 * scale) as u64
+                        let node_scale = (1.45 - frac).clamp(0.45, 1.50);
+                        // Best-move stability & eval-drop panic scaling
+                        let stab_scale = match bm_stability {
+                            0 => 1.25,
+                            1 => 1.10,
+                            2..=4 => 1.00,
+                            5..=7 => 0.86,
+                            _ => 0.74,
+                        };
+                        let drop_scale = if score_drop > 50 {
+                            1.50
+                        } else if score_drop > 25 {
+                            1.25
+                        } else {
+                            1.00
+                        };
+                        ((soft as f64) * (node_scale * stab_scale * drop_scale).clamp(0.40, 2.00))
+                            as u64
                     } else {
                         soft
                     };
@@ -1604,13 +1754,23 @@ impl Searcher {
         }
     }
 
+    /// Returns `(corrected_eval, uncorr_static_eval_for_tt, used_small, corrplexity)`.
     #[inline(always)]
-    fn corrected_eval(&mut self, b: &Board, ply: usize) -> (i32, bool) {
+    fn corrected_eval(&mut self, b: &Board, ply: usize, tt_static: i16) -> (i32, i16, bool, i32) {
         let eg = probe_endgame(b);
         if let EndgameEval::Exact(sc) = eg {
-            return (sc, false);
+            return (sc, sc.clamp(-30000, 30000) as i16, false, 0);
         }
-        let (mut raw, used_small) = self.raw_eval(b, ply);
+        let (mut raw, used_small) = if tt_static != NO_EVAL {
+            (tt_static as i32, false)
+        } else {
+            self.raw_eval(b, ply)
+        };
+        let cached_raw = if used_small {
+            NO_EVAL
+        } else {
+            raw.clamp(-30000, 30000) as i16
+        };
         if let EndgameEval::Scale(num, den) = eg {
             raw = raw * num / den;
         }
@@ -1646,7 +1806,9 @@ impl Searcher {
             / (120 * CORR_GRAIN);
         (
             (raw + corr).clamp(-MATE_BOUND + 100, MATE_BOUND - 100),
+            cached_raw,
             used_small,
+            corr.abs(),
         )
     }
 
@@ -1726,6 +1888,9 @@ impl Searcher {
         let to = m.to();
         let th = threat_idx(from, to, threat_map);
         let mut h = self.history[b.side.idx()][from as usize][to as usize][th] as i32;
+        h += (self.pawn_hist[(b.pawn_hash as usize) & 511][moved_p][to as usize] as i32)
+            * self.params.pawn_hist_w
+            / 100;
         if ply >= 1 {
             let pm = self.move_stack[ply - 1];
             let pp = self.piece_stack[ply - 1];
@@ -1758,9 +1923,11 @@ impl Searcher {
     }
 
     #[inline(always)]
+    #[allow(clippy::too_many_arguments)]
     fn update_quiet_histories(
         &mut self,
         c: usize,
+        pawn_hash: u64,
         ply: usize,
         m: Move,
         moved_p: usize,
@@ -1771,6 +1938,10 @@ impl Searcher {
         let to = m.to();
         let th = threat_idx(from, to, threat_map);
         update_history_i16(&mut self.history[c][from as usize][to as usize][th], bonus);
+        update_history_i16(
+            &mut self.pawn_hist[(pawn_hash as usize) & 511][moved_p][to as usize],
+            bonus,
+        );
         if ply >= 1 {
             let pm = self.move_stack[ply - 1];
             let pp = self.piece_stack[ply - 1];
@@ -1864,8 +2035,12 @@ impl Searcher {
             None
         };
         let mut tt_move = Move::NONE;
+        let mut tt_pv = is_pv;
+        let mut tt_static = NO_EVAL;
         if let Some(e) = tt_entry {
             tt_move = e.best_move;
+            tt_pv |= e.tt_pv();
+            tt_static = e.static_eval;
             if !is_pv && e.depth as i32 >= depth {
                 let s = score_from_tt(e.score as i32, ply);
                 match e.bound() {
@@ -1877,10 +2052,10 @@ impl Searcher {
             }
         }
 
-        let (raw_eval, used_small) = if in_check {
-            (-INF, false)
+        let (raw_eval, cached_raw, used_small, corrplexity) = if in_check {
+            (-INF, NO_EVAL, false, 0)
         } else {
-            self.corrected_eval(b, ply)
+            self.corrected_eval(b, ply, tt_static)
         };
         let mut eval = raw_eval;
         if !in_check {
@@ -1896,16 +2071,45 @@ impl Searcher {
             }
         }
         self.static_evals[ply] = raw_eval;
-        let improving = !in_check && ply >= 2 && raw_eval > self.static_evals[ply - 2];
+
+        // Hindsight eval-gain history update on opponent's prior quiet move
+        if !in_check
+            && ply >= 1
+            && excl.is_none()
+            && !self.move_stack[ply - 1].is_none()
+            && !self.move_stack[ply - 1].is_tactical()
+            && self.static_evals[ply - 1] != -INF
+        {
+            let gain = -(raw_eval + self.static_evals[ply - 1]);
+            if gain.abs() >= 15 {
+                let pm = self.move_stack[ply - 1];
+                let opp_c = b.side.idx() ^ 1;
+                let nudge = (gain * 2).clamp(-150, 150);
+                let slot = &mut self.history[opp_c][pm.from() as usize][pm.to() as usize][0];
+                update_history_i16(slot, nudge);
+            }
+        }
+
+        // Fixed `improving` flag: fall back to ply-4 when ply-2 was in check (static_eval == -INF)!
+        let improving = if in_check {
+            false
+        } else if ply >= 2 && self.static_evals[ply - 2] != -INF {
+            raw_eval > self.static_evals[ply - 2]
+        } else if ply >= 4 && self.static_evals[ply - 4] != -INF {
+            raw_eval > self.static_evals[ply - 4]
+        } else {
+            true
+        };
         let mut mate_threat = false;
 
         // Non-PV whole-node pruning
         if !is_pv && !in_check && excl.is_none() {
-            // 1. Reverse Futility Pruning
-            let rfp_margin =
-                self.params.rfp_mult * depth - self.params.rfp_improving * i32::from(improving);
+            // 1. Reverse Futility Pruning (fail-soft, tt_pv-aware)
+            let rfp_margin = self.params.rfp_mult * depth
+                - self.params.rfp_improving * i32::from(improving)
+                + self.params.rfp_ttpv * i32::from(tt_pv);
             if depth <= 8 && eval - rfp_margin >= beta && beta.abs() < MATE_BOUND {
-                return eval;
+                return (eval + beta) / 2;
             }
 
             // 2. Razoring
@@ -1916,7 +2120,7 @@ impl Searcher {
                 }
             }
 
-            // 3. Null Move Pruning
+            // 3. Null Move Pruning (+ verification search at high depth to prevent zugzwang blunders)
             if allow_null && depth >= 3 && eval >= beta && b.has_non_pawn_material(b.side) {
                 let r = (self.params.nmp_base + depth * 10000 / self.params.nmp_depth_div) / 100
                     + ((eval - beta) / self.params.nmp_eval_div.max(50)).clamp(0, 3);
@@ -1926,14 +2130,27 @@ impl Searcher {
                 self.move_stack[ply] = Move::NONE;
                 self.piece_stack[ply] = 6;
                 self.rep_history.push(next.hash);
-                let score =
+                let mut score =
                     -self.negamax(&next, depth - r, ply + 1, -beta, -beta + 1, false, !cutnode);
                 self.rep_history.pop();
                 if self.stopped {
                     return 0;
                 }
                 if score >= beta {
-                    return if score >= MATE_BOUND { beta } else { score };
+                    if score >= MATE_BOUND {
+                        score = beta;
+                    }
+                    if depth < 12 {
+                        return score;
+                    }
+                    // Verification search at depth >= 12 with null move disabled
+                    let v = self.negamax(b, depth - r, ply, beta - 1, beta, false, cutnode);
+                    if self.stopped {
+                        return 0;
+                    }
+                    if v >= beta {
+                        return score;
+                    }
                 }
                 if score <= -MATE_BOUND {
                     mate_threat = true;
@@ -1984,8 +2201,16 @@ impl Searcher {
                         return 0;
                     }
                     if sc >= prob_beta {
-                        self.tt
-                            .store(b.hash, prob_depth + 1, sc, Bound::Lower, m, ply);
+                        self.tt.store(
+                            b.hash,
+                            prob_depth + 1,
+                            sc,
+                            Bound::Lower,
+                            m,
+                            ply,
+                            tt_pv,
+                            cached_raw,
+                        );
                         return sc;
                     }
                 }
@@ -1993,7 +2218,7 @@ impl Searcher {
         }
 
         // Internal Iterative Reduction (IIR)
-        if depth >= 4 && tt_move.is_none() && excl.is_none() {
+        if depth >= 4 && tt_move.is_none() && excl.is_none() && (is_pv || cutnode) {
             depth -= 1;
         }
 
@@ -2042,7 +2267,7 @@ impl Searcher {
                             }
                         } else if s_beta >= beta {
                             return s_beta;
-                        } else if tt_s >= beta {
+                        } else if tt_s >= beta && !tt_pv {
                             ext = -1;
                         }
                     }
@@ -2076,7 +2301,7 @@ impl Searcher {
                 self.pv_len[ply] = child_len + 1;
 
                 if alpha >= beta {
-                    let bonus = (depth * depth * 16).min(1600);
+                    let bonus = (self.params.hist_bonus_mult * depth - 220).clamp(0, 2100);
                     let c = b.side.idx();
                     if is_quiet {
                         if self.killers[ply][0] != m {
@@ -2088,7 +2313,7 @@ impl Searcher {
                             self.countermoves[pm.from() as usize][pm.to() as usize] = m;
                         }
                         let tm = *threat_map.get_or_insert_with(|| b.enemy_attacks());
-                        self.update_quiet_histories(c, ply, m, moved_p, tm, bonus);
+                        self.update_quiet_histories(c, b.pawn_hash, ply, m, moved_p, tm, bonus);
                     } else if m.is_capture() {
                         let vic = captured_piece_idx(b, m);
                         update_history(
@@ -2104,8 +2329,16 @@ impl Searcher {
                     {
                         self.update_corrhist(b, ply, best_score - raw_eval, depth);
                     }
-                    self.tt
-                        .store(b.hash, depth, best_score, Bound::Lower, best_move, ply);
+                    self.tt.store(
+                        b.hash,
+                        depth,
+                        best_score,
+                        Bound::Lower,
+                        best_move,
+                        ply,
+                        tt_pv,
+                        cached_raw,
+                    );
                     return best_score;
                 }
             }
@@ -2138,7 +2371,7 @@ impl Searcher {
             // Lazy check test: only compute check_squares once we actually need pruning/LMR!
             let need_prune =
                 !is_pv && !in_check && !mate_threat && best_score > -MATE_BOUND && searched > 0;
-            let need_lmr = depth >= 3 && searched >= 2 && !in_check;
+            let need_lmr = depth >= 3 && searched >= if ply == 0 { 2 } else { 1 } && !in_check;
             let gives_check = if need_prune || need_lmr {
                 let (csq, dc) = *chk_info
                     .get_or_insert_with(|| (b.check_squares(), b.discovered_check_candidates()));
@@ -2192,28 +2425,35 @@ impl Searcher {
                 score = -self.negamax(&next, new_depth, ply + 1, -beta, -alpha, true, !cutnode);
             } else {
                 let mut r = 0;
-                if depth >= 3 && searched >= 2 && !in_check {
+                if need_lmr {
                     if is_quiet {
-                        r = self.lmr[(depth as usize).min(63)][searched.min(63)];
+                        // 1024-scale fractional LMR with tt_pv, cutnode, improving, tt_capture, corrplexity & history
+                        let mut r_fp = self.lmr[(depth as usize).min(63)][searched.min(63)];
                         if !is_pv {
-                            r += 1;
+                            r_fp += 512;
+                        }
+                        if !tt_pv {
+                            r_fp += self.params.lmr_ttpv_w;
                         }
                         if cutnode {
-                            r += 1;
+                            r_fp += self.params.lmr_cut_w;
                         }
                         if !improving {
-                            r += 1;
+                            r_fp += self.params.lmr_imp_w;
                         }
                         if tt_capture {
-                            r += 1;
+                            r_fp += self.params.lmr_ttcap_w;
                         }
                         if gives_check || mate_threat {
-                            r -= 1;
+                            r_fp -= 900;
+                        }
+                        if corrplexity > 150 {
+                            r_fp -= self.params.lmr_corr_w;
                         }
                         let tm = *threat_map.get_or_insert_with(|| b.enemy_attacks());
                         let hist = self.quiet_history(b, ply, m, moved_p, tm);
-                        r -= hist / self.params.lmr_hist_div.max(1000);
-                        r = r.clamp(0, new_depth - 1).max(0);
+                        r_fp -= hist * 1024 / self.params.lmr_hist_div.max(1000);
+                        r = ((r_fp + 512) >> 10).clamp(0, new_depth - 1).max(0);
                     } else if searched >= 4 && !gives_check && !is_good_cap {
                         let ch = if m.is_capture() {
                             self.cap_hist[b.side.idx() * 6 + moved_p][m.to() as usize]
@@ -2221,9 +2461,9 @@ impl Searcher {
                         } else {
                             0
                         };
-                        r = (self.lmr[(depth as usize).min(63)][searched.min(63)] / 2 - ch / 8000)
-                            .clamp(0, new_depth - 1)
-                            .max(0);
+                        let r_fp = self.lmr[(depth as usize).min(63)][searched.min(63)] / 2
+                            - ch * 1024 / 8000;
+                        r = ((r_fp + 512) >> 10).clamp(0, new_depth - 1).max(0);
                     }
                 }
 
@@ -2239,8 +2479,9 @@ impl Searcher {
                 if r > 0 && score > alpha {
                     let do_deeper =
                         score > best_score + self.params.lmr_deeper_margin + 2 * new_depth;
-                    let re_depth =
-                        (new_depth + i32::from(do_deeper)).min((MAX_PLY - ply - 2) as i32);
+                    let do_shallower = score < best_score + new_depth;
+                    let re_depth = (new_depth + i32::from(do_deeper) - i32::from(do_shallower))
+                        .clamp(0, (MAX_PLY - ply - 2) as i32);
                     score =
                         -self.negamax(&next, re_depth, ply + 1, -alpha - 1, -alpha, true, !cutnode);
                 }
@@ -2271,7 +2512,8 @@ impl Searcher {
                     self.pv_len[ply] = child_len + 1;
 
                     if alpha >= beta {
-                        let bonus = (depth * depth * 16).min(1600);
+                        let bonus = (self.params.hist_bonus_mult * depth - 220).clamp(0, 2100);
+                        let malus = -((self.params.hist_malus_mult * depth - 180).clamp(0, 1800));
                         let c = b.side.idx();
                         if is_quiet {
                             if self.killers[ply][0] != m {
@@ -2283,9 +2525,9 @@ impl Searcher {
                                 self.countermoves[pm.from() as usize][pm.to() as usize] = m;
                             }
                             let tm = *threat_map.get_or_insert_with(|| b.enemy_attacks());
-                            self.update_quiet_histories(c, ply, m, moved_p, tm, bonus);
+                            self.update_quiet_histories(c, b.pawn_hash, ply, m, moved_p, tm, bonus);
                             for &(qm, qp) in &quiet_tried[..quiet_cnt] {
-                                self.update_quiet_histories(c, ply, qm, qp, tm, -bonus);
+                                self.update_quiet_histories(c, b.pawn_hash, ply, qm, qp, tm, malus);
                             }
                         } else if m.is_capture() {
                             let vic = captured_piece_idx(b, m);
@@ -2296,7 +2538,7 @@ impl Searcher {
                             for &(cm, cp, cv) in &cap_tried[..cap_cnt] {
                                 update_history(
                                     &mut self.cap_hist[c * 6 + cp][cm.to() as usize][cv],
-                                    -bonus,
+                                    malus,
                                 );
                             }
                         }
@@ -2346,8 +2588,9 @@ impl Searcher {
                 self.update_corrhist(b, ply, best_score - raw_eval, depth);
             }
 
-            self.tt
-                .store(b.hash, depth, best_score, bound, best_move, ply);
+            self.tt.store(
+                b.hash, depth, best_score, bound, best_move, ply, tt_pv, cached_raw,
+            );
         }
         best_score
     }
@@ -2358,15 +2601,20 @@ impl Searcher {
             return 0;
         }
         if ply >= MAX_PLY - 1 {
-            return self.corrected_eval(b, ply).0;
+            return self.corrected_eval(b, ply, NO_EVAL).0;
         }
 
         let in_check = b.in_check();
         let orig_alpha = alpha;
 
+        let tt_entry = self.tt.probe(b.hash);
         let mut tt_move = Move::NONE;
-        if let Some(e) = self.tt.probe(b.hash) {
+        let mut tt_pv = false;
+        let mut tt_static = NO_EVAL;
+        if let Some(e) = tt_entry {
             tt_move = e.best_move;
+            tt_pv = e.tt_pv();
+            tt_static = e.static_eval;
             let s = score_from_tt(e.score as i32, ply);
             match e.bound() {
                 Bound::Exact => return s,
@@ -2377,8 +2625,21 @@ impl Searcher {
         }
 
         let mut best_score = -INF;
+        let mut cached_raw = NO_EVAL;
         if !in_check {
-            let (stand_pat, _) = self.corrected_eval(b, ply);
+            let (raw_sp, craw, _, _) = self.corrected_eval(b, ply, tt_static);
+            cached_raw = craw;
+            let mut stand_pat = raw_sp;
+            if let Some(e) = tt_entry {
+                let ts = score_from_tt(e.score as i32, ply);
+                if ts.abs() < MATE_BOUND
+                    && (e.bound() == Bound::Exact
+                        || (e.bound() == Bound::Lower && ts > stand_pat)
+                        || (e.bound() == Bound::Upper && ts < stand_pat))
+                {
+                    stand_pat = ts;
+                }
+            }
             if stand_pat >= beta {
                 return stand_pat;
             }
@@ -2468,7 +2729,9 @@ impl Searcher {
         } else {
             Bound::Upper
         };
-        self.tt.store(b.hash, 0, best_score, bound, best_move, ply);
+        self.tt.store(
+            b.hash, 0, best_score, bound, best_move, ply, tt_pv, cached_raw,
+        );
         best_score
     }
 }

@@ -1178,11 +1178,29 @@ pub fn vec_add_assign(dst: &mut [i16], src: &[i16]) {
     unsafe {
         use std::arch::aarch64::*;
         let n = dst.len();
+        let dp = dst.as_mut_ptr();
+        let sp = src.as_ptr();
         let mut i = 0;
+        while i + 32 <= n {
+            let a0 = vld1q_s16(dp.add(i));
+            let b0 = vld1q_s16(sp.add(i));
+            let a1 = vld1q_s16(dp.add(i + 8));
+            let b1 = vld1q_s16(sp.add(i + 8));
+            let a2 = vld1q_s16(dp.add(i + 16));
+            let b2 = vld1q_s16(sp.add(i + 16));
+            let a3 = vld1q_s16(dp.add(i + 24));
+            let b3 = vld1q_s16(sp.add(i + 24));
+            vst1q_s16(dp.add(i), vaddq_s16(a0, b0));
+            vst1q_s16(dp.add(i + 8), vaddq_s16(a1, b1));
+            vst1q_s16(dp.add(i + 16), vaddq_s16(a2, b2));
+            vst1q_s16(dp.add(i + 24), vaddq_s16(a3, b3));
+            i += 32;
+        }
         while i + 8 <= n {
-            let a = vld1q_s16(dst.as_ptr().add(i));
-            let b = vld1q_s16(src.as_ptr().add(i));
-            vst1q_s16(dst.as_mut_ptr().add(i), vaddq_s16(a, b));
+            vst1q_s16(
+                dp.add(i),
+                vaddq_s16(vld1q_s16(dp.add(i)), vld1q_s16(sp.add(i))),
+            );
             i += 8;
         }
         while i < n {
@@ -1196,6 +1214,21 @@ pub fn vec_add_assign(dst: &mut [i16], src: &[i16]) {
         use std::arch::x86_64::*;
         let n = dst.len();
         let mut i = 0;
+        while i + 32 <= n {
+            let a0 = _mm256_loadu_si256(dst.as_ptr().add(i) as *const __m256i);
+            let b0 = _mm256_loadu_si256(src.as_ptr().add(i) as *const __m256i);
+            let a1 = _mm256_loadu_si256(dst.as_ptr().add(i + 16) as *const __m256i);
+            let b1 = _mm256_loadu_si256(src.as_ptr().add(i + 16) as *const __m256i);
+            _mm256_storeu_si256(
+                dst.as_mut_ptr().add(i) as *mut __m256i,
+                _mm256_add_epi16(a0, b0),
+            );
+            _mm256_storeu_si256(
+                dst.as_mut_ptr().add(i + 16) as *mut __m256i,
+                _mm256_add_epi16(a1, b1),
+            );
+            i += 32;
+        }
         while i + 16 <= n {
             let a = _mm256_loadu_si256(dst.as_ptr().add(i) as *const __m256i);
             let b = _mm256_loadu_si256(src.as_ptr().add(i) as *const __m256i);
@@ -1224,11 +1257,29 @@ pub fn vec_sub_assign(dst: &mut [i16], src: &[i16]) {
     unsafe {
         use std::arch::aarch64::*;
         let n = dst.len();
+        let dp = dst.as_mut_ptr();
+        let sp = src.as_ptr();
         let mut i = 0;
+        while i + 32 <= n {
+            let a0 = vld1q_s16(dp.add(i));
+            let b0 = vld1q_s16(sp.add(i));
+            let a1 = vld1q_s16(dp.add(i + 8));
+            let b1 = vld1q_s16(sp.add(i + 8));
+            let a2 = vld1q_s16(dp.add(i + 16));
+            let b2 = vld1q_s16(sp.add(i + 16));
+            let a3 = vld1q_s16(dp.add(i + 24));
+            let b3 = vld1q_s16(sp.add(i + 24));
+            vst1q_s16(dp.add(i), vsubq_s16(a0, b0));
+            vst1q_s16(dp.add(i + 8), vsubq_s16(a1, b1));
+            vst1q_s16(dp.add(i + 16), vsubq_s16(a2, b2));
+            vst1q_s16(dp.add(i + 24), vsubq_s16(a3, b3));
+            i += 32;
+        }
         while i + 8 <= n {
-            let a = vld1q_s16(dst.as_ptr().add(i));
-            let b = vld1q_s16(src.as_ptr().add(i));
-            vst1q_s16(dst.as_mut_ptr().add(i), vsubq_s16(a, b));
+            vst1q_s16(
+                dp.add(i),
+                vsubq_s16(vld1q_s16(dp.add(i)), vld1q_s16(sp.add(i))),
+            );
             i += 8;
         }
         while i < n {
@@ -1242,6 +1293,21 @@ pub fn vec_sub_assign(dst: &mut [i16], src: &[i16]) {
         use std::arch::x86_64::*;
         let n = dst.len();
         let mut i = 0;
+        while i + 32 <= n {
+            let a0 = _mm256_loadu_si256(dst.as_ptr().add(i) as *const __m256i);
+            let b0 = _mm256_loadu_si256(src.as_ptr().add(i) as *const __m256i);
+            let a1 = _mm256_loadu_si256(dst.as_ptr().add(i + 16) as *const __m256i);
+            let b1 = _mm256_loadu_si256(src.as_ptr().add(i + 16) as *const __m256i);
+            _mm256_storeu_si256(
+                dst.as_mut_ptr().add(i) as *mut __m256i,
+                _mm256_sub_epi16(a0, b0),
+            );
+            _mm256_storeu_si256(
+                dst.as_mut_ptr().add(i + 16) as *mut __m256i,
+                _mm256_sub_epi16(a1, b1),
+            );
+            i += 32;
+        }
         while i + 16 <= n {
             let a = _mm256_loadu_si256(dst.as_ptr().add(i) as *const __m256i);
             let b = _mm256_loadu_si256(src.as_ptr().add(i) as *const __m256i);
@@ -1269,12 +1335,42 @@ fn vec_add1_sub1(dst: &mut [i16], src: &[i16], add: &[i16], sub: &[i16]) {
     unsafe {
         use std::arch::aarch64::*;
         let n = dst.len();
+        let dp = dst.as_mut_ptr();
+        let sp = src.as_ptr();
+        let ap = add.as_ptr();
+        let bp = sub.as_ptr();
         let mut i = 0;
+        while i + 32 <= n {
+            let r0 = vsubq_s16(
+                vaddq_s16(vld1q_s16(sp.add(i)), vld1q_s16(ap.add(i))),
+                vld1q_s16(bp.add(i)),
+            );
+            let r1 = vsubq_s16(
+                vaddq_s16(vld1q_s16(sp.add(i + 8)), vld1q_s16(ap.add(i + 8))),
+                vld1q_s16(bp.add(i + 8)),
+            );
+            let r2 = vsubq_s16(
+                vaddq_s16(vld1q_s16(sp.add(i + 16)), vld1q_s16(ap.add(i + 16))),
+                vld1q_s16(bp.add(i + 16)),
+            );
+            let r3 = vsubq_s16(
+                vaddq_s16(vld1q_s16(sp.add(i + 24)), vld1q_s16(ap.add(i + 24))),
+                vld1q_s16(bp.add(i + 24)),
+            );
+            vst1q_s16(dp.add(i), r0);
+            vst1q_s16(dp.add(i + 8), r1);
+            vst1q_s16(dp.add(i + 16), r2);
+            vst1q_s16(dp.add(i + 24), r3);
+            i += 32;
+        }
         while i + 8 <= n {
-            let s = vld1q_s16(src.as_ptr().add(i));
-            let a = vld1q_s16(add.as_ptr().add(i));
-            let b = vld1q_s16(sub.as_ptr().add(i));
-            vst1q_s16(dst.as_mut_ptr().add(i), vsubq_s16(vaddq_s16(s, a), b));
+            vst1q_s16(
+                dp.add(i),
+                vsubq_s16(
+                    vaddq_s16(vld1q_s16(sp.add(i)), vld1q_s16(ap.add(i))),
+                    vld1q_s16(bp.add(i)),
+                ),
+            );
             i += 8;
         }
         while i < n {
@@ -1288,6 +1384,23 @@ fn vec_add1_sub1(dst: &mut [i16], src: &[i16], add: &[i16], sub: &[i16]) {
         use std::arch::x86_64::*;
         let n = dst.len();
         let mut i = 0;
+        while i + 32 <= n {
+            let s0 = _mm256_loadu_si256(src.as_ptr().add(i) as *const __m256i);
+            let a0 = _mm256_loadu_si256(add.as_ptr().add(i) as *const __m256i);
+            let b0 = _mm256_loadu_si256(sub.as_ptr().add(i) as *const __m256i);
+            let s1 = _mm256_loadu_si256(src.as_ptr().add(i + 16) as *const __m256i);
+            let a1 = _mm256_loadu_si256(add.as_ptr().add(i + 16) as *const __m256i);
+            let b1 = _mm256_loadu_si256(sub.as_ptr().add(i + 16) as *const __m256i);
+            _mm256_storeu_si256(
+                dst.as_mut_ptr().add(i) as *mut __m256i,
+                _mm256_sub_epi16(_mm256_add_epi16(s0, a0), b0),
+            );
+            _mm256_storeu_si256(
+                dst.as_mut_ptr().add(i + 16) as *mut __m256i,
+                _mm256_sub_epi16(_mm256_add_epi16(s1, a1), b1),
+            );
+            i += 32;
+        }
         while i + 16 <= n {
             let s = _mm256_loadu_si256(src.as_ptr().add(i) as *const __m256i);
             let a = _mm256_loadu_si256(add.as_ptr().add(i) as *const __m256i);
@@ -1316,16 +1429,31 @@ fn vec_add1_sub2(dst: &mut [i16], src: &[i16], add1: &[i16], sub1: &[i16], sub2:
     unsafe {
         use std::arch::aarch64::*;
         let n = dst.len();
+        let dp = dst.as_mut_ptr();
+        let sp = src.as_ptr();
+        let a1p = add1.as_ptr();
+        let b1p = sub1.as_ptr();
+        let b2p = sub2.as_ptr();
         let mut i = 0;
+        while i + 32 <= n {
+            for k in [0usize, 8, 16, 24] {
+                let s = vld1q_s16(sp.add(i + k));
+                let a1 = vld1q_s16(a1p.add(i + k));
+                let b1 = vld1q_s16(b1p.add(i + k));
+                let b2 = vld1q_s16(b2p.add(i + k));
+                vst1q_s16(
+                    dp.add(i + k),
+                    vsubq_s16(vsubq_s16(vaddq_s16(s, a1), b1), b2),
+                );
+            }
+            i += 32;
+        }
         while i + 8 <= n {
-            let s = vld1q_s16(src.as_ptr().add(i));
-            let a1 = vld1q_s16(add1.as_ptr().add(i));
-            let b1 = vld1q_s16(sub1.as_ptr().add(i));
-            let b2 = vld1q_s16(sub2.as_ptr().add(i));
-            vst1q_s16(
-                dst.as_mut_ptr().add(i),
-                vsubq_s16(vsubq_s16(vaddq_s16(s, a1), b1), b2),
-            );
+            let s = vld1q_s16(sp.add(i));
+            let a1 = vld1q_s16(a1p.add(i));
+            let b1 = vld1q_s16(b1p.add(i));
+            let b2 = vld1q_s16(b2p.add(i));
+            vst1q_s16(dp.add(i), vsubq_s16(vsubq_s16(vaddq_s16(s, a1), b1), b2));
             i += 8;
         }
         while i < n {

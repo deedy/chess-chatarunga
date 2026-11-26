@@ -11,8 +11,8 @@ use chatarunga::search::EvalMode;
 use chatarunga::uci::{run_bench, run_uci};
 use std::sync::Arc;
 
-const EMBEDDED_NET: &[u8] = include_bytes!("../nets/h100_v5_v2_1b.nnue");
-const ENGINE_NAME: &str = "Chatarunga 1.0";
+const EMBEDDED_NET: &[u8] = include_bytes!("../nets/h100_v7_screlu_1024_6b.nnue");
+const ENGINE_NAME: &str = "Chatarunga 2.0";
 
 fn load_embedded() -> EvalMode {
     let net = NnueNet::from_bytes(EMBEDDED_NET).unwrap_or_else(|e| {

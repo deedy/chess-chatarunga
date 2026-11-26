@@ -1,0 +1,12 @@
+=== h100_v7_kb32_screlu_1536_6b vs v5_v2_1b (50ms UHO) ===
+Match: nnue:nets/h100_v7_kb32_screlu_1536_6b.nnue vs nnue:nets/h100_v5_v2_1b.nnue | 80 games | tc1=MoveTimeMs(50) tc2=MoveTimeMs(50) | 10 threads | book=241670 FENs
+RESULT nnue:nets/h100_v7_kb32_screlu_1536_6b.nnue vs nnue:nets/h100_v5_v2_1b.nnue: +18 =35 -27 (penta [5, 9, 19, 4, 3]) | score 44.38% | Elo -39.3 ± 57.0 | LOS 8.5%
+=== h100_v7_screlu_1536_6b vs v5_v2_1b (50ms UHO) ===
+Match: nnue:nets/h100_v7_screlu_1536_6b.nnue vs nnue:nets/h100_v5_v2_1b.nnue | 80 games | tc1=MoveTimeMs(50) tc2=MoveTimeMs(50) | 10 threads | book=241670 FENs
+RESULT nnue:nets/h100_v7_screlu_1536_6b.nnue vs nnue:nets/h100_v5_v2_1b.nnue: +21 =37 -22 (penta [2, 12, 13, 11, 2]) | score 49.38% | Elo -4.3 ± 53.6 | LOS 43.6%
+=== h100_v7_screlu_1024_6b vs v5_v2_1b (50ms UHO) ===
+Match: nnue:nets/h100_v7_screlu_1024_6b.nnue vs nnue:nets/h100_v5_v2_1b.nnue | 80 games | tc1=MoveTimeMs(50) tc2=MoveTimeMs(50) | 10 threads | book=241670 FENs
+RESULT nnue:nets/h100_v7_screlu_1024_6b.nnue vs nnue:nets/h100_v5_v2_1b.nnue: +28 =28 -24 (penta [1, 9, 18, 9, 3]) | score 52.50% | Elo +17.4 ± 49.8 | LOS 75.5%
+=== h100_v7_kb32_1536_6b vs v5_v2_1b (50ms UHO) ===
+Match: nnue:nets/h100_v7_kb32_1536_6b.nnue vs nnue:nets/h100_v5_v2_1b.nnue | 80 games | tc1=MoveTimeMs(50) tc2=MoveTimeMs(50) | 10 threads | book=241670 FENs
+RESULT nnue:nets/h100_v7_kb32_1536_6b.nnue vs nnue:nets/h100_v5_v2_1b.nnue: +15 =37 -28 (penta [3, 17, 11, 8, 1]) | score 41.88% | Elo -57.0 ± 53.5 | LOS 1.6%

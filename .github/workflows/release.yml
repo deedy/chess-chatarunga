@@ -81,7 +81,7 @@ jobs:
           gh release create "${{ github.ref_name }}" dist/* \
             --repo "${{ github.repository }}" \
             --title "Chatarunga ${{ github.ref_name }}" \
-            --notes "Initial open-source release of **Chatarunga** (zero-dependency Rust UCI chess engine with embedded 1.0B-position Pairwise-CReLU NNUE, ~3,390 1CPU / ~3,467 4CPU CCRL).
+            --notes "Release of **Chatarunga ${{ github.ref_name }}** — zero-dependency Rust UCI chess engine with Search v7 (38-param SPSA) and embedded 6.0B-step 16×1024 SCReLU SIMD NNUE (~3,480 1CPU / ~3,521 4CPU CCRL, +76.5 Elo over v1.0, 50.8% vs. CCRL #98 \`akimbo\` on 1CPU, and 7 wins / 35.0% vs. unthrottled Stockfish 18 on 4CPU).
 
           ### Downloads
           - **Windows (Modern CPUs, Recommended for CCRL):** \`chatarunga-${{ github.ref_name }}-windows-x86_64-avx2.exe\`

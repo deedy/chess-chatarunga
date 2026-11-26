@@ -1,30 +1,31 @@
 # Chatarunga
 
-**Chatarunga** is an open-source, zero-dependency UCI chess engine written completely from scratch in pure Rust, combining Plain Magic Bitboards, a 6th-generation alpha-beta search with depth-guarded Lazy SMP, an exact 3-piece KPK retrograde bitbase, and an embedded 1.0-billion-position SIMD NNUE evaluator (`(768×16 → 1024)×2 → 8` Pairwise-CReLU with Finny Tables).
+**Chatarunga** is an open-source, zero-dependency UCI chess engine written completely from scratch in pure Rust, combining Plain Magic Bitboards, a 7th-generation alpha-beta search with depth-guarded Lazy SMP, an exact 3-piece KPK retrograde bitbase, and an embedded 6.0-billion-step SIMD SCReLU NNUE evaluator (`(768×16 → 1024)×2 → 8` trained on 1.2B unique Bullet S2 positions with Finny Tables).
 
 Named after *Chaturanga*, the ancient Indian precursor to chess.
 
-- **Technical Report (14-page PDF):** [`docs/paper.pdf`](docs/paper.pdf) — the full narrative from a 2,660-Elo baseline to beating full-strength Stockfish 18, including colored chessboard diagrams, implied piece-value analysis across 10,017 positions, and direct CCRL calibration.
+- **Technical Report (14-page PDF):** [`docs/paper.pdf`](docs/paper.pdf)
 - **Zero external crates:** `[dependencies]` in `Cargo.toml` is completely empty.
-- **Zero-config single binary:** The champion `h100_v5_v2_1b.nnue` network is embedded directly inside the executable.
+- **Zero-config single binary:** The champion `h100_v7_screlu_1024_6b.nnue` network (25.2 MB) is embedded directly inside the executable.
 
 ---
 
 ## Strength & Direct CCRL 40/15 Calibration
 
-All matches were played using color-swapped ECO opening pairs (logs verbatim in [`logs/`](logs/)):
+All matches were played using color-swapped opening pairs (logs verbatim in [`logs/`](logs/)):
 
-| Chatarunga Config | CCRL 40/15 Anchor Opponent | TC | W / D / L | Score | Elo Diff (95% CI) | Implied CCRL 40/15 |
+| Engine Version & Config | Opponent (CCRL 40/15 Anchor) | TC / Book | W / D / L | Score | Elo Diff (95% CI) | Implied CCRL 40/15 |
 |---|---|---|---|---|---|---|
-| **Chatarunga 1.0 (1-CPU)** | `akimbo 1.1.0-dev` (1T, CCRL #98 = `3,474`) | 100 ms | 3 / 39 / 18 | 37.5% | `−88.7 ± 51.1` | **`~3,385–3,400`** |
-| **Chatarunga 1.0 (4-CPU)** | `akimbo 1.1.0-dev` (1T, CCRL #98 = `3,474`) | 100 ms | **19 / 40 / 1** | **65.0%** | **`+107.5 ± 49.0`** | `~3,580`* |
-| **Chatarunga 1.0 (4-CPU)** | **Stockfish 18** (1T, CCRL = `3,628`) | 150 ms | **1 / 32 / 27** | **28.3%** | **`−161.2 ± 55.7`** | **`~3,467 ± 56`** |
+| **Chatarunga 2.0 (1-CPU)** | **Chatarunga 1.0** (1-CPU) | 50 ms UHO | **46 / 54 / 20** | **60.8%** | **`+76.5 ± 37.2`** *(LOS 100%, 0 LL)* | **`+76.5` over v1** |
+| **Chatarunga 2.0 (1-CPU)** | `akimbo 1.1.0-dev` (1T, CCRL #98 = `3,474`) | 100 ms ECO | **12 / 37 / 11** | **50.8%** | **`+5.8 ± 52.4`** *(0 LL)* | **`~3,480`** *(~#95!)* |
+| **Chatarunga 2.0 (4-CPU)** | **Stockfish 18** (1T, CCRL = `3,628`) | 150 ms ECO | **7 / 28 / 25** | **35.0%** | **`−107.5 ± 63.5`** *(3 won pairs!)* | **`~3,521 ± 64`** *(~#75–#79!)* |
+| Chatarunga 1.0 (1-CPU) | `akimbo 1.1.0-dev` (1T, CCRL #98 = `3,474`) | 100 ms ECO | 3 / 39 / 18 | 37.5% | `−88.7 ± 51.1` | `~3,385–3,400` |
+| Chatarunga 1.0 (4-CPU) | Stockfish 18 (1T, CCRL = `3,628`) | 150 ms ECO | 1 / 32 / 27 | 28.3% | `−161.2 ± 55.7` | `~3,467 ± 56` |
 
-*\*Comparing 4-CPU against a 1-CPU opponent at 100 ms/move slightly overstates 40/15 multi-core CCRL; the Stockfish 18 anchor (`~3,467 CCRL`) provides the conservative 4-CPU benchmark.*
-
-### Highlight: Checkmate Victory Over Unthrottled Stockfish 18 (Round 25, `1-0`)
-
-In Round 25 of [`logs/sf18_full_60g.pgn`](logs/sf18_full_60g.pgn), Chatarunga (White) defeated unthrottled Stockfish 18 (Black) with **`19. c4!`**, **`21. f4!`**, the deflection sacrifice **`32. Bg6!!`**, and the clinical endgame rook sacrifice **`47. Rxa4!!`** leading to **`60. Qh7#`**.
+### What's New in Chatarunga 2.0 (`+76.5 Elo` vs. v1 / `+94.5 Elo` vs. `akimbo` 1-CPU)
+- **Search v7:** TT-PV (`tt_pv`) tracking & 16-bit TT static-eval caching (skipping redundant NNUE evals on TT hits), 1024-scale fractional LMR with `tt_pv`/`cutnode`/`improving`/`tt_capture`/`corrplexity` conditioning + `do_shallower` re-searches, fixed `improving` fallback across check plies, Pawn History (`pawn_hist`), hindsight eval-gain history, NMP verification search (`depth ≥ 12`), fail-soft RFP, best-move stability & eval-drop panic time management, and **38-parameter SPSA tuning** across 8,400 UHO games.
+- **6.0B-Step SCReLU NNUE (`h100_v7_screlu_1024_6b.nnue`):** Switched from Pairwise-CReLU (512 output pairs) to **SCReLU (1,024 active neurons/side — 2× output capacity)** trained globally shuffled across 1.2B unique positions in H200 VRAM for 6.0B steps with Power-2.5 loss (`|pred − target|^2.5`) and 4×-unrolled ARM64 NEON + x86-64 AVX2 accumulator SIMD.
+- **7 Wins vs. Full-Strength Stockfish 18:** Full 60-game PGN recorded in [`logs/chatarunga_v2_sf18_60g.pgn`](logs/chatarunga_v2_sf18_60g.pgn).
 
 ---
 
@@ -59,15 +60,6 @@ cargo test --release
 | `Threads` | spin | `1` | `1..64` | Depth-guarded Lazy SMP search threads |
 | `Move Overhead` | spin | `10` | `0..2000` | Safety buffer subtracted from clock allocations (ms) |
 | `EvalFile` | string | `<embedded>` | path / `classical` | Override embedded NNUE with external CHNN file or classical PeSTO |
-
----
-
-## Key Technical Highlights
-
-- **Bitboard & Move Generation (`src/board.rs`, `src/bitboard.rs`):** 184-byte `Copy` board state with Plain Magic Bitboards and const-generic partitioned legal/tactical/quiet move generation (**539M+ perft nps** on Kiwipete, **20.3M legal movegen pos/s** on Apple M5 Max).
-- **Search (`src/search.rs`):** Lockless 4-way 64-byte atomic clustered TT (Hyatt XOR-key check + software prefetch), depth-guarded Lazy SMP, full staged `MovePicker`, Threat-Aware Quiet History, 1/2/4/6-ply Continuation History, 6-source Multi-Correction History (Pawn, W/B Non-Pawn, Minor, Major, 1- & 2-ply Continuation), ProbCut, Singular Extensions, Cut-node LMR, and 29 multi-stage SPSA-tuned parameters (`+184 Elo` verified).
-- **Endgame Knowledge (`src/endgame.rs`):** Exact 196,608-state 3-piece KPK retrograde bitbase generated at startup in ~8 ms (24 KB), plus wrong-colored rook pawn draws, `KNNK`, `KBNK` mop-up, and opposite-color bishop drawishness scaling.
-- **SIMD NNUE (`src/nnue.rs`):** Embedded `(768×16 → 1024)×2 → 8` Pairwise-CReLU network trained on 1.0 billion Bullet S2 positions on Modal NVIDIA H100 GPUs, with Finny Table differential king-bucket refreshes and bit-exact **ARM64 NEON** + **x86-64 AVX2** SIMD inference kernels (**2.50M search nps** single-core on M5 Max).
 
 ---
 
