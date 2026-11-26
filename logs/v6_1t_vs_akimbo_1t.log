@@ -1,0 +1,2 @@
+Match: nnue:nets/h100_v5_v2_1b.nnue vs uci:/tmp/ccrl_rivals/akimbo/target/release/akimbo | 60 games | tc1=MoveTimeMs(100) tc2=MoveTimeMs(100) | 10 threads | book=built-in 60 ECO
+RESULT nnue:nets/h100_v5_v2_1b.nnue vs uci:/tmp/ccrl_rivals/akimbo/target/release/akimbo: +3 =39 -18 (penta [2, 14, 11, 3, 0]) | score 37.50% | Elo -88.7 ± 51.1 | LOS 0.0%

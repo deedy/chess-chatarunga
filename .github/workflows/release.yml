@@ -1,0 +1,91 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            artifact: chatarunga-${{ github.ref_name }}-windows-x86_64-avx2.exe
+            rustflags: "-C target-feature=+avx2,+bmi2,+popcnt"
+            bin: target/release/chatarunga.exe
+          - os: windows-latest
+            artifact: chatarunga-${{ github.ref_name }}-windows-x86_64-popcnt.exe
+            rustflags: "-C target-feature=+popcnt"
+            bin: target/release/chatarunga.exe
+          - os: ubuntu-latest
+            artifact: chatarunga-${{ github.ref_name }}-linux-x86_64-avx2
+            rustflags: "-C target-feature=+avx2,+bmi2,+popcnt"
+            bin: target/release/chatarunga
+          - os: macos-latest
+            artifact: chatarunga-${{ github.ref_name }}-macos-aarch64
+            rustflags: ""
+            bin: target/release/chatarunga
+
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Run unit & SIMD bit-exactness tests
+        env:
+          RUSTFLAGS: ${{ matrix.rustflags }}
+        run: cargo test --release
+
+      - name: Build Chatarunga release binary
+        env:
+          RUSTFLAGS: ${{ matrix.rustflags }}
+        run: cargo build --release --bin chatarunga
+
+      - name: Smoke test UCI & bench
+        shell: bash
+        run: |
+          ./${{ matrix.bin }} bench 8
+          printf "uci\nisready\nposition startpos\ngo depth 8\nquit\n" | ./${{ matrix.bin }}
+
+      - name: Stage release artifact
+        shell: bash
+        run: |
+          mkdir -p dist
+          cp "${{ matrix.bin }}" "dist/${{ matrix.artifact }}"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: dist/${{ matrix.artifact }}
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "${{ github.ref_name }}" dist/* \
+            --title "Chatarunga ${{ github.ref_name }}" \
+            --notes "Initial open-source release of **Chatarunga** (zero-dependency Rust UCI chess engine with embedded 1.0B-position Pairwise-CReLU NNUE, ~3,390 1CPU / ~3,467 4CPU CCRL).
+
+          ### Downloads
+          - **Windows (Modern CPUs, Recommended for CCRL):** \`chatarunga-${{ github.ref_name }}-windows-x86_64-avx2.exe\`
+          - **Windows (Older x86-64 CPUs):** \`chatarunga-${{ github.ref_name }}-windows-x86_64-popcnt.exe\`
+          - **Linux (x86-64 AVX2):** \`chatarunga-${{ github.ref_name }}-linux-x86_64-avx2\`
+          - **macOS (Apple Silicon):** \`chatarunga-${{ github.ref_name }}-macos-aarch64\`
+
+          No external \`.nnue\` file required — the neural network is embedded directly in each binary."

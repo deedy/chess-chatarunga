@@ -1,0 +1,131 @@
+=== IMPLIED CHESS PIECE VALUE ANALYSIS (10017 quiet game positions) ===
+Phase distribution: Opening (24-32 pcs) = 2624, Middlegame (14-23 pcs) = 3383, Endgame (6-13 pcs) = 4010
+
+--- Model: Classical PeSTO ---
+  [A] Counterfactual Single-Piece Removal:
+    Opening    | cp: P= 85.7 N=332.1 B=374.7 R=465.6 Q= 988.9 | norm(P=1): P=1.00 N=3.87 B=4.37 R=5.43 Q=11.54 (B-N=+0.50, R-B=1.06)
+    Middlegame | cp: P=103.0 N=318.3 B=346.1 R=499.8 Q= 977.9 | norm(P=1): P=1.00 N=3.09 B=3.36 R=4.85 Q=9.49 (B-N=+0.27, R-B=1.49)
+    Endgame    | cp: P=133.2 N=302.7 B=322.0 R=527.0 Q= 979.4 | norm(P=1): P=1.00 N=2.27 B=2.42 R=3.96 Q=7.35 (B-N=+0.14, R-B=1.54)
+    Overall    | cp: P=102.0 N=324.6 B=357.1 R=491.4 Q= 984.1 | norm(P=1): P=1.00 N=3.18 B=3.50 R=4.82 Q=9.65 (B-N=+0.32, R-B=1.32)
+  [B] OLS Material Regression (balanced |eval|<350 cp, n=7866):
+    Overall    | cp: P= 97.0 N=242.2 B=252.1 R=380.5 Q= 773.0 BP=+36.2 | norm(P=1): P=1.00 N=2.50 B=2.60 R=3.92 Q=7.97 BP=+0.37 (B-N=+0.10, R-B=1.32)
+    Opening    | cp: P= 65.1 N=295.4 B=300.7 R=406.0 Q= 932.6 BP=+27.3 | norm(P=1): P=1.00 N=4.54 B=4.62 R=6.24 Q=14.34 BP=+0.42 [n=2544]
+    Middlegame | cp: P= 87.4 N=253.0 B=257.1 R=384.8 Q= 815.4 BP=+44.5 | norm(P=1): P=1.00 N=2.89 B=2.94 R=4.40 Q=9.33 BP=+0.51 [n=2961]
+    Endgame    | cp: P=112.8 N=211.2 B=231.4 R=377.4 Q= 734.7 BP=+51.6 | norm(P=1): P=1.00 N=1.87 B=2.05 R=3.34 Q=6.51 BP=+0.46 [n=2361]
+  [C] Positional & Tactical Concept Probes:
+    Middlegame Bishop Pair (B2 - B1): +37.2 cp (+0.36P) [n2=1756, n1=3513]
+    Knight Center vs Rim: Center=344.9 cp (3.38P) vs Rim=295.0 cp (2.89P) -> diff +49.9 cp (+0.49P)
+    Advanced Pawn (6th/7th) vs Base (2nd/3rd): Adv=258.7 cp (2.54P) vs Base=95.1 cp (0.93P) -> ratio 2.72x
+    Hanging Minors (N/B): safe=338.7 cp vs hanging=353.0 cp -> static discount -14.3 cp (104.2% retained) [n_hang=442]
+    Hanging Majors (R/Q): safe=620.8 cp vs hanging=656.4 cp -> static discount -35.6 cp (105.7% retained) [n_hang=204]
+
+--- Model: NNUE Gen 3 (Self-Play) ---
+  [A] Counterfactual Single-Piece Removal:
+    Opening    | cp: P= 95.5 N=344.0 B=380.6 R=478.2 Q=1010.8 | norm(P=1): P=1.00 N=3.60 B=3.98 R=5.01 Q=10.58 (B-N=+0.38, R-B=1.02)
+    Middlegame | cp: P=129.9 N=409.1 B=445.8 R=640.8 Q=1278.2 | norm(P=1): P=1.00 N=3.15 B=3.43 R=4.93 Q=9.84 (B-N=+0.28, R-B=1.50)
+    Endgame    | cp: P=234.7 N=585.4 B=656.4 R=988.5 Q=1740.7 | norm(P=1): P=1.00 N=2.49 B=2.80 R=4.21 Q=7.42 (B-N=+0.30, R-B=1.41)
+    Overall    | cp: P=137.0 N=391.2 B=444.9 R=647.1 Q=1195.3 | norm(P=1): P=1.00 N=2.86 B=3.25 R=4.72 Q=8.72 (B-N=+0.39, R-B=1.48)
+  [B] OLS Material Regression (balanced |eval|<350 cp, n=7197):
+    Overall    | cp: P=100.8 N=265.0 B=288.5 R=426.9 Q= 867.3 BP=+17.5 | norm(P=1): P=1.00 N=2.63 B=2.86 R=4.24 Q=8.60 BP=+0.17 (B-N=+0.23, R-B=1.37)
+    Opening    | cp: P= 66.3 N=259.2 B=262.2 R=332.0 Q= 777.1 BP=+24.1 | norm(P=1): P=1.00 N=3.91 B=3.96 R=5.01 Q=11.72 BP=+0.36 [n=2576]
+    Middlegame | cp: P= 92.5 N=260.0 B=271.7 R=395.1 Q= 893.6 BP=+39.0 | norm(P=1): P=1.00 N=2.81 B=2.94 R=4.27 Q=9.66 BP=+0.42 [n=2773]
+    Endgame    | cp: P=128.9 N=293.0 B=338.4 R=527.4 Q= 997.8 BP=+24.4 | norm(P=1): P=1.00 N=2.27 B=2.63 R=4.09 Q=7.74 BP=+0.19 [n=1848]
+  [C] Positional & Tactical Concept Probes:
+    Middlegame Bishop Pair (B2 - B1): -1.0 cp (-0.01P) [n2=1756, n1=3513]
+    Knight Center vs Rim: Center=446.2 cp (3.26P) vs Rim=387.0 cp (2.82P) -> diff +59.1 cp (+0.43P)
+    Advanced Pawn (6th/7th) vs Base (2nd/3rd): Adv=388.4 cp (2.83P) vs Base=120.6 cp (0.88P) -> ratio 3.22x
+    Hanging Minors (N/B): safe=423.9 cp vs hanging=427.0 cp -> static discount -3.1 cp (100.7% retained) [n_hang=442]
+    Hanging Majors (R/Q): safe=789.6 cp vs hanging=839.9 cp -> static discount -50.3 cp (106.4% retained) [n_hang=204]
+
+--- Model: CHNN v2 1B (Pairwise) ---
+  [A] Counterfactual Single-Piece Removal:
+    Opening    | cp: P=110.2 N=333.0 B=372.1 R=422.9 Q= 875.5 | norm(P=1): P=1.00 N=3.02 B=3.38 R=3.84 Q=7.95 (B-N=+0.36, R-B=0.46)
+    Middlegame | cp: P=116.7 N=388.5 B=404.9 R=552.0 Q=1007.8 | norm(P=1): P=1.00 N=3.33 B=3.47 R=4.73 Q=8.64 (B-N=+0.14, R-B=1.26)
+    Endgame    | cp: P=142.9 N=385.8 B=427.2 R=705.2 Q=1045.9 | norm(P=1): P=1.00 N=2.70 B=2.99 R=4.94 Q=7.32 (B-N=+0.29, R-B=1.95)
+    Overall    | cp: P=119.3 N=355.6 B=391.6 R=531.0 Q= 941.0 | norm(P=1): P=1.00 N=2.98 B=3.28 R=4.45 Q=7.89 (B-N=+0.30, R-B=1.17)
+  [B] OLS Material Regression (balanced |eval|<350 cp, n=7883):
+    Overall    | cp: P= 73.6 N=212.4 B=223.9 R=351.1 Q= 711.5 BP=+20.6 | norm(P=1): P=1.00 N=2.89 B=3.04 R=4.77 Q=9.67 BP=+0.28 (B-N=+0.16, R-B=1.73)
+    Opening    | cp: P= 32.3 N=189.4 B=190.0 R=275.0 Q= 583.2 BP=+18.6 | norm(P=1): P=1.00 N=5.87 B=5.89 R=8.52 Q=18.07 BP=+0.58 [n=2593]
+    Middlegame | cp: P= 63.3 N=226.1 B=230.3 R=347.6 Q= 785.8 BP=+36.8 | norm(P=1): P=1.00 N=3.57 B=3.64 R=5.49 Q=12.42 BP=+0.58 [n=2881]
+    Endgame    | cp: P= 92.8 N=225.2 B=234.5 R=386.0 Q= 733.6 BP=+35.7 | norm(P=1): P=1.00 N=2.43 B=2.53 R=4.16 Q=7.91 BP=+0.39 [n=2409]
+  [C] Positional & Tactical Concept Probes:
+    Middlegame Bishop Pair (B2 - B1): +6.5 cp (+0.06P) [n2=1756, n1=3513]
+    Knight Center vs Rim: Center=390.3 cp (3.27P) vs Rim=331.8 cp (2.78P) -> diff +58.5 cp (+0.49P)
+    Advanced Pawn (6th/7th) vs Base (2nd/3rd): Adv=218.5 cp (1.83P) vs Base=113.6 cp (0.95P) -> ratio 1.92x
+    Hanging Minors (N/B): safe=370.4 cp vs hanging=315.8 cp -> static discount +54.7 cp (85.2% retained) [n_hang=442]
+    Hanging Majors (R/Q): safe=641.9 cp vs hanging=646.5 cp -> static discount -4.6 cp (100.7% retained) [n_hang=204]
+
+--- Model: CHNN v3 1B (Threats) ---
+  [A] Counterfactual Single-Piece Removal:
+    Opening    | cp: P=114.6 N=357.4 B=386.7 R=439.2 Q= 571.1 | norm(P=1): P=1.00 N=3.12 B=3.37 R=3.83 Q=4.98 (B-N=+0.26, R-B=0.46)
+    Middlegame | cp: P=120.7 N=371.4 B=386.8 R=483.6 Q= 657.9 | norm(P=1): P=1.00 N=3.08 B=3.21 R=4.01 Q=5.45 (B-N=+0.13, R-B=0.80)
+    Endgame    | cp: P=111.1 N=273.6 B=287.0 R=425.5 Q= 582.2 | norm(P=1): P=1.00 N=2.46 B=2.58 R=3.83 Q=5.24 (B-N=+0.12, R-B=1.25)
+    Overall    | cp: P=116.2 N=352.0 B=371.3 R=452.9 Q= 600.5 | norm(P=1): P=1.00 N=3.03 B=3.20 R=3.90 Q=5.17 (B-N=+0.17, R-B=0.70)
+  [B] OLS Material Regression (balanced |eval|<350 cp, n=7620):
+    Overall    | cp: P= 66.4 N=172.1 B=182.9 R=290.8 Q= 587.0 BP=+21.3 | norm(P=1): P=1.00 N=2.59 B=2.76 R=4.38 Q=8.84 BP=+0.32 (B-N=+0.16, R-B=1.62)
+    Opening    | cp: P= 24.9 N=130.8 B=131.6 R=238.1 Q= 317.3 BP=+19.6 | norm(P=1): P=1.00 N=5.25 B=5.28 R=9.56 Q=12.74 BP=+0.79 [n=2615]
+    Middlegame | cp: P= 59.8 N=193.7 B=193.8 R=301.5 Q= 668.2 BP=+42.6 | norm(P=1): P=1.00 N=3.24 B=3.24 R=5.04 Q=11.17 BP=+0.71 [n=2878]
+    Endgame    | cp: P= 88.3 N=198.3 B=209.7 R=340.9 Q= 659.2 BP=+25.8 | norm(P=1): P=1.00 N=2.25 B=2.38 R=3.86 Q=7.47 BP=+0.29 [n=2127]
+  [C] Positional & Tactical Concept Probes:
+    Middlegame Bishop Pair (B2 - B1): +22.7 cp (+0.19P) [n2=1756, n1=3513]
+    Knight Center vs Rim: Center=367.4 cp (3.16P) vs Rim=323.3 cp (2.78P) -> diff +44.1 cp (+0.38P)
+    Advanced Pawn (6th/7th) vs Base (2nd/3rd): Adv=169.2 cp (1.46P) vs Base=114.9 cp (0.99P) -> ratio 1.47x
+    Hanging Minors (N/B): safe=360.8 cp vs hanging=242.7 cp -> static discount +118.1 cp (67.3% retained) [n_hang=442]
+    Hanging Majors (R/Q): safe=493.0 cp vs hanging=403.4 cp -> static discount +89.6 cp (81.8% retained) [n_hang=204]
+
+=== SPECIAL CHESS POSITIONS MULTI-ENGINE ANALYSIS (Static Eval + Deep Search) ===
+
+----------------------------------------------------------------
+P1: Kasparov's Immortal (Kasparov-Topalov, Wijk aan Zee 1999, 24. Rxd4!!) [1000ms]
+FEN: b2r3r/k4p1p/p2q1np1/NppP4/3p1Q2/P4PPB/1PP4P/1K1RR3 w - - 0 24
+  Classical PeSTO        | static= +153 cp | 1000ms d=21 score=  -32 cp | best=Nc6+   | nodes= 4364288 | PV: Nc6+ Bxc6 Qxd6 Rxd6 dxc6 Kb6
+  NNUE Gen 3 (Self-Play) | static= +123 cp | 1000ms d=20 score=  -48 cp | best=Nc6+   | nodes= 3620864 | PV: Nc6+ Bxc6 Qxd6 Rxd6 dxc6 Kb6
+  CHNN v2 1B (Pairwise)  | static=  +37 cp | 1000ms d=19 score=  -98 cp | best=Nc6+   | nodes= 2459648 | PV: Nc6+ Bxc6 Qxd6 Rxd6 dxc6 Kb6
+  CHNN v3 1B (Threats)   | static=  +22 cp | 1000ms d=16 score=  -63 cp | best=Nc6+   | nodes= 1292293 | PV: Nc6+ Bxc6 Qxd6 Rxd6 dxc6 Rxc6
+  CHNN v2 1B (4T SMP)    | static=  ---   | 1000ms d=20 score=  -71 cp | best=Nc6+   | nodes= 9625616 | PV: Nc6+ Bxc6 Qxd6 Rxd6 dxc6 Kb6
+
+----------------------------------------------------------------
+P2: Game of the Century (D. Byrne-R. Fischer, New York 1956, 17... Be6!!) [1000ms]
+FEN: r3r1k1/pp3pbp/1qp3p1/2B5/2BP2b1/Q1n2N2/P4PPP/3R1K1R b - - 0 17
+  Classical PeSTO        | static= -230 cp | 1000ms d=21 score= -174 cp | best=Be6    | nodes= 4067333 | PV: Be6 Bd3 Nb5 Qb4 a5 Qd2
+  NNUE Gen 3 (Self-Play) | static= -399 cp | 1000ms d=22 score= -193 cp | best=Be6    | nodes= 3686408 | PV: Be6 Qxc3 Qxc5 dxc5 Bxc3 Bxe6
+  CHNN v2 1B (Pairwise)  | static= -354 cp | 1000ms d=22 score= -181 cp | best=Be6    | nodes= 2670597 | PV: Be6 Qxc3 Qxc5 dxc5 Bxc3 Bxe6
+  CHNN v3 1B (Threats)   | static= -303 cp | 1000ms d=20 score= -202 cp | best=Be6    | nodes= 1384448 | PV: Be6 Qxc3 Qxc5 dxc5 Bxc3 Bxe6
+  CHNN v2 1B (4T SMP)    | static=  ---   | 1000ms d=24 score= -214 cp | best=Be6    | nodes=10219537 | PV: Be6 Qxc3 Qxc5 dxc5 Bxc3 Bxe6
+
+----------------------------------------------------------------
+P3: Topalov-Shirov (Linares 1998, 47... Bh3!! — Famous Endgame Horizon Test) [3000ms]
+FEN: 8/8/4kpp1/3p1b2/p6P/2B5/6P1/6K1 b - - 0 47
+  Classical PeSTO        | static= -324 cp | 3000ms d=28 score= -589 cp | best=a3     | nodes=18896902 | PV: a3 Kf2 Bc2 Ke3 Kf5 Kd2
+  NNUE Gen 3 (Self-Play) | static= -474 cp | 3000ms d=27 score= -659 cp | best=Bc2    | nodes=14692352 | PV: Bc2 Kf2 Kf5 Ke3 Be4 g3
+  CHNN v2 1B (Pairwise)  | static= -218 cp | 3000ms d=28 score= -212 cp | best=Bc2    | nodes= 8429568 | PV: Bc2 Kf1 a3 Ke2 Kf5 Kd2
+  CHNN v3 1B (Threats)   | static= -233 cp | 3000ms d=24 score= -282 cp | best=a3     | nodes= 4374534 | PV: a3 Kf2 Bc2 Ke3 Kf5 Kd2
+  CHNN v2 1B (4T SMP)    | static=  ---   | 3000ms d=28 score= -264 cp | best=a3     | nodes=26920980 | PV: a3 Kf2 Bc2 Ke3 Kf5 Ba1
+
+----------------------------------------------------------------
+P4: Opposite-Color Bishops Fortress (White +2 Pawns, Dead Theoretical Draw) [1000ms]
+FEN: 8/4b3/p2k4/P2Pp3/2P1P3/4K3/8/5B2 w - - 0 60
+  Classical PeSTO        | static= +323 cp | 1000ms d=31 score= +172 cp | best=Bh3    | nodes= 5363712 | PV: Bh3 Kc5 Bc8 Kxc4 Bxa6+ Kb4
+  NNUE Gen 3 (Self-Play) | static= +341 cp | 1000ms d=33 score= +176 cp | best=Kf3    | nodes= 3874816 | PV: Kf3 Bd8 Bh3 Kc5 Bc8 Kxc4
+  CHNN v2 1B (Pairwise)  | static=  +91 cp | 1000ms d=30 score=   +7 cp | best=Kf3    | nodes= 2179072 | PV: Kf3 Bd8 Kg4 Bxa5 Kf5 Bc3
+  CHNN v3 1B (Threats)   | static=  +59 cp | 1000ms d=32 score=   +5 cp | best=Kf3    | nodes= 1320960 | PV: Kf3 Bd8 Kg4 Bxa5 Bd3 Bc3
+  CHNN v2 1B (4T SMP)    | static=  ---   | 1000ms d=31 score=   +5 cp | best=c5+    | nodes= 7636993 | PV: c5+ Kxc5 Bxa6 Bd8 Kf3 Bxa5
+
+----------------------------------------------------------------
+P5: Good Knight vs. Trapped Bad Bishop (Equal Material, Strategic Win) [1000ms]
+FEN: 3k4/1p1b1p2/p1p1p1p1/P1PpP2p/1P1P3P/3N1KP1/8/8 w - - 0 45
+  Classical PeSTO        | static=   +7 cp | 1000ms d=25 score=  +11 cp | best=g4     | nodes= 4104192 | PV: g4 hxg4+ Kxg4 Ke8 Nf4 Ke7
+  NNUE Gen 3 (Self-Play) | static= -108 cp | 1000ms d=25 score= +501 cp | best=Kf4    | nodes= 3217410 | PV: Kf4 Ke7 Kg5 Kf8 Nf2 f5
+  CHNN v2 1B (Pairwise)  | static=  +37 cp | 1000ms d=31 score= +225 cp | best=Kf4    | nodes= 1828870 | PV: Kf4 Ke8 Kg5 Ke7 Nb2 Be8
+  CHNN v3 1B (Threats)   | static=   +7 cp | 1000ms d=22 score= +369 cp | best=Kf4    | nodes= 1048582 | PV: Kf4 Ke8 Nf2 Kf8 Kg5 Bc8
+  CHNN v2 1B (4T SMP)    | static=  ---   | 1000ms d=24 score= +380 cp | best=Kf4    | nodes= 6356995 | PV: Kf4 Ke8 Kg5 Ke7 Kh6 Kf8
+
+----------------------------------------------------------------
+P6: Kiwipete Tactical Tension (Complex Pins, Captures, & Static Threats) [1000ms]
+FEN: r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1
+  Classical PeSTO        | static=  +69 cp | 1000ms d=19 score=  -74 cp | best=Bxa6   | nodes= 2904064 | PV: Bxa6 bxc3 Bxc3 exd5 Ng4 hxg2
+  NNUE Gen 3 (Self-Play) | static=  -48 cp | 1000ms d=17 score=  -58 cp | best=Bxa6   | nodes= 2394112 | PV: Bxa6 bxc3 Bxc3 exd5 Ng4 Nxg4
+  CHNN v2 1B (Pairwise)  | static=   +8 cp | 1000ms d=17 score=  -99 cp | best=Bxa6   | nodes= 1396754 | PV: Bxa6 hxg2 Qxg2 bxc3 Bxc3 exd5
+  CHNN v3 1B (Threats)   | static=  -65 cp | 1000ms d=14 score= -106 cp | best=Bxa6   | nodes=  628739 | PV: Bxa6 hxg2 Qxg2 bxc3 Bxc3 exd5
+  CHNN v2 1B (4T SMP)    | static=  ---   | 1000ms d=19 score= -124 cp | best=Bxa6   | nodes= 5701653 | PV: Bxa6 bxc3 Bxc3 hxg2 Qxg2 exd5
+

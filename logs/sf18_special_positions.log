@@ -1,0 +1,30 @@
+P1: Kasparov's Immortal (Kasparov-Topalov 1999, 24. Rxd4!!) [1000ms]
+  FEN: b2r3r/k4p1p/p2q1np1/NppP4/3p1Q2/P4PPB/1PP4P/1K1RR3 w - - 0 24
+  SF18 static: Final evaluation       -0.31 (white side) [with scaled NNUE, ...]
+  SF18 1000ms : info depth 24 seldepth 36 multipv 1 score cp -27 lowerbound nodes 1074108 nps 1074108 hashfull 86 tbhits 0 time 1000 pv d1d4
+  SF18 best  : bestmove d1d4 ponder a7b6
+P2: Game of the Century (Byrne-Fischer 1956, 17... Be6!!) [1000ms]
+  FEN: r3r1k1/pp3pbp/1qp3p1/2B5/2BP2b1/Q1n2N2/P4PPP/3R1K1R b - - 0 17
+  SF18 static: Final evaluation       -2.05 (white side) [with scaled NNUE, ...]
+  SF18 1000ms : info depth 24 seldepth 56 multipv 1 score cp 191 nodes 1059131 nps 1059131 hashfull 90 tbhits 0 time 1000 pv g4e6 a3c3 b6c5 d4c5 g7c3 c4e6 e8e6 g2g3 b7b5 c5b6 a7b6 d1c1 c3f6 c1c2 c6c5 f1g2 g8f8 h2h4 h7h5 h1d1 f8e7 c2d2 a8a7 d2c2
+  SF18 best  : bestmove g4e6 ponder a3c3
+P3: Topalov-Shirov (Linares 1998, 47... Bh3!!) [3000ms]
+  FEN: 8/8/4kpp1/3p1b2/p6P/2B5/6P1/6K1 b - - 0 47
+  SF18 static: Final evaluation       -1.88 (white side) [with scaled NNUE, ...]
+  SF18 3000ms : info depth 32 seldepth 39 multipv 1 score cp 440 lowerbound nodes 6621825 nps 2207275 hashfull 248 tbhits 0 time 3000 pv f5h3
+  SF18 best  : bestmove f5h3 ponder g2h3
+P4: Opposite-Color Bishops Fortress (White +2P, Draw) [1000ms]
+  FEN: 8/4b3/p2k4/P2Pp3/2P1P3/4K3/8/5B2 w - - 0 60
+  SF18 static: Final evaluation       +0.33 (white side) [with scaled NNUE, ...]
+  SF18 1000ms : info depth 37 seldepth 48 multipv 1 score cp 0 nodes 1907089 nps 1907089 hashfull 86 tbhits 0 time 1000 pv e3f3 e7d8 f3g4 d8a5 g4f5 a5b6 f1d3 b6e3 f5f6 e3b6
+  SF18 best  : bestmove e3f3 ponder e7d8
+P5: Good Knight vs Trapped Bad Bishop (Equal Mat, Win) [1000ms]
+  FEN: 3k4/1p1b1p2/p1p1p1p1/P1PpP2p/1P1P3P/3N1KP1/8/8 w - - 0 45
+  SF18 static: Final evaluation       +0.43 (white side) [with scaled NNUE, ...]
+  SF18 1000ms : info depth 19 seldepth 41 multipv 1 score cp 482 lowerbound nodes 1509931 nps 1509931 hashfull 78 tbhits 0 time 1000 pv f3f4
+  SF18 best  : bestmove f3f4 ponder d8e7
+P6: Kiwipete Tactical Tension [1000ms]
+  FEN: r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1
+  SF18 static: Final evaluation       -1.71 (white side) [with scaled NNUE, ...]
+  SF18 1000ms : info depth 21 seldepth 39 multipv 1 score cp -201 upperbound nodes 742211 nps 742211 hashfull 77 tbhits 0 time 1000 pv e2a6 b4c3
+  SF18 best  : bestmove e2a6 ponder b4c3

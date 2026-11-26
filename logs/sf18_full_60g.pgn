@@ -1,0 +1,1250 @@
+[Event "chess_ai Arena"]
+[Round "3"]
+[White "nnue:nets/h100_v5_v2_1b.nnue:t=4"]
+[Black "sf"]
+[Result "1/2-1/2"]
+[SetUp "1"]
+[FEN "r1bqk1nr/pppp1ppp/2n5/2b1p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 4 4"]
+
+4. c3 Nf6 5. d3 a6 6. h3 h6 7. O-O d6 8. d4 Bb6 9. dxe5 Nxe5 
+10. Nxe5 dxe5 11. Qxd8+ Kxd8 12. Nd2 Ke7 13. a4 a5 14. Nf3 Nxe4 15. Nxe5 Kf6 
+16. Bf4 g5 17. Rae1 Bf5 18. Ng4+ Bxg4 19. Rxe4 Bf5 20. Be5+ Kg6 21. Re2 Rhd8 
+22. g4 Bd3 23. Bxd3+ Rxd3 24. Kg2 Re8 25. Rfe1 f6 26. Bg3 Rxe2 27. Rxe2 h5 
+28. Re7 Rd2 29. b4 h4 30. bxa5 Ba7 31. Bxc7 Rxf2+ 32. Kh1 Rf1+ 33. Kg2 Rf2+ 
+34. Kh1 Rf3 35. Kg2 Rf2+ 1/2-1/2
+
+[Event "chess_ai Arena"]
+[Round "4"]
+[White "sf"]
+[Black "nnue:nets/h100_v5_v2_1b.nnue:t=4"]
+[Result "1/2-1/2"]
+[SetUp "1"]
+[FEN "r1bqk1nr/pppp1ppp/2n5/2b1p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 4 4"]
+
+4. O-O Nf6 5. d3 d6 6. c3 O-O 7. b4 Bb6 8. a4 a5 9. b5 Ne7 
+10. Nbd2 Ng6 11. d4 Bg4 12. Qc2 Qd7 13. dxe5 dxe5 14. Ba3 Rfd8 15. Ng5 Qxd2 
+16. Nxf7 Qxc2 17. Nh6+ Kh8 18. Nf7+ Kg8 19. Nxd8+ Be6 20. Bxe6+ Kh8 21. Nf7+ Kg8 
+22. Nxe5+ Kh8 23. Nf7+ Kg8 24. Ne5+ Kh8 25. Nf7+ Kg8 26. Nd6+ Kh8 27. Ra2 Qxc3 
+28. Nf7+ Kg8 29. Nd8+ Kh8 30. Nf7+ Kg8 31. Ng5+ Kh8 32. Rc1 Bxf2+ 33. Kh1 Qe3 
+34. Nf7+ Kg8 35. Nh6+ Kh8 36. Nf7+ Kg8 37. Ne5+ Kh8 38. Nf7+ 1/2-1/2
+
+[Event "chess_ai Arena"]
+[Round "1"]
+[White "nnue:nets/h100_v5_v2_1b.nnue:t=4"]
+[Black "sf"]
+[Result "0-1"]
+[SetUp "1"]
+[FEN "r1bqkbnr/pppp1ppp/2n5/1B2p3/4P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 3 3"]
+
+3... a6 4. Ba4 Nf6 5. O-O b5 6. Bb3 Bb7 7. Re1 Bc5 8. c3 Bb6 9. d4 
+d6 10. Bg5 h6 11. Bh4 g5 12. Bg3 O-O 13. a3 Re8 14. Bc2 Ne7 15. Nbd2 
+Ng6 16. a4 c5 17. d5 c4 18. Nf1 Rb8 19. axb5 axb5 20. Ne3 Bc8 21. Nf5 
+Bxf5 22. exf5 Nf4 23. Nd2 Kg7 24. Qf3 N4xd5 25. Ne4 Nxe4 26. Bxe4 Nf6 27. Rad1 
+Qc7 28. h3 b4 29. cxb4 Rec8 30. b5 Ba5 31. Bc6 Bxe1 32. Rxe1 Rb6 33. Kh2 
+Rxc6 34. bxc6 Qxc6 35. Qe2 Qd5 36. Rd1 Qe4 37. Qd2 Ne8 38. f6+ Kxf6 39. f3 
+Qd3 40. Qc1 Qf5 41. Qc3 Rb8 42. Qxc4 Rxb2 43. Qc6 Ke7 44. Rc1 Qd3 45. Kh1 
+Qe2 46. Rg1 Rc2 47. Qb7+ Kf8 48. Be1 Qc4 49. Qa8 Qc6 50. Qa3 Kg7 51. Bb4 
+Qd5 52. Ra1 Rc6 53. Qa4 Qc4 54. Qa3 Qd4 55. Qa4 Rb6 56. Rd1 Qf4 57. Qxe8 
+Rxb4 58. Qc6 Rd4 59. Rg1 Rd2 60. Qc7 Qe3 61. Qc8 d5 62. Qg4 Re2 63. Kh2 
+Re1 64. Rxe1 Qxe1 65. Qa4 d4 66. Qb5 Qe3 67. Qc5 h5 68. Qb6 Qf4+ 69. Kg1 
+d3 70. Qd8 Qe3+ 71. Kh1 d2 72. Kh2 Qf4+ 73. Kh1 h4 74. g4 Qe3 75. Qd5 
+Qd4 76. Qxd4 exd4 77. Kg2 d1=Q 78. Kf2 Qc2+ 79. Ke1 d3 80. Kf1 d2 81. Kf2 
+d1=Q+ 82. Ke3 Qdd2# 0-1
+
+[Event "chess_ai Arena"]
+[Round "2"]
+[White "sf"]
+[Black "nnue:nets/h100_v5_v2_1b.nnue:t=4"]
+[Result "1-0"]
+[SetUp "1"]
+[FEN "r1bqkbnr/pppp1ppp/2n5/1B2p3/4P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 3 3"]
+
+3... a6 4. Ba4 Nf6 5. O-O Nxe4 6. d4 b5 7. Bb3 d5 8. dxe5 Be6 9. c3 
+Bc5 10. Nbd2 O-O 11. Bc2 Bf5 12. Nb3 Bb6 13. Nfd4 Nxd4 14. cxd4 a5 15. f3 
+a4 16. Nc5 Nxc5 17. Bxf5 Ne6 18. Be3 Qe7 19. Rc1 g6 20. Bxe6 Qxe6 21. Qd3 
+f6 22. f4 Qd7 23. h3 fxe5 24. fxe5 Rxf1+ 25. Rxf1 Rf8 26. Re1 c6 27. Bh6 
+Qf5 28. Qc3 Qf2+ 29. Kh2 Rc8 30. Qb4 Rd8 31. Qe7 Qf7 32. Qb4 Qf2 33. Be3 
+Qf8 34. Qd2 Qf5 35. Bh6 Re8 36. b3 axb3 37. axb3 Qh5 38. g4 Qh4 39. Rf1 
+Qe7 40. Kg2 Bd8 41. Qf4 Bc7 42. Qf3 g5 43. Bxg5 Qf8 44. Qc3 Qg7 45. Qxc6 
+Qg6 46. Qxd5+ Qe6 47. Qxe6+ Rxe6 48. Rc1 Bxe5 49. Re1 h6 50. Bf4 Bxf4 51. Rxe6 
+Bd2 52. h4 Kg7 53. h5 Kf7 54. d5 Kg7 55. Kf3 b4 56. Ke4 Bg5 57. d6 
+Kf7 58. Kf5 Bh4 59. Re5 Bf6 60. Rb5 Bh4 61. Rb7+ Kf8 62. Ke6 Kg8 63. d7 
+Kh8 64. Rb5 Kg8 65. g5 Bxg5 66. Rxg5+ hxg5 67. d8=Q+ Kg7 68. Qd7+ Kh6 69. Qf7 
+g4 70. Qg6# 1-0
+
+[Event "chess_ai Arena"]
+[Round "7"]
+[White "nnue:nets/h100_v5_v2_1b.nnue:t=4"]
+[Black "sf"]
+[Result "0-1"]
+[SetUp "1"]
+[FEN "r1bqkb1r/pppp1ppp/2n2n2/4p3/4P3/2N2N2/PPPP1PPP/R1BQKB1R w KQkq - 4 4"]
+
+4. Bb5 Bb4 5. O-O O-O 6. d3 Bxc3 7. bxc3 d6 8. Bg5 Ne7 9. Nh4 Ng6 
+10. Nxg6 fxg6 11. Bc4+ Kh8 12. f4 h6 13. fxe5 hxg5 14. exf6 gxf6 15. a4 a5 
+16. Bd5 Kg7 17. d4 c6 18. Bb3 b6 19. Qe2 Re8 20. Qf3 Ba6 21. Rf2 Ra7 
+22. Re1 f5 23. g4 f4 24. h4 d5 25. hxg5 Rf7 26. Rh2 Qxg5 27. e5 Bc8 
+28. Qh3 Bxg4 29. Qh7+ Kf8 30. Qh8+ Ke7 31. Qh6 Qxh6 32. Rxh6 Be6 33. Rxg6 Rh7 
+34. Rf1 Rf8 35. Kf2 c5 36. Ba2 c4 37. Ke1 f3 38. Rgg1 Rh3 39. Rg7+ Rf7 
+40. Rxf7+ Bxf7 41. Kf2 Bh5 42. Bb1 Ke6 43. Ke3 Kf5 44. Ba2 Rh4 45. e6 Re4+ 
+46. Kd2 Rxe6 47. Kc1 Bg4 48. Kb2 Re2 49. Bxc4 dxc4 50. d5 Kf4 51. d6 Rd2 
+52. Rh1 Rxd6 53. Rh2 Kg3 54. Rh7 f2 55. Rf7 Rd1 56. Rxf2 Kxf2 57. Ka3 Ke3 
+58. Ka2 Kd2 59. Kb2 Rf1 60. Ka3 Kc1 61. Ka2 Kxc2 62. Ka3 Ra1# 0-1
+
+[Event "chess_ai Arena"]
+[Round "8"]
+[White "sf"]
+[Black "nnue:nets/h100_v5_v2_1b.nnue:t=4"]
+[Result "1/2-1/2"]
+[SetUp "1"]
+[FEN "r1bqkb1r/pppp1ppp/2n2n2/4p3/4P3/2N2N2/PPPP1PPP/R1BQKB1R w KQkq - 4 4"]
+
+4. d4 exd4 5. Nxd4 Bb4 6. Nxc6 bxc6 7. Bd3 d5 8. exd5 cxd5 9. O-O O-O 
+10. h3 c6 11. Qf3 h6 12. Re1 a5 13. a3 Bd6 14. Bf4 a4 15. Rad1 Be6 
+16. Ne2 Re8 17. Nd4 Bxf4 18. Qxf4 Bd7 19. Rxe8+ Qxe8 20. Bf5 c5 21. Bxd7 Qxd7 
+22. Nf5 Qe6 23. Rd3 Re8 24. Re3 Ne4 25. f3 g5 26. Qg4 h5 27. Qxh5 Qxf5 
+28. fxe4 Rxe4 29. Rxe4 dxe4 30. h4 f6 31. hxg5 fxg5 32. Qe8+ Kg7 33. Qxa4 Qd5 
+34. c3 Qd3 35. Qa7+ Kf6 36. Qb6+ Kf7 37. Qb7+ Kf6 38. Qb6+ Kf7 39. Qc7+ Kf6 
+40. Qc6+ Kf7 41. Qb7+ Kf6 42. Qc6+ Kf7 43. Qb7+ 1/2-1/2
+
+[Event "chess_ai Arena"]
+[Round "5"]
+[White "nnue:nets/h100_v5_v2_1b.nnue:t=4"]
+[Black "sf"]
+[Result "0-1"]
+[SetUp "1"]
+[FEN "r1bqkbnr/pppp1ppp/2n5/4p3/3PP3/5N2/PPP2PPP/RNBQKB1R b KQkq - 0 3"]
+
+3... exd4 4. Nxd4 Nf6 5. Nxc6 bxc6 6. Bd3 d5 7. e5 Ng4 8. O-O Bc5 9. Bf4 
+g5 10. Bg3 h5 11. Be2 h4 12. Bxg4 hxg3 13. hxg3 f5 14. Qd3 fxg4 15. Qg6+ 
+Kf8 16. Qxc6 Bb6 17. Nc3 Bd7 18. Qg6 Qe7 19. Nxd5 Qg7 20. Qxg7+ Kxg7 21. Nxb6 
+axb6 22. f4 gxf3 23. Rxf3 Rhe8 24. Rc3 Ra7 25. Re1 Be6 26. a3 c5 27. Rd3 
+Bf5 28. Rd5 Bxc2 29. Rd6 Rb7 30. g4 Ree7 31. Re2 Bb3 32. Re3 Bg8 33. a4 
+Re6 34. Rd8 Bf7 35. Rc8 Ree7 36. a5 Be6 37. Rc6 bxa5 38. Rxc5 Ra7 39. Re4 
+a4 40. Rb5 Bd7 41. Rc5 Be6 42. Rb5 Rec7 43. Rb6 Bd5 44. Re1 Rc6 45. Rb8 
+Re7 46. Rb5 Bc4 47. Ra5 Ra6 48. Rc5 Be6 49. Re4 Rb7 50. Rc2 Ra5 51. Rf2 
+Rf7 52. Rfe2 Bb3 53. Kh2 Re7 54. Kh3 Rc5 55. Kg3 Rc4 56. Rxc4 Bxc4 57. Rc2 
+Bb3 58. Rc5 Rb7 59. Ra5 Kf7 60. Kh3 Ke7 61. e6 Kf6 62. g3 Re7 63. Rf5+ 
+Kg6 64. Rb5 Rxe6 65. Rb4 Kf6 66. Rb5 Re4 67. Rf5+ Kg6 68. Rb5 Kf6 69. Rf5+ 
+Kg6 70. Rb5 Be6 71. Kg2 Bxg4 72. Rb7 Be6 73. Rb5 g4 74. Kg1 Bb3 75. Kf2 
+Kf6 76. Rb7 Ke6 77. Rb5 Kd6 78. Ra5 Re5 79. Ra8 Kc5 80. Ra7 Kd4 81. Rd7+ 
+Kc4 82. Rd2 Re4 83. Rd8 Rd4 84. Re8 Kd3 85. Ra8 Kc2 86. Ke3 Rc4 87. Rb8 
+Kxb2 88. Kf2 a3 89. Ra8 a2 90. Ke2 Ra4 91. Rxa4 Bxa4 92. Ke3 Bd1 93. Kd4 
+a1=Q 94. Ke5 Qa3 95. Ke6 Qxg3 96. Kd7 Qd3+ 97. Kc6 g3 98. Kb6 Qd6+ 99. Kb7 
+Bf3+ 100. Kc8 Qe7 101. Kb8 Qb7# 0-1
+
+[Event "chess_ai Arena"]
+[Round "6"]
+[White "sf"]
+[Black "nnue:nets/h100_v5_v2_1b.nnue:t=4"]
+[Result "1-0"]
+[SetUp "1"]
+[FEN "r1bqkbnr/pppp1ppp/2n5/4p3/3PP3/5N2/PPP2PPP/RNBQKB1R b KQkq - 0 3"]
+
+3... exd4 4. Nxd4 Bc5 5. Nb3 Bb6 6. Nc3 d6 7. Bf4 Nge7 8. Qd2 O-O 9. O-O-O 
+Be6 10. Be3 f5 11. exf5 Nxf5 12. Bxb6 axb6 13. f4 Re8 14. Bb5 Bf7 15. Kb1 
+Qd7 16. a3 Rad8 17. Nd5 Nfe7 18. Nxe7+ Qxe7 19. Nd4 Qe4 20. Qc3 Qxf4 21. Rhf1 
+Qe5 22. h4 d5 23. Bxc6 bxc6 24. Rde1 Qh5 25. Nxc6 d4 26. Qb4 Rxe1+ 27. Qxe1 
+Rd7 28. g4 Qc5 29. Ne5 Re7 30. Rxf7 Rxe5 31. Qf1 Qd6 32. Qc4 b5 33. Qb3 
+Kh8 34. g5 g6 35. a4 Re1+ 36. Ka2 Re3 37. Rf6 Qc5 38. Qxb5 Qxb5 39. axb5 
+Re5 40. Rf8+ Kg7 41. Rd8 Rxb5 42. Rd7+ Kg8 43. Rxc7 Rd5 44. b4 d3 45. cxd3 
+Rxd3 46. Kb2 Rd4 47. Kb3 Rxh4 48. b5 Rh1 49. Kc2 Rh2+ 50. Kc3 Rh5 51. b6 
+Rxg5 52. b7 Rb5 53. Rc8+ Kg7 54. b8=Q Rxb8 55. Rxb8 Kf6 56. Rb5 Ke6 57. Kd4 
+Kf6 58. Ke4 h6 59. Rc5 Kg7 60. Rc6 h5 61. Kf4 h4 62. Kg4 Kh6 63. Kxh4 
+Kg7 64. Kg5 Kf7 65. Rxg6 Ke7 66. Kf5 Kd7 67. Ke5 Kc7 68. Kd5 Kd7 69. Rg7+ 
+Ke8 70. Ke6 Kd8 71. Rh7 Kc8 72. Kd6 Kb8 73. Kc6 Ka8 74. Kb6 Kb8 75. Rh8# 
+1-0
+
+[Event "chess_ai Arena"]
+[Round "13"]
+[White "nnue:nets/h100_v5_v2_1b.nnue:t=4"]
+[Black "sf"]
+[Result "1/2-1/2"]
+[SetUp "1"]
+[FEN "r1bqkb1r/1ppp1ppp/p1n2n2/4p3/B3P3/5N2/PPPP1PPP/RNBQ1RK1 b kq - 1 5"]
+
+5... Nxe4 6. d4 b5 7. Bb3 d5 8. dxe5 Be6 9. c3 Be7 10. Nbd2 Nc5 11. Bc2 
+d4 12. cxd4 Nxd4 13. Nxd4 Qxd4 14. Nf3 Qxd1 15. Rxd1 Rd8 16. Be3 Rxd1+ 17. Rxd1 
+Na4 18. Bxa4 bxa4 19. a3 O-O 20. Nd4 Bd7 21. Rd2 Rd8 22. f3 Kf8 23. Kf2 
+Ke8 24. Ne2 Bb5 25. Rc2 c5 26. Nf4 g6 27. Rd2 Rxd2+ 28. Bxd2 Kd7 29. Nd5 
+Bd8 30. Nf6+ Ke6 31. Bc3 h5 32. Ke3 Bc7 33. Ke4 Bc6+ 34. Kf4 h4 35. Ne4 
+Bxe4 36. Kxe4 g5 37. f4 gxf4 38. h3 c4 39. Kxf4 Kd5 40. Kf5 Bb6 41. Kf6 
+Bd4 42. Kf5 Bf2 43. Kf6 Bg3 44. Kf5 a5 45. Kg4 Ke4 46. Kg5 Bf2 47. Kg4 
+Kd3 48. Kg5 Bc5 49. Kf6 Bxa3 50. Kxf7 Bc5 51. Bxa5 Kc2 52. Ke6 Bd4 53. Kd5 
+Bxb2 54. e6 Bf6 55. Kxc4 a3 56. Bc3 Bxc3 57. e7 a2 58. e8=Q a1=Q 59. Qe4+ 
+Kd2 60. Qf4+ Ke2 61. Qf3+ Ke1 62. Qxc3+ Qxc3+ 63. Kxc3 Kf1 64. Kd2 Kf2 65. Kd3 
+Kxg2 66. Ke2 Kxh3 67. Kf2 Kh2 68. Kf1 Kg3 69. Kg1 h3 70. Kh1 Kh4 71. Kh2 
+Kg4 72. Kg1 Kg3 73. Kh1 h2 1/2-1/2
+
+[Event "chess_ai Arena"]
+[Round "14"]
+[White "sf"]
+[Black "nnue:nets/h100_v5_v2_1b.nnue:t=4"]
+[Result "1-0"]
+[SetUp "1"]
+[FEN "r1bqkb1r/1ppp1ppp/p1n2n2/4p3/B3P3/5N2/PPPP1PPP/RNBQ1RK1 b kq - 1 5"]
+
+5... Nxe4 6. d4 b5 7. Bb3 d5 8. dxe5 Be6 9. c3 Bc5 10. Nbd2 O-O 11. Bc2 
+Bf5 12. Nb3 Bb6 13. Nfd4 Nxd4 14. cxd4 a5 15. f3 a4 16. Nc5 Nxc5 17. Bxf5 
+Ne6 18. Be3 Qe7 19. Rc1 Rac8 20. Rc6 Qe8 21. Rc2 g6 22. Bg4 f5 23. exf6 
+Rxf6 24. Re1 Qf7 25. Rce2 h5 26. Bh3 Rd8 27. Kh1 Ba5 28. Bd2 Bxd2 29. Qxd2 
+Rd6 30. Re5 Kh7 31. Kg1 Rb6 32. g3 b4 33. f4 b3 34. axb3 axb3 35. Qc3 
+h4 36. Bg4 Rd6 37. Kh1 c6 38. Qe3 Ng7 39. Re7 Qf8 40. Qe5 Kh8 41. Ra1 
+c5 42. dxc5 Ra6 43. Rxa6 Rxa6 44. Kg2 Kh7 45. Rd7 Rc6 46. Qg5 Qf6 47. Qxf6 
+Rxf6 48. Rxd5 Nf5 49. Kf3 Kg7 50. Bxf5 gxf5 51. gxh4 Rh6 52. Kg3 Rg6+ 53. Kf2 
+Rh6 54. Rxf5 Rxh4 55. Kg3 Rh6 56. Re5 Kf7 57. Re3 Rc6 58. Rc3 Rc8 59. c6 
+Rc7 60. f5 Ke7 61. Kf4 Kd6 62. f6 Ke6 63. Kg5 Kf7 64. Kf5 Rc8 65. c7 
+Rh8 66. Kf4 Rc8 67. Ke5 Kg6 68. Ke6 Re8+ 69. Kd6 Rc8 70. Ke7 Kh7 71. f7 
+Kg6 72. f8=Q Rxf8 73. Kxf8 Kg5 74. c8=Q Kf4 75. Ke7 Kg5 76. Rg3+ Kf4 77. Ke6 
+Ke4 78. Qc4# 1-0
+
+[Event "chess_ai Arena"]
+[Round "11"]
+[White "nnue:nets/h100_v5_v2_1b.nnue:t=4"]
+[Black "sf"]
+[Result "1/2-1/2"]
+[SetUp "1"]
+[FEN "r1bqkbnr/ppp2ppp/2np4/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 0 4"]
+
+4. d4 exd4 5. Nxd4 Nf6 6. Nc3 Be7 7. O-O O-O 8. h3 Nxd4 9. Qxd4 Be6 
+10. Bxe6 fxe6 11. e5 dxe5 12. Qxe5 Qd6 13. Bf4 Rad8 14. Qe3 Qb6 15. Qxb6 cxb6 
+16. Rae1 Bb4 17. Rxe6 Bxc3 18. bxc3 Nd5 19. Bg5 Rc8 20. Rd1 Nxc3 21. Rd7 Rf7 
+22. Ree7 Rxe7 23. Rxe7 h6 24. Bh4 Nxa2 25. Bg3 g5 26. Rxb7 Rxc2 27. Bb8 Nb4 
+28. Bxa7 Nc6 29. Rc7 b5 30. Be3 b4 31. Rb7 Rc3 32. g3 b3 33. Kg2 Na5 
+34. Rb8+ Kh7 35. Bd2 Rc5 36. Bb4 Rd5 37. Bxa5 Rxa5 38. Rxb3 Ra6 39. Rb4 h5 
+40. h4 g4 41. Kf1 Kg6 42. Rd4 Rf6 43. Ke1 Re6+ 44. Kd2 Rf6 45. Ke3 Re6+ 
+46. Kd3 Rb6 47. Re4 Ra6 48. Kd2 Kf5 49. Rc4 Re6 50. Rd4 Ke5 51. Rb4 Kf6 
+52. Ra4 Kg6 53. Ra5 Kh6 54. Ra3 Kg7 55. Kd3 Kg6 56. Ra2 Kh6 57. Kd2 Kg6 
+58. Ra4 Kf5 59. Ra3 Kg6 60. Kd3 Kh6 61. Ra4 Kg6 62. Ra7 Kh6 63. Ra5 Kg6 
+64. Rg5+ Kh6 65. Rf5 Kg6 66. Rc5 Kh6 67. Rd5 Kg6 68. Kd2 Kh6 69. Rb5 Kg6 
+70. Rg5+ Kh6 71. Rf5 Kg6 72. Rf4 Rd6+ 73. Ke1 Rd3 74. Rc4 Rd6 75. Rc5 Re6+ 
+76. Kf1 Rf6 77. Rc2 Rd6 78. Rc3 Rb6 79. Ra3 Kf5 80. Re3 Ra6 81. Re7 Kf6 
+82. Rb7 Ra1+ 83. Kg2 Kg6 84. Rb8 Ra3 85. Rb2 Kh6 86. f4 Rd3 87. Ra2 Kg7 
+88. Ra7+ Kg6 89. Ra5 Rd2+ 90. Kf1 Rd3 91. Kf2 Rf3+ 92. Kg2 Kh6 93. Ra6+ Kg7 
+94. Ra7+ Kg6 95. Ra5 Rd3 96. Rg5+ Kh6 97. Rf5 Rd2+ 98. Kh1 Kg6 99. Rb5 Rd3 
+100. Rg5+ Kh6 101. Kg2 Rb3 102. Kf2 Rf3+ 103. Kg2 Rc3 104. Kf2 Rf3+ 105. Kg2 Rb3 
+106. Kf2 Rf3+ 1/2-1/2
+
+[Event "chess_ai Arena"]
+[Round "12"]
+[White "sf"]
+[Black "nnue:nets/h100_v5_v2_1b.nnue:t=4"]
+[Result "1/2-1/2"]
+[SetUp "1"]
+[FEN "r1bqkbnr/ppp2ppp/2np4/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 0 4"]
+
+4. d4 exd4 5. Nxd4 Be7 6. Nxc6 bxc6 7. e5 Qd7 8. Bf4 d5 9. Bd3 Qg4 
+10. Qxg4 Bxg4 11. Nd2 Bc5 12. Nb3 Bb6 13. Ba6 Bc8 14. Bxc8 Rxc8 15. a4 a5 
+16. Rf1 Ra8 17. O-O-O Ne7 18. g3 Ng6 19. Bd2 Ne7 20. Be3 Nf5 21. Bc5 h5 
+22. Rd3 Rh6 23. Re1 Rb8 24. h3 g5 25. Bxb6 cxb6 26. Rf3 Ng7 27. Nd4 Ne6 
+28. Nf5 Rh7 29. Nd6+ Ke7 30. Rd1 Rd8 31. Rb3 Rb8 32. Rf3 Rd8 33. Rb3 Rb8 
+34. c4 Nc5 35. Re3 dxc4 36. Nf5+ Ke8 37. Rd6 Nxa4 38. Re4 Nc5 39. Rxc4 Rd8 
+40. Rxc6 Rd5 41. Rxb6 Rxe5 42. Nd4 Kf8 43. Kc2 g4 44. f4 Rd5 45. h4 Ne4 
+46. Ne6+ fxe6 47. Rxe4 Rc7+ 48. Kb1 Rd3 49. Rexe6 Rxg3 50. f5 a4 51. Rb8+ Kf7 
+52. Rh6 Rg1+ 53. Ka2 Rcc1 54. Ka3 Rc4 55. Rb7+ Kg8 56. Rg6+ Kf8 57. Ka2 Rcc1 
+58. Ka3 Rc4 59. Ka2 Rcc1 60. Rb8+ Kf7 61. Ka3 Rc4 62. Ka2 Rcc1 63. Ka3 Rc4 
+64. Rb7+ Kf8 1/2-1/2
+
+[Event "chess_ai Arena"]
+[Round "9"]
+[White "nnue:nets/h100_v5_v2_1b.nnue:t=4"]
+[Black "sf"]
+[Result "1/2-1/2"]
+[SetUp "1"]
+[FEN "rnbqkb1r/pppp1ppp/5n2/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq - 2 3"]
+
+3. Nxe5 d6 4. Nf3 Nxe4 5. d4 d5 6. Bd3 Bd6 7. O-O O-O 8. c4 c6 
+9. Re1 Re8 10. Qb3 Na6 11. cxd5 cxd5 12. Nc3 Be6 13. a3 Rc8 14. Be3 Nc7 
+15. Rac1 Nxc3 16. Qxc3 Bd7 17. Qd2 Ne6 18. Rxc8 Qxc8 19. Qa5 Qb8 20. Qxd5 Bc6 
+21. Qh5 g6 22. Qh4 Bxf3 23. gxf3 Be7 24. Qg4 h5 25. Qe4 Bd6 26. Bb5 Re7 
+27. Qh4 Nf4 28. Rc1 Kg7 29. Bxf4 Bxf4 30. Qxe7 Bxc1 31. Bc4 Qf4 32. Qxb7 Qxd4 
+33. Qxf7+ Kh6 34. a4 Bxb2 35. Qf8+ Qg7 36. Qf4+ Kh7 37. Bd3 Qe5 38. Qf7+ Qg7 
+39. Bxg6+ Kh6 40. Qxg7+ Bxg7 41. Be8 Be5 42. Kg2 Kg5 43. Bc6 a5 44. Be4 Bc7 
+45. Bd5 h4 46. Bc6 Be5 47. Be4 Kf4 48. Bd5 Bd6 49. Bc6 Be7 50. Be4 Bf6 
+51. Kg1 Be5 52. Bc6 Kg5 53. Kg2 Bf4 54. Be4 Bd6 55. Ba8 Kf4 56. Bd5 Bc7 
+57. Bb7 Bb8 58. Bc8 Kg5 59. Kh1 Bc7 60. Bb7 Be5 61. Kg1 Bd6 62. Bd5 Bf4 
+63. Be6 Bb8 64. Kg2 Be5 65. Bg4 Bf6 66. Bc8 Kf4 67. Bd7 Be5 68. h3 Bb8 
+69. Bg4 Bd6 70. Bc8 Ba3 71. Bb7 Be7 72. Kg1 Bc5 73. Kf1 Bd6 74. Bc6 Bf8 
+75. Kg2 Bc5 76. Ba8 Bb4 77. Kf1 Bf8 78. Be4 Bc5 79. Kg2 Bb4 80. Bd3 Bf8 
+81. Bb5 Ba3 82. Be8 Be7 83. Bd7 Ba3 84. Bb5 Bd6 85. Be2 Ba3 86. Bc4 Be7 
+87. Bd5 Bd6 88. Kf1 Ba3 89. Kg1 Bf8 90. Bc6 Be7 91. Ba8 Bf8 92. Kf1 Bc5 
+93. Ke2 Bf8 94. Bd5 Ba3 95. Bc6 Bf8 96. Bb7 Ba3 97. Be4 Bf8 98. Bc6 Bd6 
+99. Be8 Bb4 100. Bd7 Ba3 101. Be6 Bb4 102. Bg4 Be7 103. Kf1 Ba3 104. Kg1 Bc5 
+105. Bh5 Ke5 106. Bg4 Ba3 107. Kg2 Bc5 108. Bd7 Bf8 109. Kf1 Ba3 110. f4+ Kxf4 
+111. Ke2 Bb4 112. Bc8 Be7 113. Bd7 Bf8 114. Bb5 Be7 115. Bd7 Bd6 116. Bc8 Ba3 
+117. Bd7 Be7 118. Bb5 Bf8 119. Bd7 Bb4 120. Bc8 Bc5 121. Bd7 Bb4 1/2-1/2
+
+[Event "chess_ai Arena"]
+[Round "10"]
+[White "sf"]
+[Black "nnue:nets/h100_v5_v2_1b.nnue:t=4"]
+[Result "1-0"]
+[SetUp "1"]
+[FEN "rnbqkb1r/pppp1ppp/5n2/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq - 2 3"]
+
+3. Nxe5 Nxe4 4. Qe2 Qe7 5. Qxe4 d6 6. d4 dxe5 7. dxe5 Nc6 8. Nc3 Qxe5 
+9. Qxe5+ Nxe5 10. Bf4 f6 11. O-O-O Bd7 12. Nb5 O-O-O 13. Nxa7+ Kb8 14. Nb5 Bc5 
+15. Bg3 Bc6 16. Re1 h5 17. h4 Rd7 18. f3 Rhd8 19. Nc3 Bd4 20. a3 Rd6 
+21. a4 Bxc3 22. bxc3 Bxa4 23. Bxe5 fxe5 24. Bd3 Rd5 25. Re3 Rc5 26. Rhe1 Re8 
+27. f4 Bc6 28. Kd2 Kc8 29. g3 e4 30. Bxe4 Bxe4 31. Rxe4 Rxe4 32. Rxe4 Kd7 
+33. Kd3 b5 34. Re5 Kd6 35. Rg5 Rxg5 36. hxg5 Kd5 37. Ke3 Ke6 38. Ke4 g6 
+39. c4 bxc4 40. c3 c6 41. Kd4 Kf5 42. Kxc4 Kg4 43. Kc5 Kxg3 44. f5 h4 
+45. fxg6 h3 46. g7 h2 47. g8=Q h1=Q 48. g6 Qh5+ 49. Kd6 Qa5 50. c4 Qb4+ 
+51. Kc7 Qa3 52. Qf7 c5 53. Kb7 Qb4+ 54. Kc8 Qa4 55. g7 Qa6+ 56. Kd7 Qa7+ 
+57. Ke6 Qa6+ 58. Kf5 Qc8+ 59. Ke5 Qb8+ 60. Ke4 Qb1+ 61. Kd5 Qd3+ 62. Kc6 Qe4+ 
+63. Kb6 Qb1+ 64. Kc7 Qh7 65. g8=Q+ Qxg8 66. Qxg8+ Kf3 67. Qd5+ Kg4 68. Qxc5 Kf3 
+69. Qe5 Kg4 70. c5 Kh3 71. c6 Kh4 72. Kd6 Kg4 73. c7 Kh4 74. Qg7 Kh3 
+75. c8=Q+ Kh4 76. Qcg4# 1-0
+
+[Event "chess_ai Arena"]
+[Round "19"]
+[White "nnue:nets/h100_v5_v2_1b.nnue:t=4"]
+[Black "sf"]
+[Result "0-1"]
+[SetUp "1"]
+[FEN "r1bqkb1r/pp2pppp/2np1n2/8/3NP3/2N5/PPP2PPP/R1BQKB1R w KQkq - 1 6"]
+
+6. Bg5 e6 7. Qd2 Be7 8. O-O-O O-O 9. Nb3 h6 10. Bxf6 Bxf6 11. Kb1 Bxc3 
+12. Qxc3 e5 13. Bb5 a5 14. a4 Nb4 15. Qd2 Be6 16. Qxd6 Qf6 17. Nc5 Rfd8 
+18. Bd7 Qxf2 19. Rd2 Ba2+ 20. Ka1 Qe3 21. c3 Bc4 22. cxb4 axb4 23. b3 Bb5 
+24. Qd5 Rac8 25. Bxc8 Rxd5 26. Rxd5 Bc6 27. Rd8+ Kh7 28. Nd3 Qb6 29. Rd5 Bxd5 
+30. exd5 Qd4+ 31. Nb2 Qxd5 32. Rf1 h5 33. Ka2 Kh6 34. h4 g6 35. Rc1 e4 
+36. Rc7 e3 37. Bxb7 Qd2 38. Ba6 e2 39. Bxe2 Qxe2 40. Rxf7 Qxg2 41. Rc7 g5 
+42. hxg5+ Kg6 43. Rc4 Qf2 44. a5 Qf5 45. a6 Qa5+ 46. Kb1 Kxg5 47. Nd3 Qxa6 
+48. Nf4 h4 49. Nd3 h3 50. Rc5+ Kh6 51. Rc4 Qf6 52. Nxb4 h2 53. Rc1 Qb6 
+54. Nd3 Qxb3+ 55. Nb2 Kg5 56. Rc5+ Kf4 57. Rh5 Qg3 58. Rh8 Qg2 59. Nd1 Ke4 
+60. Rh4+ Kd3 61. Nb2+ Ke2 62. Ka2 h1=Q 63. Rxh1 Qxh1 64. Kb3 Ke3 65. Na4 Kd4 
+66. Ka2 Qb7 67. Ka3 Qb1 68. Nb2 Kc3 69. Na4+ Kc2 70. Nb2 Qxb2+ 71. Ka4 Qb6 
+72. Ka3 Qb3# 0-1
+
+[Event "chess_ai Arena"]
+[Round "20"]
+[White "sf"]
+[Black "nnue:nets/h100_v5_v2_1b.nnue:t=4"]
+[Result "1/2-1/2"]
+[SetUp "1"]
+[FEN "r1bqkb1r/pp2pppp/2np1n2/8/3NP3/2N5/PPP2PPP/R1BQKB1R w KQkq - 1 6"]
+
+6. Nd5 Nxd5 7. exd5 Qa5+ 8. Bd2 Qxd5 9. Nb5 Qe6+ 10. Be2 Qd7 11. c4 a6 
+12. Nc3 e6 13. Be3 Be7 14. Na4 Qc7 15. Nb6 Rb8 16. O-O O-O 17. Qd2 Rd8 
+18. Rfd1 Bf6 19. Rac1 h6 20. b4 Bg5 21. f4 Bxf4 22. Bxf4 Qxb6+ 23. Kh1 e5 
+24. Bxh6 Qc7 25. Bh5 Be6 26. Rc3 Nd4 27. Rf1 Nf5 28. Rxf5 Bxf5 29. Rf3 Be6 
+30. Bxg7 Kxg7 31. Qg5+ Kf8 32. Qh6+ Ke7 33. Bxf7 Bxf7 34. Qh4+ Ke8 35. Qh8+ Ke7 
+36. Rxf7+ Kxf7 37. Qh7+ Ke6 38. Qxc7 Rdc8 39. Qg7 Rxc4 40. Qg6+ Kd5 41. Qf7+ Kd4 
+42. Qf2+ Kd3 43. Qf3+ Kd2 44. Qf2+ Kd3 45. Qf3+ Kd2 46. Qf2+ Kd3 1/2-1/2
+
+[Event "chess_ai Arena"]
+[Round "17"]
+[White "nnue:nets/h100_v5_v2_1b.nnue:t=4"]
+[Black "sf"]
+[Result "0-1"]
+[SetUp "1"]
+[FEN "rnbqkb1r/1p2pppp/p2p1n2/8/3NP3/2N5/PPP2PPP/R1BQKB1R w KQkq - 0 6"]
+
+6. Be3 e5 7. Nb3 Be6 8. f4 exf4 9. Bxf4 Nc6 10. Qd2 d5 11. exd5 Nxd5 
+12. Nxd5 Qxd5 13. O-O-O O-O-O 14. Bd3 Bd6 15. Bxd6 Rxd6 16. Bf5 Qxd2+ 17. Rxd2 Rhd8 
+18. Rxd6 Rxd6 19. Bxh7 g6 20. Nc5 Bd5 21. Rd1 Rd8 22. Bg8 Ne5 23. b3 Bxg2 
+24. Re1 Nd7 25. Nxd7 Rxd7 26. h4 Kd8 27. Re5 Bf3 28. Bh7 Re7 29. Rc5 Kd7 
+30. Kd2 Ke6 31. Rc4 Bh5 32. Rf4 Rd7+ 33. Ke3 Ke7 34. Rc4 Kf6 35. Rc8 Kg7 
+36. Bg8 Bg4 37. Rb8 Bf5 38. c4 Bb1 39. b4 Bxa2 40. Rc8 Bb3 41. Ke4 Ba4 
+42. Ke5 Bc6 43. Re8 Rd4 44. Kxd4 Bxe8 45. Bxf7 Bxf7 46. c5 Kf6 47. c6 bxc6 
+48. Kc5 Ke5 49. Kb6 Bc4 50. Kxc6 Bd3 51. Kc7 Bb5 52. Kd8 Kd6 53. Kc8 Ke5 
+54. Kd8 Ke6 55. Kc7 Kd5 56. Kd8 Kc4 57. Ke7 Kxb4 58. Kf8 a5 59. Kg7 a4 
+60. Kh7 a3 61. Kh6 Bd3 62. Kh7 a2 63. Kg7 a1=Q+ 64. Kf7 Qe5 65. h5 gxh5 
+66. Kf8 Qf6+ 67. Kg8 Qe7 68. Kh8 Qh7# 0-1
+
+[Event "chess_ai Arena"]
+[Round "18"]
+[White "sf"]
+[Black "nnue:nets/h100_v5_v2_1b.nnue:t=4"]
+[Result "1-0"]
+[SetUp "1"]
+[FEN "rnbqkb1r/1p2pppp/p2p1n2/8/3NP3/2N5/PPP2PPP/R1BQKB1R w KQkq - 0 6"]
+
+6. Be3 e5 7. Nb3 Be7 8. f3 Be6 9. Qd2 h5 10. Be2 Qc7 11. Nd5 Nxd5 
+12. exd5 Bf5 13. O-O O-O 14. Na5 Re8 15. a4 Nd7 16. Nc4 e4 17. f4 Bg4 
+18. a5 f5 19. h3 Bxe2 20. Qxe2 Rac8 21. Ra4 g6 22. Rb4 h4 23. Qd2 Rf8 
+24. Rc1 Bd8 25. Kh1 Rf7 26. Nb6 Nxb6 27. axb6 Qd7 28. b3 Rc5 29. Rd1 Rb5 
+30. c4 Ra5 31. Qc2 g5 32. Qe2 gxf4 33. Bxf4 Rg7 34. Be3 Bf6 35. c5 dxc5 
+36. Rc4 Rb5 37. d6 Qe6 38. b4 Rxb6 39. Rxc5 Rxd6 40. Rxd6 Qxd6 41. Rc8+ Kf7 
+42. Qh5+ Ke6 43. Rc5 Be5 44. Bh6 Rg3 45. Bf4 Bxf4 46. Qxf5+ Ke7 47. Qxe4+ Kd7 
+48. Qxb7+ Ke6 49. Rc6 Ra3 50. Rxd6+ Bxd6 51. Kg1 Bg3 52. Qe4+ Kf6 53. Qd4+ Kf7 
+54. Kf1 Ke7 55. Ke2 Ra2+ 56. Kf3 Rf2+ 57. Qxf2 Bxf2 58. Kxf2 Kd6 59. g3 hxg3+ 
+60. Kxg3 Ke5 61. Kf3 Kf6 62. Kf4 Kf7 63. Ke5 Kg7 64. Kd5 Kf6 65. Kc5 Kg5 
+66. Kb6 Kh4 67. Kxa6 Kxh3 68. Kb6 Kg4 69. Kc6 Kh5 70. b5 Kg4 71. b6 Kf4 
+72. b7 Kf5 73. Kb6 Ke6 74. Kb5 Kf5 75. Kc6 Kg6 76. Kd5 Kh5 77. Ke4 Kg5 
+78. b8=Q Kg4 79. Qg8+ Kh5 80. Kf5 Kh4 81. Qg4# 1-0
+
+[Event "chess_ai Arena"]
+[Round "15"]
+[White "nnue:nets/h100_v5_v2_1b.nnue:t=4"]
+[Black "sf"]
+[Result "1/2-1/2"]
+[SetUp "1"]
+[FEN "r1bqk1nr/pppp1ppp/2n5/2b1p3/2B1P3/2P2N2/PP1P1PPP/RNBQK2R b KQkq - 0 4"]
+
+4... Nf6 5. d4 exd4 6. e5 d5 7. Bb5 Ne4 8. cxd4 Bb6 9. Nc3 O-O 10. h3 
+Ba5 11. O-O Bxc3 12. Bxc6 Bxb2 13. Bxb2 bxc6 14. Bc1 Rb8 15. Be3 f5 16. exf6 
+Qxf6 17. Rc1 h6 18. Kh2 Rb2 19. Ne5 Nxf2 20. Qe1 Ba6 21. Rxf2 Rxf2 22. Bxf2 
+Qxf2 23. Qxf2 Rxf2 24. Nxc6 Kh7 25. a4 Bd3 26. Kg3 Rd2 27. Nxa7 Be4 28. Rxc7 
+Rxd4 29. Nb5 Rd3+ 30. Kf2 Rd2+ 31. Ke3 Rxg2 32. a5 Ra2 33. Ra7 Bf5 34. Nc3 
+d4+ 35. Kxd4 Rd2+ 36. Ke5 Bxh3 37. a6 Bf1 38. Ne4 Ra2 39. Nc5 Ra5 40. Kd4 
+h5 41. Ne6 Rxa6 42. Rxg7+ Kh6 43. Re7 h4 44. Nf4 Kg5 45. Ke3 Ra3+ 46. Kf2 
+Kxf4 47. Kxf1 Kg3 48. Rg7+ Kh3 49. Rh7 Ra6 50. Kg1 Ra1+ 51. Kf2 Ra2+ 52. Kg1 
+Ra1+ 53. Kf2 Ra2+ 54. Kg1 Ra8 55. Rf7 Ra1+ 56. Rf1 Rxf1+ 57. Kxf1 Kg3 58. Kg1 
+h3 59. Kh1 Kf4 60. Kh2 Kg4 61. Kg1 Kg3 62. Kh1 h2 1/2-1/2
+
+[Event "chess_ai Arena"]
+[Round "16"]
+[White "sf"]
+[Black "nnue:nets/h100_v5_v2_1b.nnue:t=4"]
+[Result "1/2-1/2"]
+[SetUp "1"]
+[FEN "r1bqk1nr/pppp1ppp/2n5/2b1p3/2B1P3/2P2N2/PP1P1PPP/RNBQK2R b KQkq - 0 4"]
+
+4... Nf6 5. d4 exd4 6. e5 d5 7. Bb5 Ne4 8. cxd4 Bb6 9. Nc3 O-O 10. h3 
+f6 11. O-O fxe5 12. Bxc6 bxc6 13. Nxe4 dxe4 14. Qb3+ Qd5 15. Nxe5 Qxb3 16. axb3 
+Bxd4 17. Nxc6 Bf6 18. Ra5 Bd7 19. Ne5 Rfd8 20. Bf4 a6 21. Rc5 Be6 22. Rxc7 
+Rd5 23. Nc4 Rb5 24. Re1 Rxb3 25. Nd2 Rb4 26. Bd6 Rb6 27. Bc5 Rbb8 28. b4 
+Bd8 29. Rc6 Bd5 30. Rd6 Bf7 31. Nxe4 a5 32. bxa5 Bxa5 33. Red1 Rd8 34. f3 
+Bg6 35. Kf2 Rdc8 36. Bd4 Bb4 37. Rd5 Rc4 38. Ke3 Be7 39. Rd7 Re8 40. Kf4 
+Rf8+ 41. Kg3 Rf7 42. Rd5 Rc6 43. Bc5 h6 44. Bxe7 Bxe4 45. Rd8+ Kh7 46. Bd6 
+Bf5 47. Kh4 Rc4+ 48. Kg3 Rc6 49. Rd2 Rc8 50. Be5 Rxd8 51. Rxd8 Rd7 52. Re8 
+Bg6 53. Rb8 Bf7 54. Rb2 Bd5 55. Rd2 Be6 56. Rb2 Bd5 57. Kh2 Ra7 58. Rb5 
+Rd7 59. Rc5 Kg8 60. Bc3 Bb7 61. Kg3 Kf7 62. h4 Kg8 63. h5 Rf7 64. Bb2 
+Rd7 65. Ba1 Bd5 66. Bc3 Bf7 67. Kf2 Bb3 68. Rb5 Ba4 69. Rb8+ Kh7 70. Rb6 
+Rc7 71. Be5 Re7 72. Bb2 Rf7 73. Re6 Bd7 74. Re5 Bc8 75. Kg3 Rb7 76. Bc3 
+Rc7 77. Re3 Bb7 78. Kh4 Bd5 79. Be5 Re7 80. Re2 Bc6 81. Re1 Rd7 82. Kg3 
+Rd5 83. Kf4 Rd7 84. Kg3 Rd5 85. Kh4 Rd7 86. Rc1 Bd5 87. Rc2 Rb7 88. Rd2 
+Bc6 89. Rd6 Re7 90. Bc3 Rc7 91. Ba5 Rc8 92. Bb6 Be8 93. Bd4 Rc2 94. g4 
+Rd2 95. Rd8 Ba4 96. f4 Rd1 97. f5 Rd3 98. g5 hxg5+ 99. Kxg5 Rg3+ 100. Kf4 
+Rh3 101. Kg4 Rh2 102. Be5 Rh1 103. h6 Rxh6 104. Kg5 Rh1 105. Bd4 Rd1 106. f6 
+gxf6+ 107. Kxf6 Rd3 108. Ke7 Bb3 109. Kf6 Ba4 110. Ke6 Bc2 111. Rh8+ Kg6 112. Rg8+ 
+Kh5 113. Ke5 Rd1 114. Rg2 Ba4 115. Kf6 Rxd4 116. Rh2+ Kg4 117. Rh1 Bd7 118. Ke5 
+Rd3 119. Rf1 Kg5 120. Rh1 Bg4 121. Ra1 Rd7 122. Ra8 Rd1 123. Rg8+ Kh4 124. Kf4 
+Rf1+ 125. Ke3 Be6 126. Ra8 Kg5 127. Ke2 Rc1 128. Kd2 Rc7 129. Ra1 Bf5 130. Rc1 
+Ra7 131. Kc3 Kf4 132. Rg1 Ke5 133. Kc4 Rc7+ 134. Kb5 Bd3+ 135. Kb6 Kd6 136. Rg4 
+Rc6+ 137. Kb7 Ba6+ 138. Ka7 Bc8 139. Rg6+ Be6 140. Rg5 Kc7 141. Rb5 Rc3 142. Rb7+ 
+Kd6 143. Rb6+ Ke5 144. Ka6 Bd5 145. Ka5 Rc8 146. Rb2 Kd4 147. Kb4 Bc4 148. Rd2+ 
+Bd3 149. Rb2 Rb8+ 150. Ka3 Ra8+ 151. Kb4 Ra1 152. Kb3 Ra6 153. Kb4 Ra7 154. Kb3 
+Ra5 155. Kb4 Ra8 156. Kb3 Rf8 157. Ka3 Rg8 158. Rb4+ Bc4 159. Rb2 Kc5 160. Rh2 
+Ra8+ 161. Kb2 Ra2+ 162. Kc3 Rxh2 1/2-1/2
+
+[Event "chess_ai Arena"]
+[Round "21"]
+[White "nnue:nets/h100_v5_v2_1b.nnue:t=4"]
+[Black "sf"]
+[Result "1/2-1/2"]
+[SetUp "1"]
+[FEN "rnbqkb1r/pp2pp1p/3p1np1/8/3NP3/2N5/PPP2PPP/R1BQKB1R w KQkq - 0 6"]
+
+6. Be3 Nc6 7. f3 h5 8. Be2 Nxd4 9. Bxd4 Bd7 10. Bxf6 exf6 11. Qd4 Bh6 
+12. Qxd6 Bc6 13. Rd1 Qxd6 14. Rxd6 Rc8 15. Rd1 Kf8 16. Kf2 Bf4 17. h4 Kg7 
+18. g3 Bc7 19. Rd2 Bb6+ 20. Kg2 Ba5 21. Rb1 Bxc3 22. bxc3 Rhe8 23. Rb3 Rc7 
+24. Kf2 Re5 25. Ra3 b6 26. Rd8 f5 27. exf5 Rxf5 28. c4 Rc5 29. Bd3 Re5 
+30. Rd6 Rc5 31. Rd4 Bd7 32. Ke3 Be6 33. Kd2 Re5 34. Rb3 Ra5 35. a3 Ra4 
+36. Kc3 Rc8 37. g4 Rh8 38. g5 Rc8 39. f4 Rc6 40. Kd2 Rc8 41. Bf1 Bxc4 
+42. Rc3 b5 43. Bxc4 bxc4 44. Ke2 Kf8 45. Kf3 Ra5 46. Re4 Kg7 47. Re5 Ra6 
+48. f5 gxf5 49. Rxf5 Re6 50. Re3 Rce8 51. Rxe6 Rxe6 52. Rf4 Ra6 53. Rxc4 Rxa3+ 
+54. Ke2 a5 55. Kf2 Kg6 56. Ke2 Rg3 57. Rc6+ Kf5 58. Kf2 Rg4 59. Rf6+ Ke5 
+60. Rxf7 a4 61. Ra7 Rxh4 62. g6 Rg4 63. Ra5+ Kf6 64. Rxh5 Kxg6 65. Ra5 Rc4 
+66. Ke3 Rxc2 67. Rxa4 Kf5 68. Ra5+ Kf6 69. Ra6+ Ke5 70. Ra5+ Kf6 71. Ra6+ Ke5 
+72. Ra5+ Kf6 1/2-1/2
+
+[Event "chess_ai Arena"]
+[Round "22"]
+[White "sf"]
+[Black "nnue:nets/h100_v5_v2_1b.nnue:t=4"]
+[Result "1-0"]
+[SetUp "1"]
+[FEN "rnbqkb1r/pp2pp1p/3p1np1/8/3NP3/2N5/PPP2PPP/R1BQKB1R w KQkq - 0 6"]
+
+6. Be3 Bg7 7. f3 a6 8. g4 b5 9. Qd2 b4 10. Nce2 a5 11. O-O-O h5 
+12. g5 Nfd7 13. Nf4 Nb6 14. Bb5+ Kf8 15. Kb1 Qc7 16. Rhe1 Qb7 17. Qd3 Rg8 
+18. Nf5 Be5 19. Nh6 Bd7 20. Nxh5 gxh5 21. f4 Bg7 22. e5 Nc6 23. exd6 e6 
+24. f5 exf5 25. Bxc6 Qxc6 26. Bxb6 Bxh6 27. gxh6 Rg4 28. h3 Rg2 29. Re2 Rg6 
+30. Qd4 Rxh6 31. Rg1 f6 32. Re7 Be8 33. Bc5 b3 34. Rf7+ Kxf7 35. Qc4+ Qd5 
+36. Qxd5+ Kf8 37. Qg8# 1-0
+
+[Event "chess_ai Arena"]
+[Round "23"]
+[White "nnue:nets/h100_v5_v2_1b.nnue:t=4"]
+[Black "sf"]
+[Result "1/2-1/2"]
+[SetUp "1"]
+[FEN "r1bqkb1r/pp1p1ppp/2n2n2/4p3/3NP3/2N5/PPP2PPP/R1BQKB1R w KQkq - 0 6"]
+
+6. Ndb5 d6 7. Bg5 a6 8. Na3 b5 9. Bxf6 gxf6 10. Nd5 Bg7 11. Bd3 Be6 
+12. Ne3 Bh6 13. O-O Bxe3 14. fxe3 Rg8 15. Nb1 b4 16. a3 Ke7 17. axb4 Nxb4 
+18. Nc3 Qb6 19. Qf3 Nxd3 20. cxd3 Qxb2 21. Nd5+ Bxd5 22. Rab1 Qc2 23. exd5 Rg6 
+24. e4 Kf8 25. h4 h5 26. Rbc1 Qd2 27. Rb1 Kg7 28. Rf2 Qc3 29. Rb6 Qc5 
+30. Rc6 Qa3 31. Kh2 a5 32. Rc7 Rb8 33. Qh3 Qb4 34. Qd7 Rf8 35. Qf5 Qe1 
+36. Rd7 Rb8 37. Qe6 Rf8 38. Qf5 Qe3 39. Qf3 Qc5 40. Rb2 Rg4 41. g3 a4 
+42. Rbb7 Rg6 43. Rbc7 Qb4 44. Ra7 a3 45. Qf2 Qc3 46. Qe2 f5 47. exf5 Rg4 
+48. Rac7 Qa1 49. Qd2 Qf1 50. Rxd6 Rb8 51. Rb7 Ra8 52. Rg6+ Rxg6 53. fxg6 a2 
+54. Rxf7+ Qxf7 55. gxf7 a1=Q 56. Qg5+ Kxf7 57. Qf5+ Kg7 58. Qg5+ Kf7 59. Qf5+ Kg7 
+60. Qg5+ Kh7 61. Qf5+ Kh6 62. Qg5+ Kh7 63. Qf5+ Kh8 64. Qf6+ Kg8 65. Qg6+ Kf8 
+66. Qf5+ Ke7 67. Qe6+ Kd8 68. Qd6+ Kc8 69. Qc6+ Kb8 70. Qb6+ Kc8 71. Qc6+ Kd8 
+72. Qd6+ Ke8 73. Qe6+ Kf8 74. Qf5+ Kg7 1/2-1/2
+
+[Event "chess_ai Arena"]
+[Round "24"]
+[White "sf"]
+[Black "nnue:nets/h100_v5_v2_1b.nnue:t=4"]
+[Result "1-0"]
+[SetUp "1"]
+[FEN "r1bqkb1r/pp1p1ppp/2n2n2/4p3/3NP3/2N5/PPP2PPP/R1BQKB1R w KQkq - 0 6"]
+
+6. Ndb5 d6 7. Bg5 a6 8. Na3 b5 9. Nd5 Be7 10. Bxf6 Bxf6 11. c3 Rb8 
+12. Nc2 Bg5 13. a4 bxa4 14. Ncb4 Nxb4 15. cxb4 O-O 16. Rxa4 a5 17. h4 Bh6 
+18. b5 Bd7 19. Nc3 Kh8 20. Bc4 f5 21. exf5 e4 22. g4 e3 23. Qd4 exf2+ 
+24. Kxf2 Re8 25. g5 Bxg5 26. hxg5 Qxg5 27. Bd3 Bxf5 28. Rg1 Qd2+ 29. Be2 Qh6 
+30. Qf4 Qe6 31. Rg3 Bc2 32. Qg5 Qf7+ 33. Rf4 Qa7+ 34. Ke1 d5 35. Qxd5 Qc7 
+36. Qc4 Qd6 37. Qd4 Qh6 38. Rh4 Qc1+ 39. Kf2 Rb7 40. Ne4 Rf7+ 41. Kg2 Qe1 
+42. Bf3 Bxe4 43. Rxe4 Rxe4 44. Qxe4 Qd2+ 45. Be2 Qd8 46. Bd3 g5 47. Qe5+ Qf6 
+48. Qxf6+ Rxf6 49. Rxg5 h6 50. Rf5 Rd6 51. Bc4 Rd2+ 52. Rf2 Rd8 53. b6 h5 
+54. b7 Kg7 55. Kf3 Rb8 56. Bd5 Kf6 57. Ke4+ Kg6 58. Rc2 Kf6 59. Rc8 Rxb7 
+60. Bxb7 a4 61. Ra8 Ke6 62. Rxa4 Kd7 63. Kd4 Ke7 64. b4 h4 65. Bd5 Kf6 
+66. Ra6+ Kg5 67. Ra3 Kf6 68. b5 Kg5 69. b6 h3 70. b7 h2 71. Rg3+ Kh5 
+72. b8=Q Kh4 73. Bh1 Kh5 74. Qh8# 1-0
+
+[Event "chess_ai Arena"]
+[Round "25"]
+[White "nnue:nets/h100_v5_v2_1b.nnue:t=4"]
+[Black "sf"]
+[Result "1-0"]
+[SetUp "1"]
+[FEN "rnbqkbnr/1p1p1ppp/p3p3/8/3NP3/8/PPP2PPP/RNBQKB1R w KQkq - 0 5"]
+
+5. c4 Nf6 6. Nc3 Qc7 7. Be2 Bb4 8. Qd3 O-O 9. Bg5 Qe5 10. Nf3 Qxe4 
+11. Qd2 Qf5 12. Bd3 Bxc3 13. bxc3 Ne4 14. Qe3 d5 15. O-O Nc6 16. Rfe1 Re8 
+17. Rad1 f6 18. cxd5 exd5 19. c4 Ne5 20. Nxe5 Qxg5 21. f4 Qh6 22. Qd4 fxe5 
+23. Qxd5+ Be6 24. Qxe4 exf4 25. Qxb7 Qh5 26. h3 Rac8 27. Rd2 Bf7 28. Rde2 Qc5+ 
+29. Kh2 Rxe2 30. Rxe2 Rd8 31. Rd2 Kf8 32. Bg6 hxg6 33. Rxd8+ Be8 34. Qe4 Qe7 
+35. Qxf4+ Kg8 36. Qb8 Kf7 37. Qd6 Qe4 38. Qd5+ Qxd5 39. Rxd5 Ke6 40. Ra5 Kd6 
+41. Rxa6+ Kc5 42. Ra7 Kxc4 43. Rxg7 Kb4 44. Kg3 Ba4 45. Rxg6 Kc4 46. Rg4+ Kb5 
+47. Rxa4 Kxa4 48. h4 Ka3 49. h5 Kxa2 50. h6 Ka1 51. h7 Kb2 52. h8=Q+ Kb3 
+53. Qb8+ Kc4 54. Qc8+ Kd4 55. Qd7+ Ke5 56. Kf3 Kf6 57. Kf4 Kg6 58. Qe7 Kh6 
+59. Kf5 Kh5 60. Qh7# 1-0
+
+[Event "chess_ai Arena"]
+[Round "26"]
+[White "sf"]
+[Black "nnue:nets/h100_v5_v2_1b.nnue:t=4"]
+[Result "1-0"]
+[SetUp "1"]
+[FEN "rnbqkbnr/1p1p1ppp/p3p3/8/3NP3/8/PPP2PPP/RNBQKB1R w KQkq - 0 5"]
+
+5. c4 Nf6 6. Nc3 Qc7 7. Be2 Nc6 8. O-O Bb4 9. Na4 Bd6 10. g3 Nxe4 
+11. Be3 O-O 12. Bf3 Nf6 13. c5 Be7 14. Rc1 Nxd4 15. Qxd4 e5 16. Qc3 d5 
+17. cxd6 Qxc3 18. dxe7 Qa5 19. exf8=R+ Kxf8 20. Nb6 Bh3 21. Nxa8 Bxf1 22. Kxf1 Qxa2 
+23. Nb6 h5 24. Rc8+ Ke7 25. Rc7+ Kf8 26. Rc8+ Ke7 27. h3 e4 28. Be2 Qxb2 
+29. Rc7+ Kf8 30. Rc8+ Ke7 31. Rb8 Qe5 32. Rxb7+ Kf8 33. Bc4 Kg8 34. Rxf7 Kh8 
+35. Kg2 Qd6 36. Ra7 Qd1 37. Be6 h4 38. g4 Qf3+ 39. Kh2 Qd1 40. Ra8+ Kh7 
+41. Nc4 Qa1 42. Kg2 g5 43. Ra7+ Kh6 44. Nd6 Nxg4 45. Bxg4 Kg6 46. Bf5+ Kf6 
+47. Rf7+ Ke5 48. Nc4+ Kd5 49. Rc7 Qd4 50. Rd7+ Kxc4 51. Rxd4+ Kb3 52. Rxe4 Kb2 
+53. Ra4 Kc3 54. Be6 g4 55. Bxg4 Kc2 56. Rxa6 Kd3 57. Rc6 Ke4 58. Rc5 Kd3 
+59. Bd1 Ke4 60. Bc2# 1-0
+
+[Event "chess_ai Arena"]
+[Round "27"]
+[White "nnue:nets/h100_v5_v2_1b.nnue:t=4"]
+[Black "sf"]
+[Result "0-1"]
+[SetUp "1"]
+[FEN "r1bqkbnr/pp1p1ppp/2n1p3/8/3NP3/8/PPP2PPP/RNBQKB1R w KQkq - 1 5"]
+
+5. Nc3 Qc7 6. Be3 a6 7. Nxc6 bxc6 8. Qf3 Nf6 9. O-O-O d5 10. exd5 cxd5 
+11. Qg3 Qxg3 12. hxg3 Bb7 13. Be2 h6 14. g4 Rg8 15. f3 Rb8 16. Na4 Nd7 
+17. Nb6 Nxb6 18. Bxb6 Bc6 19. Bd4 Bb5 20. Rhe1 Bb4 21. c3 Bd6 22. Bd3 Kd7 
+23. Kc2 f6 24. b3 Bxd3+ 25. Rxd3 a5 26. Kb2 Rh8 27. Rh1 Rhc8 28. Rhd1 a4 
+29. Be3 Rc6 30. b4 Rc4 31. Bd4 Kc6 32. a3 Bg3 33. R1d2 Rh8 34. Re2 Kd7 
+35. Bc5 Be5 36. Bd4 Bd6 37. Kc2 h5 38. g5 Rf8 39. gxf6 gxf6 40. Kb1 h4 
+41. Kb2 Bg3 42. Kc2 Bd6 43. Kb2 Rf7 44. Kc2 Bg3 45. Bc5 Be5 46. Bd4 Kd6 
+47. Bc5+ Kd7 48. Bd4 Bd6 49. Kb1 Bg3 50. Red2 Be1 51. Re2 Bg3 52. Red2 Kc6 
+53. Rb2 e5 54. Bf2 e4 55. fxe4 dxe4 56. b5+ Kb7 57. Rd4 Rxd4 58. Bxd4 f5 
+59. Rb4 Re7 60. Rxa4 Kb8 61. b6 e3 62. Ra7 Re6 63. Bxe3 Rxe3 64. a4 Rxc3 
+65. Rf7 Rc5 66. Ka2 Be1 67. Kb3 Ba5 68. Rh7 Rc3+ 69. Kb2 Rc4 70. Rf7 Rf4 
+71. Kc2 Bxb6 72. Kd3 Bf2 73. Rf8+ Kb7 74. Rf6 Bg3 75. Rf7+ Kc6 76. a5 Kb5 
+77. Rb7+ Kxa5 78. Rb2 Rf2 79. Rxf2 Bxf2 80. Ke2 Bg3 81. Ke3 f4+ 82. Ke2 Kb5 
+83. Kf1 Ka4 84. Ke2 Kb4 85. Kf3 Kc3 86. Ke4 Kd2 87. Kd4 Ke1 88. Ke4 Kf2 
+89. Kd4 Kxg2 90. Kc5 f3 91. Kb4 h3 92. Kc4 f2 93. Kb3 h2 94. Kc2 f1=Q 
+95. Kb3 h1=Q 96. Kc3 Qh4 97. Kb2 Qb4+ 98. Kc2 Qfb1# 0-1
+
+[Event "chess_ai Arena"]
+[Round "28"]
+[White "sf"]
+[Black "nnue:nets/h100_v5_v2_1b.nnue:t=4"]
+[Result "1-0"]
+[SetUp "1"]
+[FEN "r1bqkbnr/pp1p1ppp/2n1p3/8/3NP3/8/PPP2PPP/RNBQKB1R w KQkq - 1 5"]
+
+5. Nc3 Be7 6. Ndb5 Nf6 7. Nd6+ Kf8 8. Bf4 Ne8 9. Nxe8 Kxe8 10. h4 Bb4 
+11. Bd6 Qb6 12. Rh3 a6 13. a3 Bc5 14. Bxc5 Qxc5 15. Rg3 g6 16. Qd2 b5 
+17. O-O-O b4 18. axb4 Qxb4 19. b3 h5 20. Kb2 Rb8 21. Qf4 a5 22. Rg5 Ke7 
+23. Bb5 Re8 24. Na2 Qxb5 25. Rxb5 Rxb5 26. Nc3 Rb8 27. Nd5+ exd5 28. exd5 Kf8 
+29. dxc6 Rb4 30. Qd6+ Kg7 31. cxd7 Bxd7 32. Qxd7 Rbe4 33. Ka3 R8e6 34. Qc8 Rf6 
+35. Qc3 Rxh4 36. Rd6 Rf4 37. Rxf6 Rxf6 38. f4 Kf8 39. Qxf6 Ke8 40. Ka4 Kf8 
+41. Qd8+ Kg7 42. Qe8 g5 43. fxg5 f5 44. Qe7+ Kg8 45. g6 f4 46. Qh7+ Kf8 
+47. Qf7# 1-0
+
+[Event "chess_ai Arena"]
+[Round "29"]
+[White "nnue:nets/h100_v5_v2_1b.nnue:t=4"]
+[Black "sf"]
+[Result "1/2-1/2"]
+[SetUp "1"]
+[FEN "rnbqkbnr/pp1ppppp/8/2p5/4P3/2P5/PP1P1PPP/RNBQKBNR b KQkq - 0 2"]
+
+2... d5 3. exd5 Qxd5 4. d4 Nf6 5. Nf3 e6 6. Be3 Nc6 7. a3 Ng4 8. Nbd2 
+cxd4 9. cxd4 Be7 10. Bc4 Qd8 11. O-O Nxe3 12. fxe3 O-O 13. Rc1 Bd7 14. Ne4 
+Rc8 15. Qd3 a6 16. Nc3 b5 17. Ba2 b4 18. Ne4 bxa3 19. bxa3 Na7 20. Rxc8 
+Qxc8 21. Bc4 Bb5 22. Rc1 Qd8 23. Bxb5 axb5 24. Ne5 Qa5 25. Qc3 Qxc3 26. Rxc3 
+Rc8 27. Rxc8+ Nxc8 28. Nc3 Na7 29. a4 f6 30. Nd3 bxa4 31. Nxa4 Nb5 32. Kf2 
+Bd6 33. Nab2 Kf7 34. Nc4 Ke7 35. h3 Nc3 36. Kf3 f5 37. g4 Bc7 38. Nf2 
+Bb8 39. Nd3 Ne4 40. Kg2 Kd7 41. Kf3 Ng5+ 42. Kg2 Ne4 43. Kf3 Ng5+ 44. Kg2 
+Nf7 45. Nc5+ Ke7 46. gxf5 exf5 47. h4 Bc7 48. Kf3 Kf6 49. Nd7+ Ke6 50. Nf8+ 
+Kd5 51. Nd2 g5 52. hxg5 Nxg5+ 53. Ke2 Bd6 54. Nd7 Ke6 55. Nb6 h5 56. Nbc4 
+Be7 57. Ne5 h4 58. Ng6 h3 59. Nf3 Kf6 60. Nxe7 Kxe7 61. Kf2 Ne4+ 62. Kg1 
+Ke6 63. Kh2 Nf2 64. Kg3 Ng4 65. Ng5+ Kd5 66. Nxh3 Nxe3 67. Kf4 Nc2 68. Kxf5 
+Nxd4+ 69. Kf6 Kc4 70. Ng5 Kb5 71. Ne6 Ka6 72. Nxd4 1/2-1/2
+
+[Event "chess_ai Arena"]
+[Round "30"]
+[White "sf"]
+[Black "nnue:nets/h100_v5_v2_1b.nnue:t=4"]
+[Result "1-0"]
+[SetUp "1"]
+[FEN "rnbqkbnr/pp1ppppp/8/2p5/4P3/2P5/PP1P1PPP/RNBQKBNR b KQkq - 0 2"]
+
+2... d5 3. exd5 Qxd5 4. d4 Nc6 5. Nf3 Nf6 6. Be3 e6 7. Na3 Ng4 8. Bg5 
+Bd7 9. Bc4 Qe4+ 10. Be2 f6 11. O-O fxg5 12. Nd2 Qf4 13. Bxg4 cxd4 14. g3 
+Qf6 15. Nac4 h5 16. Bf3 g4 17. Bg2 Qh6 18. Re1 O-O-O 19. Ne5 dxc3 20. bxc3 
+Bc5 21. Ne4 Be8 22. Qb3 Na5 23. Qb2 Be7 24. Rab1 h4 25. Nc4 hxg3 26. hxg3 
+Rd5 27. Nxa5 b6 28. Nc4 Rh5 29. Kf1 Kb8 30. Nxb6 Rb5 31. Qe2 Qh5 32. Nc4 
+Bc6 33. Na5 Be8 34. a4 Bd8 35. Rxb5+ Bxb5 36. Rb1 Bb6 37. Qxb5 Qxb5+ 38. Rxb5 
+Kc8 39. Nc4 Rd8 40. Ke2 Bc7 41. Nc5 Bb6 42. Bb7+ Kb8 43. Be4 Kc8 44. Nxb6+ 
+axb6 45. Rxb6 Rh8 46. Rc6+ Kd8 47. a5 g5 48. a6 Ke7 49. Rxe6+ Kf8 50. a7 
+Kg7 51. a8=Q Rxa8 52. Bxa8 Kf7 53. Ra6 Kg7 54. Bd5 Kf8 55. Ra7 Ke8 56. Rc7 
+Kf8 57. Ne6+ Kg8 58. Be4 Kh8 59. Rc8# 1-0
+
+[Event "chess_ai Arena"]
+[Round "31"]
+[White "nnue:nets/h100_v5_v2_1b.nnue:t=4"]
+[Black "sf"]
+[Result "1/2-1/2"]
+[SetUp "1"]
+[FEN "r1bqkbnr/pp1ppppp/2n5/2p5/4P3/2N5/PPPP1PPP/R1BQKBNR w KQkq - 2 3"]
+
+3. Nf3 g6 4. d4 cxd4 5. Nxd4 Bg7 6. Be3 Nf6 7. Bc4 d6 8. f3 Qb6 
+9. O-O O-O 10. Bb3 Ng4 11. fxg4 Bxd4 12. Bxd4 Qxd4+ 13. Qxd4 Nxd4 14. g5 Nc6 
+15. Nd5 Rb8 16. h4 Be6 17. Nf4 Bxb3 18. axb3 Kg7 19. g4 Rh8 20. h5 gxh5 
+21. gxh5 Rhg8 22. Kf2 f6 23. g6 hxg6 24. Nxg6 Kf7 25. Rg1 Rg7 26. c3 a6 
+27. Rad1 Rh7 28. Rh1 Rc8 29. b4 Nd8 30. Ke3 Ne6 31. Rh4 Rh6 32. Rdh1 Ng7 
+33. Rg1 Re8 34. Nf4 Reh8 35. Rf1 Ne8 36. Kf3 Ng7 37. Ke3 R8h7 38. c4 e5 
+39. Nd5 f5 40. exf5 Rxh5 41. Rxh5 Rxh5 42. Ke4 Rh4+ 43. Kd3 Nh5 44. Rg1 Rh3+ 
+45. Ke2 Rh2+ 46. Kd3 Rh3+ 47. Ke2 Rg3 48. Rh1 Rg5 49. Kf3 Ng7 50. Rh8 Nxf5 
+51. Ke4 Kg6 52. Rg8+ Ng7 53. Ne3 Rh5 54. b3 Rh4+ 55. Kd3 Rh3 56. Ke2 Kf7 
+57. Rb8 b5 58. c5 dxc5 59. bxc5 Ne6 60. Rb7+ Kf8 61. b4 Nd4+ 62. Kd2 Nc6 
+63. Nd5 e4 64. Rb6 Rd3+ 65. Ke2 Nd4+ 66. Kf2 Rf3+ 67. Kg2 e3 68. c6 Rf2+ 
+69. Kg3 Rc2 70. Nxe3 Rxc6 71. Rxc6 Nxc6 72. Nd5 Nxb4 73. Nxb4 Ke7 74. Nxa6 Kd7 
+75. Kf2 Kc6 76. Ke3 Kb6 77. Nb4 Ka5 78. Nc2 Ka4 79. Kf2 Kb3 80. Nd4+ Kc4 
+81. Nxb5 1/2-1/2
+
+[Event "chess_ai Arena"]
+[Round "32"]
+[White "sf"]
+[Black "nnue:nets/h100_v5_v2_1b.nnue:t=4"]
+[Result "1/2-1/2"]
+[SetUp "1"]
+[FEN "r1bqkbnr/pp1ppppp/2n5/2p5/4P3/2N5/PPPP1PPP/R1BQKBNR w KQkq - 2 3"]
+
+3. Nge2 d6 4. d4 cxd4 5. Nxd4 Nf6 6. Bg5 e6 7. Qd2 a6 8. Nxc6 bxc6 
+9. O-O-O Be7 10. f4 d5 11. e5 Nd7 12. Bxe7 Qxe7 13. h4 h5 14. Ne2 c5 
+15. f5 Nxe5 16. Nf4 O-O 17. Rh3 Ng4 18. Re1 Qd8 19. fxe6 Bxe6 20. Nxh5 Nf6 
+21. Nxf6+ Qxf6 22. Rc3 c4 23. Qg5 Qxg5+ 24. hxg5 g6 25. Be2 a5 26. Bf3 a4 
+27. Ra3 Rfd8 28. Rh1 Rdb8 29. Rh4 Ra5 30. Bg4 Bxg4 31. Rxg4 Rab5 32. Rxa4 Rxb2 
+33. Kd2 Rb1 34. Kc3 Re8 35. Ra7 Re2 36. Rf4 Rc1 37. Rfxf7 Rcxc2+ 38. Kd4 Rcd2+ 
+39. Kc5 Rxa2 40. Rg7+ Kh8 41. Rh7+ Kg8 42. Rag7+ Kf8 43. Rc7 Kg8 44. Rcg7+ Kf8 
+45. Rb7 Kg8 46. Rbd7 Ra5+ 47. Kb4 Ra8 48. Rhg7+ Kf8 49. Rdf7+ Ke8 50. Rc7 Kf8 
+51. Rcf7+ Ke8 52. Rc7 Kf8 53. Kc3 Rxg2 54. Rcf7+ Ke8 55. Rc7 Kf8 56. Rh7 Rg3+ 
+57. Kd4 Kg8 58. Rhg7+ Kh8 59. Rh7+ Kg8 60. Rcg7+ Kf8 61. Rf7+ Kg8 62. Rhg7+ Kh8 
+63. Rh7+ Kg8 64. Rfg7+ Kf8 65. Rb7 Kg8 66. Kc5 c3 67. Rbg7+ Kf8 68. Rd7 Kg8 
+69. Rhg7+ Kf8 70. Rdf7+ Ke8 71. Re7+ Kf8 72. Ref7+ Ke8 73. Rb7 Rc8+ 74. Kd6 Rd8+ 
+75. Ke5 Re3+ 76. Kf4 Re4+ 77. Kg3 Kf8 78. Rbf7+ Ke8 79. Ra7 Kf8 80. Raf7+ Ke8 
+81. Ra7 Kf8 82. Rh7 Kg8 83. Rag7+ Kf8 84. Rf7+ Kg8 85. Rhg7+ Kh8 86. Rh7+ Kg8 
+87. Rfg7+ Kf8 88. Ra7 Kg8 89. Rab7 c2 90. Rbg7+ Kf8 91. Rc7 Kg8 92. Rcg7+ Kf8 
+93. Rb7 Re7 94. Rbxe7 c1=Q 95. Rhf7+ Kg8 96. Rg7+ Kh8 97. Rh7+ Kg8 98. Reg7+ Kf8 
+99. Rf7+ Ke8 100. Re7+ Kf8 101. Rhf7+ Kg8 102. Rg7+ Kh8 103. Rh7+ Kg8 104. Rhg7+ 1/2-1/2
+
+[Event "chess_ai Arena"]
+[Round "33"]
+[White "nnue:nets/h100_v5_v2_1b.nnue:t=4"]
+[Black "sf"]
+[Result "0-1"]
+[SetUp "1"]
+[FEN "rnbqkb1r/pp2pppp/3p1n2/8/3NP3/2N1B3/PPP2PPP/R2QKB1R b KQkq - 1 6"]
+
+6... a6 7. Qd2 e5 8. Nb3 Be7 9. h3 Qc7 10. g4 b5 11. O-O-O b4 12. Na4 
+Nc6 13. Nb6 Rb8 14. Nd5 Nxd5 15. exd5 Na5 16. Kb1 O-O 17. f4 exf4 18. Bxf4 
+Nxb3 19. cxb3 Bd7 20. Bd3 Rfe8 21. g5 g6 22. h4 Bg4 23. Rdg1 Bh5 24. Rc1 
+Qd7 25. Qf2 Bf8 26. Rc6 Bg4 27. Bg3 a5 28. Rhc1 Rb7 29. Ra6 h6 30. Rxa5 
+hxg5 31. Ra6 gxh4 32. Bxh4 Bh5 33. Rh1 Bh6 34. Bf6 Bg7 35. Bh4 Be5 36. Re1 
+Qh3 37. Re3 Qh1+ 38. Re1 Qh3 39. Re3 Qd7 40. Re1 Rc7 41. Ra4 Qh3 42. Bb5 
+g5 43. Ka1 Rec8 44. Bc6 Qxh4 45. Qxh4 gxh4 46. Rxb4 Bg3 47. Rc1 f5 48. a4 
+f4 49. Re4 Ra7 50. Rf1 f3 51. Re3 f2 52. b4 Rb8 53. b3 Rxb4 54. Kb2 
+Kg7 55. Ka3 Rf4 56. Bb5 Rf3 57. Re4 Kh6 58. Kb4 h3 59. a5 h2 60. a6 
+Rf4 61. Rxf4 Bxf4 62. Ka5 Kg5 63. b4 Bf3 64. Rb1 Bxd5 65. Bd3 h1=Q 66. Rxh1 
+Bxh1 67. Bf1 Be3 68. b5 Ra8 69. Bh3 Kf4 70. Bf1 Rb8 71. Bh3 Be4 72. Bf1 
+Ba7 73. Ka4 d5 74. Be2 Ke3 75. Bf1 d4 76. Kb3 d3 77. Ka3 d2 78. Ka2 
+d1=Q 79. Bd3 Qxd3 80. b6 Rxb6 81. Ka1 Qxa6# 0-1
+
+[Event "chess_ai Arena"]
+[Round "34"]
+[White "sf"]
+[Black "nnue:nets/h100_v5_v2_1b.nnue:t=4"]
+[Result "1-0"]
+[SetUp "1"]
+[FEN "rnbqkb1r/pp2pppp/3p1n2/8/3NP3/2N1B3/PPP2PPP/R2QKB1R b KQkq - 1 6"]
+
+6... Nc6 7. f3 e5 8. Nb3 Be6 9. Qe2 Be7 10. O-O-O O-O 11. g4 Nd7 12. Kb1 
+a5 13. a4 Nb4 14. Qf2 Bh4 15. Qd2 Be7 16. Bb5 Rc8 17. Qe2 Rc7 18. h4 
+Qa8 19. Rd2 f6 20. Rhd1 Kh8 21. Nd5 Nxd5 22. exd5 Bf7 23. Qg2 b6 24. f4 
+exf4 25. Bxf4 Ne5 26. Re2 Kg8 27. Be3 Qb7 28. Bc1 Rfc8 29. Bf4 Kh8 30. Be3 
+Kg8 31. Bc1 f5 32. gxf5 Bxh4 33. Bf4 Bf6 34. Bxe5 Bxe5 35. Bc6 Qa7 36. Nd4 
+Bxd4 37. Rxd4 Kh8 38. f6 Bg6 39. Rh4 Kg8 40. Qh3 Rf8 41. Be8 Rcf7 42. Bxf7+ 
+Qxf7 43. fxg7 Rb8 44. Rd4 b5 45. Qe6 b4 46. Rf2 Qxe6 47. dxe6 b3 48. Rxd6 
+Kxg7 49. Kc1 bxc2 50. Rd7+ Kh6 51. e7 Re8 52. Rf8 Kg7 53. Rxe8 Bxe8 54. Ra7 
+Kf6 55. Rxa5 Kxe7 56. Kxc2 Bg6+ 57. Kd2 h5 58. Ra6 Be4 59. Rh6 Kd7 60. Rxh5 
+Bg2 61. Kc3 Kc7 62. Rh6 Kb7 63. a5 Ka7 64. Kd4 Bb7 65. b4 Ba6 66. Kc5 
+Bd3 67. b5 Bf5 68. Rf6 Bh3 69. b6+ Kb7 70. a6+ Kc8 71. b7+ Kc7 72. Rf8 
+Kd7 73. b8=Q Ke6 74. Qd6# 1-0
+
+[Event "chess_ai Arena"]
+[Round "35"]
+[White "nnue:nets/h100_v5_v2_1b.nnue:t=4"]
+[Black "sf"]
+[Result "1/2-1/2"]
+[SetUp "1"]
+[FEN "r1bqkb1r/pp1p1ppp/2n1pn2/8/3NP3/2N5/PPP1BPPP/R1BQK2R b KQkq - 3 6"]
+
+6... Be7 7. Bf4 d5 8. exd5 Nxd5 9. Nxd5 Qxd5 10. Nb5 Qxd1+ 11. Rxd1 O-O 12. c3 
+e5 13. Be3 Bf5 14. g4 Be4 15. f3 Bg6 16. Rd7 a6 17. Nd6 Bxd6 18. Rxd6 
+Bb1 19. Rd7 b5 20. Kf2 Bxa2 21. Rc7 Rac8 22. Rxc8 Rxc8 23. Ra1 Bc4 24. Rxa6 
+f6 25. Bxc4+ bxc4 26. f4 exf4 27. Bxf4 Ne5 28. Bxe5 fxe5 29. Ke3 Rb8 30. Ra2 
+h5 31. gxh5 Kh7 32. Ke4 Rb5 33. h4 Kh6 34. Ra4 Rxb2 35. Rxc4 Kxh5 36. Kxe5 
+Rc2 37. Ke4 Rg2 38. Kf3 Rh2 39. Kg3 Rh1 40. Rc5+ Kh6 41. c4 g6 42. Kg4 
+Rg1+ 43. Kf4 Rh1 44. Kg3 Kg7 45. Kg4 Rg1+ 46. Kf4 Rh1 47. Ke5 Rxh4 48. Rc7+ 
+Kh6 49. c5 Rc4 50. Rc8 g5 51. c6 Rc1 52. Kd6 Rd1+ 53. Kc5 Rc1+ 54. Kb6 
+g4 55. Rg8 Kh5 56. c7 Kh4 57. Rh8+ Kg5 58. c8=Q Rxc8 59. Rxc8 g3 60. Rg8+ 
+Kf4 61. Kc5 Kf3 62. Kd4 g2 63. Kd3 Kf2 64. Rg4 g1=Q 65. Rxg1 Kxg1 1/2-1/2
+
+[Event "chess_ai Arena"]
+[Round "36"]
+[White "sf"]
+[Black "nnue:nets/h100_v5_v2_1b.nnue:t=4"]
+[Result "1/2-1/2"]
+[SetUp "1"]
+[FEN "r1bqkb1r/pp1p1ppp/2n1pn2/8/3NP3/2N5/PPP1BPPP/R1BQK2R b KQkq - 3 6"]
+
+6... d5 7. exd5 exd5 8. O-O Bd6 9. Bg5 O-O 10. Bb5 h6 11. Bh4 Bg4 12. f3 
+Be6 13. Kh1 Rc8 14. Nxe6 fxe6 15. f4 Bb8 16. Bd3 Qd6 17. Qf3 g5 18. Bg3 
+gxf4 19. Nb5 Qe5 20. Rae1 Ne4 21. Bh4 Qf5 22. Bxe4 dxe4 23. Qxe4 Qxe4 24. Rxe4 
+e5 25. g3 f3 26. Na3 Rc7 27. Re3 Rd7 28. Rfxf3 Rxf3 29. Rxf3 Rd2 30. Rc3 
+Re2 31. g4 e4 32. Bg3 Bxg3 33. Rxg3 e3 34. Nc4 Rxc2 35. Nxe3 Rxb2 36. Rg2 
+Rb1+ 37. Rg1 Rb4 38. Rg2 Ra4 39. Rb2 b6 40. Re2 Re4 41. Kg2 Nd4 42. Re1 
+Kf7 43. Kg3 Kg6 44. h3 b5 45. Kf2 Ne6 46. Nf5 Ng5 47. Ne7+ Kf6 48. Rxe4 
+Nxe4+ 49. Ke3 Nc3 50. Nc6 Kg5 51. Nxa7 b4 52. Nc6 Nxa2 53. Nd4 Nc3 54. Nf3+ 
+Kf6 55. Nd4 Kg6 56. Kd3 Kg5 57. Nf5 Nd5 58. Nxh6 Kxh6 59. h4 Ne7 60. Kc4 
+Nc6 61. h5 Kg5 62. Kb3 Ne7 63. Kxb4 Ng8 64. Kc3 Kxg4 65. h6 Nxh6 1/2-1/2
+
+[Event "chess_ai Arena"]
+[Round "37"]
+[White "nnue:nets/h100_v5_v2_1b.nnue:t=4"]
+[Black "sf"]
+[Result "1/2-1/2"]
+[SetUp "1"]
+[FEN "rnbqk1nr/ppp2ppp/4p3/3p4/1b1PP3/2N5/PPP2PPP/R1BQKBNR w KQkq - 2 4"]
+
+4. e5 c5 5. a3 Bxc3+ 6. bxc3 Qc7 7. Qg4 Ne7 8. Qxg7 Rg8 9. Qxh7 cxd4 
+10. Qd3 Qxe5+ 11. Ne2 dxc3 12. Qxc3 Qxc3+ 13. Nxc3 Nbc6 14. Rb1 a6 15. h4 b5 
+16. h5 e5 17. Bd3 e4 18. Bf1 f6 19. h6 Kf7 20. Ne2 Bf5 21. Nf4 Rgc8 
+22. Be2 Ne5 23. h7 d4 24. Ra1 Rh8 25. a4 b4 26. Bb2 N7c6 27. Rd1 Rad8 
+28. Bxa6 Rxh7 29. Rxh7+ Bxh7 30. Bb5 e3 31. Rc1 exf2+ 32. Kxf2 Be4 33. Nd3 f5 
+34. Nxe5+ Nxe5 35. Rd1 Rg8 36. Bxd4 Rxg2+ 37. Ke3 Bxc2 38. Re1 Ke6 39. Bxe5 Kxe5 
+40. Kf3+ Be4+ 41. Rxe4+ fxe4+ 42. Kxg2 Kd4 43. a5 b3 44. a6 b2 45. a7 b1=Q 
+46. a8=Q Qxb5 47. Qa1+ Kd5 48. Qa8+ Qc6 49. Qxc6+ Kxc6 50. Kf2 Kc5 51. Ke3 Kd5 
+52. Kd2 Kd4 53. Ke2 e3 54. Ke1 Ke4 55. Ke2 Kf4 56. Ke1 Kf3 57. Kf1 Kg3 
+58. Ke2 Kf4 59. Ke1 Kf3 60. Kf1 Ke4 61. Ke2 Kd4 62. Ke1 Kd5 63. Kf1 Kc4 
+64. Ke2 Kd4 1/2-1/2
+
+[Event "chess_ai Arena"]
+[Round "38"]
+[White "sf"]
+[Black "nnue:nets/h100_v5_v2_1b.nnue:t=4"]
+[Result "1-0"]
+[SetUp "1"]
+[FEN "rnbqk1nr/ppp2ppp/4p3/3p4/1b1PP3/2N5/PPP2PPP/R1BQKBNR w KQkq - 2 4"]
+
+4. e5 c5 5. a3 Ba5 6. Qg4 Ne7 7. dxc5 Bxc3+ 8. bxc3 Nf5 9. Bd3 O-O 
+10. Bxf5 exf5 11. Qg3 Qe7 12. Ne2 Nc6 13. O-O Nxe5 14. Re1 Re8 15. Bd2 Ng6 
+16. Rab1 Qxc5 17. h4 Re4 18. h5 Rg4 19. Qh3 Nh4 20. Nf4 Bd7 21. Rb4 g5 
+22. hxg6 Nxg6 23. Nh5 Qd6 24. Rxb7 Nf8 25. Bf4 Qa6 26. Be5 Re8 27. Rbb1 Re6 
+28. f3 Rg5 29. Nf4 Rxe5 30. Rxe5 Qf6 31. Qh4 h6 32. Rbe1 Kh7 33. Qf2 Ng6 
+34. Nxg6 Kxg6 35. Qxa7 Bc6 36. Qe7 Qg7 37. R1e2 Bb5 38. Rf2 Kh7 39. f4 Rh5 
+40. Rf3 Bc6 41. Rg3 Qxg3 42. Qxf7+ Kh8 43. Qxh5 Qxf4 44. Re6 Qc1+ 45. Kh2 Qf4+ 
+46. Kh3 Qg4+ 47. Qxg4 fxg4+ 48. Kh4 Ba4 49. c4 dxc4 50. c3 Kg7 51. g3 Bd1 
+52. Kh5 Kf7 53. Rd6 Ba4 54. Rxh6 Bd1 55. Kg5 Kf8 56. Rd6 Bb3 57. Kf6 Kg8 
+58. Ra6 Kh7 59. a4 Bd1 60. a5 Be2 61. Rb6 Kh6 62. a6 Bf1 63. Rb8 Bd3 
+64. Rh8+ Bh7 65. a7 Kh5 66. Rxh7# 1-0
+
+[Event "chess_ai Arena"]
+[Round "39"]
+[White "nnue:nets/h100_v5_v2_1b.nnue:t=4"]
+[Black "sf"]
+[Result "1/2-1/2"]
+[SetUp "1"]
+[FEN "rnbqkb1r/ppp2ppp/4pn2/3p4/3PP3/2N5/PPP2PPP/R1BQKBNR w KQkq - 2 4"]
+
+4. Bg5 dxe4 5. Nxe4 Nbd7 6. Nxf6+ Nxf6 7. Nf3 Be7 8. Bd3 c5 9. dxc5 Qa5+ 
+10. c3 Qxc5 11. Qe2 Bd7 12. O-O O-O 13. Ne5 Rfd8 14. Bxf6 Bxf6 15. Bxh7+ Kf8 
+16. Nxd7+ Rxd7 17. Bc2 b5 18. Rfd1 Rad8 19. Rxd7 Rxd7 20. a3 a5 21. Rd1 Rxd1+ 
+22. Bxd1 g6 23. g3 Qd5 24. a4 bxa4 25. Bxa4 Kg7 26. h4 Be7 27. Be8 Bc5 
+28. Bb5 Ba7 29. Ba4 Qd6 30. Qf3 Qb8 31. b3 Qd6 32. Kg2 Qc5 33. Be8 Qe7 
+34. Bc6 Qd6 35. Kf1 Qb8 36. Ba4 Qd8 37. Bb5 Bc5 38. Be2 Qb6 39. Bc4 Be7 
+40. h5 gxh5 41. Qxh5 Bf6 42. Qg4+ Kf8 43. Qf3 Kg7 44. Kg2 Qc7 45. Qg4+ Kf8 
+46. Qf3 Ke7 47. Qd3 Qc6+ 48. Kh2 Kf8 49. f4 Qc5 50. Kh3 Qh5+ 51. Kg2 Qc5 
+52. g4 Qc6+ 53. Qf3 Qd6 54. g5 Qd2+ 55. Kh3 Be7 56. g6 fxg6 57. Bxe6 Kg7 
+58. Bd5 Bd6 59. Kg4 Bxf4 60. Qxf4 Qxd5 61. c4 Qg2+ 62. Kh4 Qh1+ 63. Kg3 Qg1+ 
+64. Kh3 Qb6 65. Qe5+ Kf7 66. Qf4+ Kg8 67. Qf3 Qe6+ 68. Kg2 Qe5 69. Kf1 Kg7 
+70. Kg2 Qg5+ 71. Kh3 Qe5 72. Qd3 Qh5+ 73. Kg3 Qc5 74. Qd7+ Kf6 75. Qd8+ Kf7 
+76. Qd7+ Kf6 77. Qd8+ Kf7 78. Qd7+ Kf6 1/2-1/2
+
+[Event "chess_ai Arena"]
+[Round "40"]
+[White "sf"]
+[Black "nnue:nets/h100_v5_v2_1b.nnue:t=4"]
+[Result "1-0"]
+[SetUp "1"]
+[FEN "rnbqkb1r/ppp2ppp/4pn2/3p4/3PP3/2N5/PPP2PPP/R1BQKBNR w KQkq - 2 4"]
+
+4. Bg5 dxe4 5. Nxe4 Be7 6. Bxf6 Bxf6 7. Nf3 Nd7 8. Qd2 O-O 9. O-O-O Be7 
+10. Qf4 Rb8 11. d5 f5 12. d6 cxd6 13. Nxd6 Qc7 14. Qe3 Nf6 15. Nxc8 Qxc8 
+16. Bb5 a6 17. Ba4 Bc5 18. Nd4 Kh8 19. Qxe6 Bxd4 20. Qxc8 Bxb2+ 21. Kxb2 Rbxc8 
+22. f3 g6 23. Rhe1 Rc7 24. Rd6 Kg7 25. Bb3 Nh5 26. a4 Rf6 27. Rd4 Kh6 
+28. Re5 Ng7 29. Rh4+ Nh5 30. Rc4 Rxc4 31. Bxc4 Rc6 32. Kb3 Rc7 33. a5 Kg7 
+34. Kb4 Kf6 35. Re6+ Kg7 36. g3 Nf6 37. Bb3 Ng8 38. c4 g5 39. Rd6 h5 
+40. Bc2 Rf7 41. f4 gxf4 42. gxf4 h4 43. Kc5 Rc7+ 44. Kd4 Nh6 45. h3 Rf7 
+46. c5 Re7 47. Rb6 Rd7+ 48. Kc4 Rc7 49. Kd5 Re7 50. Bb1 Rf7 51. Kd6 Kf6 
+52. Bd3 Re7 53. Kd5+ Kg7 54. Bc2 Kh7 55. Kd6 Rg7 56. Bb1 Kh8 57. Ba2 Nf7+ 
+58. Bxf7 Rxf7 59. c6 bxc6 60. Rxa6 Rf8 61. Rxc6 Rd8+ 62. Kc5 Rd3 63. a6 Ra3 
+64. Kb6 Rb3+ 65. Kc7 Rxh3 66. a7 Ra3 67. Kb7 Rb3+ 68. Kc7 Ra3 69. Kb7 Rb3+ 
+70. Rb6 Ra3 71. a8=Q+ Rxa8 72. Kxa8 Kg7 73. Kb7 Kf8 74. Rh6 h3 75. Rxh3 Kf7 
+76. Kc6 Kg7 77. Re3 Kf7 78. Kd7 Kg8 79. Ke7 Kg7 80. Rh3 Kg6 81. Kf8 Kf6 
+82. Rh6# 1-0
+
+[Event "chess_ai Arena"]
+[Round "41"]
+[White "nnue:nets/h100_v5_v2_1b.nnue:t=4"]
+[Black "sf"]
+[Result "1/2-1/2"]
+[SetUp "1"]
+[FEN "rnbqkbnr/ppp2ppp/4p3/3p4/3PP3/8/PPPN1PPP/R1BQKBNR b KQkq - 1 3"]
+
+3... c5 4. exd5 exd5 5. Bb5+ Bd7 6. Bxd7+ Qxd7 7. Ne2 Nc6 8. Nf3 Nf6 9. O-O 
+Be7 10. Ne5 Qc7 11. Nxc6 bxc6 12. Bg5 h6 13. Bf4 Qd7 14. Be5 cxd4 15. Qxd4 
+O-O 16. Ng3 Rfe8 17. Rfe1 c5 18. Qf4 Qg4 19. Rad1 Qxf4 20. Bxf4 d4 21. Bd2 
+Nd5 22. Kf1 Red8 23. Ba5 Rd7 24. c4 Nf6 25. Ne2 Bd6 26. h3 Rc8 27. Nc1 
+Rb7 28. Nd3 Nd7 29. b3 Rc6 30. Re8+ Kh7 31. Be1 g5 32. Rd2 f6 33. Ke2 
+Kg6 34. Kf3 Kf7 35. Rde2 Nf8 36. Kg4 Ng6 37. R8e6 Rbb6 38. Ba5 Nf8 39. Re8 
+Rb7 40. Be1 Ra6 41. Rc8 Ng6 42. g3 Re7 43. Rxe7+ Bxe7 44. a4 Ne5+ 45. Nxe5+ 
+fxe5 46. Rc7 e4 47. a5 d3 48. Kf5 Rf6+ 49. Ke5 Re6+ 50. Kf5 Rf6+ 51. Ke5 
+e3 52. fxe3 Rf1 53. Bc3 Rc1 54. Bd2 Rc2 55. Be1 Re2 56. Bc3 Rxe3+ 57. Kf5 
+a6 58. g4 Ke8 59. Rc6 Re2 60. Rxa6 Rc2 61. Be1 Rf2+ 62. Bxf2 d2 63. Re6 
+d1=Q 64. Bxc5 Qd7 65. Ke5 Qc7+ 66. Bd6 Qxa5+ 67. c5 Qc3+ 68. Kf5 Qd3+ 69. Ke5 
+Qe3+ 70. Kf5 Qf3+ 71. Ke5 Qe3+ 72. Kf5 Qf3+ 73. Ke5 Qc3+ 74. Kf5 Qc2+ 75. Ke5 
+Qxb3 76. Rxe7+ Kd8 77. Kf6 Qxh3 78. Kg6 Kc8 79. Rc7+ Kd8 80. c6 Qd3+ 81. Kh5 
+Qh3+ 82. Kg6 Qxg4 83. Rd7+ Qxd7 84. cxd7 g4 85. Kxh6 g3 86. Kg7 g2 87. Bh2 
+g1=Q+ 88. Bxg1 Kxd7 1/2-1/2
+
+[Event "chess_ai Arena"]
+[Round "42"]
+[White "sf"]
+[Black "nnue:nets/h100_v5_v2_1b.nnue:t=4"]
+[Result "1-0"]
+[SetUp "1"]
+[FEN "rnbqkbnr/ppp2ppp/4p3/3p4/3PP3/8/PPPN1PPP/R1BQKBNR b KQkq - 1 3"]
+
+3... c5 4. Ngf3 Nf6 5. e5 Nfd7 6. c3 Nc6 7. Bd3 Qb6 8. O-O cxd4 9. cxd4 
+Nxd4 10. Nxd4 Qxd4 11. Nf3 Qb6 12. a3 Be7 13. Be3 Bc5 14. Bd2 f5 15. a4 
+a5 16. Bb5 O-O 17. Rc1 Qa7 18. Bf4 Nb8 19. Ng5 h6 20. Qh5 b6 21. Rc3 
+Bd7 22. Rh3 Bxb5 23. axb5 hxg5 24. Bxg5 Nd7 25. Re1 Bd4 26. Qh8+ Kf7 27. Qh5+ 
+Kg8 28. Qh7+ Kf7 29. Rh6 Bxe5 30. Re3 Rg8 31. Qg6+ Kf8 32. Qxe6 Re8 33. Qxf5+ 
+Bf6 34. Rhh3 Qb8 35. Bf4 Ne5 36. Rh5 Kf7 37. Bxe5 Rxe5 38. Qd7+ Kf8 39. Rhxe5 
+Bxe5 40. g4 Bf6 41. g5 Qd8 42. Qe6 d4 43. g6 Qe7 44. Qc8+ Qd8 45. Qe6 
+Qe7 46. Qc8+ Qd8 47. Qb7 Be7 48. Re5 Qd6 49. Qc8+ Bd8 50. Qf5+ Bf6 51. Re6 
+Qc7 52. Rc6 Qe5 53. Qxe5 Bxe5 54. Rc8+ Ke7 55. Rxg8 d3 56. Kf1 Bxb2 57. Ke1 
+Bc3+ 58. Kd1 a4 59. Ra8 Ba5 60. Rc8 Kf6 61. Rc4 Kxg6 62. Rxa4 Bc3 63. Rc4 
+Ba5 64. Ra4 Bc3 65. Ra3 Be5 66. Rxd3 Bxh2 67. Rc3 Kf5 68. Rc6 Be5 69. Rxb6 
+Bd4 70. Rd6 Bxf2 71. b6 Bg3 72. Rd8 Kg6 73. Kd2 Kf7 74. b7 Bh2 75. Ke3 
+Ke7 76. b8=Q Bxb8 77. Rxb8 Kf6 78. Ke4 g6 79. Rb3 g5 80. Rb6+ Ke7 81. Ke5 
+g4 82. Rg6 Kd7 83. Rxg4 Kc7 84. Rc4+ Kd7 85. Rc1 Ke7 86. Rc7+ Kd8 87. Kd6 
+Ke8 88. Rb7 Kf8 89. Ke6 Kg8 90. Kf6 Kh8 91. Kg6 Kg8 92. Rb8# 1-0
+
+[Event "chess_ai Arena"]
+[Round "43"]
+[White "nnue:nets/h100_v5_v2_1b.nnue:t=4"]
+[Black "sf"]
+[Result "1/2-1/2"]
+[SetUp "1"]
+[FEN "rnbqkbnr/pp3ppp/4p3/2ppP3/3P4/2P5/PP3PPP/RNBQKBNR b KQkq - 0 4"]
+
+4... Nc6 5. Nf3 Bd7 6. Be2 Nge7 7. O-O Ng6 8. Be3 Be7 9. g3 cxd4 10. cxd4 
+f6 11. exf6 Bxf6 12. Nc3 O-O 13. Re1 Be8 14. Bd3 Qd7 15. Rc1 Nge7 16. Ne2 
+Nf5 17. Bxf5 exf5 18. Bd2 h6 19. Nf4 Bf7 20. Nd3 Bh5 21. Nf4 Bxf3 22. Qxf3 
+Bxd4 23. Qb3 Rfe8 24. Bc3 Bxc3 25. bxc3 Kh7 26. Qxd5 Qxd5 27. Nxd5 Rxe1+ 28. Rxe1 
+Rd8 29. Nb4 Rd6 30. Nxc6 Rxc6 31. Re7 Rxc3 32. Rxb7 Ra3 33. h4 Kg6 34. Kg2 
+Rxa2 35. Rc7 h5 36. Rc6+ Kf7 37. Rc7+ Kf6 38. Rc6+ Ke7 39. Rc7+ Kf6 40. Rc6+ 
+Kf7 41. Rc7+ Kg6 42. Rc6+ Kh7 43. Rc5 g6 44. Rc7+ Kh6 45. Rd7 Ra6 46. Rc7 
+Ra3 47. Rd7 Ra6 48. Rc7 Ra3 49. Rd7 Ra6 1/2-1/2
+
+[Event "chess_ai Arena"]
+[Round "44"]
+[White "sf"]
+[Black "nnue:nets/h100_v5_v2_1b.nnue:t=4"]
+[Result "1-0"]
+[SetUp "1"]
+[FEN "rnbqkbnr/pp3ppp/4p3/2ppP3/3P4/2P5/PP3PPP/RNBQKBNR b KQkq - 0 4"]
+
+4... Nc6 5. Nf3 cxd4 6. cxd4 Nge7 7. Nc3 Nf5 8. a3 a6 9. h4 Qb6 10. Na4 
+Qa7 11. Be3 Nxe3 12. fxe3 f6 13. Bd3 fxe5 14. Ng5 e4 15. Bxe4 dxe4 16. O-O 
+Be7 17. Rc1 Bd7 18. b4 g6 19. Nc5 O-O-O 20. Nf7 Qb6 21. Nxh8 Rxh8 22. Rf7 
+Bxc5 23. Rxc5 Be8 24. Rf2 Bd7 25. Qg4 Kb8 26. Rf7 Be8 27. Qg3+ Kc8 28. Re7 
+Bd7 29. Qe5 Rg8 30. Rxh7 Qc7 31. Qg5 Qd8 32. Qf4 Rh8 33. Rxh8 Qxh8 34. a4 
+e5 35. dxe5 b6 36. Qf6 Qe8 37. Rc1 Kb7 38. Qd6 b5 39. axb5 axb5 40. Rc5 
+Kb6 41. e6 Bc8 42. e7 Bb7 43. Re5 Bc8 44. Qc5+ Kc7 45. Qxb5 Bf5 46. Qc4 
+Kd7 47. Rc5 Qxe7 48. Qb5 Qf6 49. Qb7+ Kd8 50. Qxc6 Qxc6 51. Rxc6 Kd7 52. Rc1 
+Kd6 53. b5 Be6 54. b6 Bd5 55. Kh2 Bb7 56. Kg3 Bc6 57. Kg4 Bb7 58. Kg5 
+Ba6 59. Kxg6 Ke7 60. h5 Kd7 61. h6 Bd3 62. b7 Bb5 63. b8=Q Bc6 64. Kf6 
+Bd5 65. Rc7+ Kd6 66. Qd8# 1-0
+
+[Event "chess_ai Arena"]
+[Round "45"]
+[White "nnue:nets/h100_v5_v2_1b.nnue:t=4"]
+[Black "sf"]
+[Result "1/2-1/2"]
+[SetUp "1"]
+[FEN "rnbqkbnr/pp2pppp/2p5/8/3PN3/8/PPP2PPP/R1BQKBNR b KQkq - 0 4"]
+
+4... Nf6 5. Nxf6+ exf6 6. Nf3 Bd6 7. Bd3 O-O 8. O-O Bg4 9. Re1 Re8 10. Rxe8+ 
+Qxe8 11. Be3 Nd7 12. h3 Bh5 13. c3 Qe7 14. g4 Bg6 15. Nh4 Bxd3 16. Qxd3 
+g6 17. Nf3 Nf8 18. Rd1 Ne6 19. c4 Bf4 20. d5 cxd5 21. cxd5 Bxe3 22. dxe6 
+Bb6 23. exf7+ Qxf7 24. Qa3 Rc8 25. Rd2 h5 26. gxh5 Rc1+ 27. Kg2 gxh5 28. Nh4 
+Qg7+ 29. Kf3 Rc4 30. Qb3 Qc7 31. Kg2 Qc6+ 32. Nf3 Kg7 33. Qd1 Qe4 34. Qe1 
+Qg6+ 35. Kf1 Kh6 36. Rd5 Qc2 37. Rxh5+ Kxh5 38. Qe8+ Kh6 39. Qh8+ Kg6 40. Qe8+ 
+Kg7 41. Qe7+ Kg6 42. Qe8+ Kg7 43. Qe7+ Kg8 44. Qe8+ Kg7 1/2-1/2
+
+[Event "chess_ai Arena"]
+[Round "46"]
+[White "sf"]
+[Black "nnue:nets/h100_v5_v2_1b.nnue:t=4"]
+[Result "1-0"]
+[SetUp "1"]
+[FEN "rnbqkbnr/pp2pppp/2p5/8/3PN3/8/PPP2PPP/R1BQKBNR b KQkq - 0 4"]
+
+4... Nf6 5. Nxf6+ exf6 6. Nf3 Bd6 7. Bd3 O-O 8. O-O Re8 9. h3 Nd7 10. c4 
+Nf8 11. Qb3 a5 12. a4 Qc7 13. Bd2 Be6 14. Rac1 Qd7 15. Rfd1 Bc7 16. Bf1 
+Rac8 17. Be3 Red8 18. Kh1 Bb8 19. Qb6 Qc7 20. Qb3 Qd7 21. Rc3 Bc7 22. Qxb7 
+Rb8 23. Qa7 Ra8 24. Qc5 Bd6 25. Qh5 Qb7 26. d5 cxd5 27. c5 Qxb2 28. Rdc1 
+Bc7 29. Nd4 Qb7 30. c6 Qc8 31. Nb5 Ng6 32. Bd3 Re8 33. Rd1 Be5 34. Rc5 
+Bc7 35. Rdc1 Qb8 36. Bf1 h6 37. Qd1 Qd8 38. Nxc7 Qxc7 39. Qd4 Rec8 40. Bb5 
+Rd8 41. f3 Rdc8 42. Bg1 Ne7 43. Bh2 Nf5 44. Qf2 Qa7 45. c7 Qb6 46. Qg1 
+Ne7 47. Rb1 Qa7 48. Rbc1 Qb6 49. Rb1 Qa7 50. Qd4 Nf5 51. Qc3 d4 52. Qc1 
+Ne7 53. Bd3 Nd5 54. Be4 Nc3 55. Rxc3 dxc3 56. Qxc3 Ba2 57. Rb2 Be6 58. Bb7 
+Rd8 59. Qc1 Rac8 60. cxd8=Q+ Rxd8 61. Bg1 Qb8 62. Bh2 Qa7 63. Bg1 Qb8 64. Bd5 
+Qe5 65. Bxe6 fxe6 66. Rd2 Rxd2 67. Qxd2 Kf7 68. Qe3 Qd5 69. Qd4 Qb7 70. Qa7 
+Qxa7 71. Bxa7 Ke7 72. Bb6 Kd6 73. Bxa5 Kc5 74. Kg1 Kc4 75. Be1 f5 76. h4 
+g5 77. h5 Kd4 78. a5 Kc5 79. Kf2 Kc6 80. Ke3 Kb5 81. Kd4 Kc6 82. Ke5 
+Kd7 83. Bd2 Kc6 84. Kxe6 f4 85. Bc3 Kb5 86. Bg7 Kc5 87. a6 Kc6 88. Bxh6 
+g4 89. fxg4 Kb6 90. Bxf4 Kxa6 91. h6 Kb5 92. Kd5 Kb4 93. h7 Kb3 94. h8=Q 
+Kc2 95. Qd4 Kb3 96. Bc1 Kc2 97. Qb2+ Kd1 98. Qd2# 1-0
+
+[Event "chess_ai Arena"]
+[Round "51"]
+[White "nnue:nets/h100_v5_v2_1b.nnue:t=4"]
+[Black "sf"]
+[Result "1/2-1/2"]
+[SetUp "1"]
+[FEN "rnbqkbnr/pp2pppp/8/3p4/2PP4/8/PP3PPP/RNBQKBNR b KQkq - 0 4"]
+
+4... Nf6 5. Nf3 g6 6. cxd5 Nxd5 7. Bc4 Bg7 8. Qb3 e6 9. Bg5 Qb6 10. Nc3 
+h6 11. Bd2 Ne7 12. Qxb6 axb6 13. Nb5 O-O 14. Nc7 Ra7 15. Nb5 Ra8 16. Nc7 
+Ra7 17. Nb5 Ra8 1/2-1/2
+
+[Event "chess_ai Arena"]
+[Round "52"]
+[White "sf"]
+[Black "nnue:nets/h100_v5_v2_1b.nnue:t=4"]
+[Result "1/2-1/2"]
+[SetUp "1"]
+[FEN "rnbqkbnr/pp2pppp/8/3p4/2PP4/8/PP3PPP/RNBQKBNR b KQkq - 0 4"]
+
+4... Nf6 5. Nc3 Nc6 6. Nf3 g6 7. cxd5 Nxd5 8. Qb3 e6 9. Bb5 Bg7 10. Bxc6+ 
+bxc6 11. O-O O-O 12. Re1 Qc7 13. Bg5 Rb8 14. Nxd5 cxd5 15. Qa3 f6 16. Rac1 
+Qb6 17. Bf4 Qxb2 18. Qe3 Ra8 19. Rc7 Rf7 20. Rxf7 Kxf7 21. Bh6 Bd7 22. Qf4 
+Bxh6 23. Qxh6 Kg8 24. Qf4 Rf8 25. Qc7 Rf7 26. Qxa7 g5 27. h4 h6 28. h5 
+Kg7 29. Qa5 g4 30. Qd2 Qxd2 31. Nxd2 Re7 32. Nb3 e5 33. Kh2 Be8 34. Kg3 
+Bxh5 35. a4 Bf7 36. a5 h5 37. Kh4 Rb7 38. Nc5 Rc7 39. Rc1 Kg6 40. a6 
+exd4 41. Nd3 Ra7 42. Nb4 Kf5 43. Rd1 Ke4 44. Re1+ Kf5 45. Rd1 Ke4 46. Re1+ 
+Kf5 47. Rd1 1/2-1/2
+
+[Event "chess_ai Arena"]
+[Round "47"]
+[White "nnue:nets/h100_v5_v2_1b.nnue:t=4"]
+[Black "sf"]
+[Result "1/2-1/2"]
+[SetUp "1"]
+[FEN "rn1qkbnr/pp2pppp/2p5/3pPb2/3P4/8/PPP2PPP/RNBQKBNR w KQkq - 1 4"]
+
+4. Nf3 e6 5. c3 c5 6. Bb5+ Nd7 7. O-O a6 8. Be2 Rc8 9. Nbd2 cxd4 
+10. Nxd4 Bg6 11. f4 Bc5 12. Nf3 Ne7 13. Kh1 O-O 14. Be3 h6 15. Bg1 Ba7 
+16. Nh4 Be4 17. Qe1 Bxd4 18. Bxd4 Nc5 19. h3 Nf5 20. Nxf5 exf5 21. Rd1 Ne6 
+22. Qf2 Qc7 23. Bb6 Qc6 24. Be3 b5 25. a3 a5 26. Bd3 Bxd3 27. Rxd3 b4 
+28. cxb4 axb4 29. axb4 Qb5 30. Rfd1 Qxb4 31. Rxd5 Rc4 32. Kh2 Rb8 33. R1d2 Qa4 
+34. Qe2 Re4 35. Qf2 Rb3 36. R5d3 Qb5 37. Rxb3 Qxb3 38. Re2 Qd3 39. Re1 Kh7 
+40. Qd2 Qb5 41. Qf2 Qd3 42. Qd2 Qb5 43. Qf2 g6 44. Bc1 Rc4 45. Be3 Rb4 
+46. Bc1 Rc4 47. Be3 Rb4 48. Bc1 Qa4 49. Re2 Rc4 50. Be3 Qb3 51. Rd2 Re4 
+52. Re2 Qd3 53. Re1 Rb4 54. Bc1 Rc4 55. Qf1 Qc2 56. Be3 Re4 57. Bc1 Rc4 
+58. Be3 Rb4 59. Bc1 g5 60. Re2 Qd3 61. Rf2 Qxf1 62. Rxf1 Nxf4 63. Bxf4 gxf4 
+64. Rf3 Rxb2 65. Rxf4 Kg6 66. Kg3 Kg5 67. Rc4 f4+ 68. Kf3 Rb3+ 69. Kf2 Kf5 
+70. Ra4 Rb2+ 71. Kf3 Rb3+ 72. Kf2 Kxe5 73. Ra5+ Ke4 74. Ra4+ Kf5 75. Ra5+ Ke4 
+76. Ra4+ Ke5 77. Ra5+ Kf6 78. Ra6+ Kg5 79. Ra5+ f5 80. Ra8 Rb2+ 81. Kf3 Rb3+ 
+82. Kf2 h5 83. Rg8+ Kh4 84. Rc8 Ra3 85. Rg8 f3 86. g3+ Kxh3 87. Rh8 Kg4 
+88. Rg8+ Kh3 89. Rh8 Kg4 90. Rg8+ Kh3 1/2-1/2
+
+[Event "chess_ai Arena"]
+[Round "48"]
+[White "sf"]
+[Black "nnue:nets/h100_v5_v2_1b.nnue:t=4"]
+[Result "1/2-1/2"]
+[SetUp "1"]
+[FEN "rn1qkbnr/pp2pppp/2p5/3pPb2/3P4/8/PPP2PPP/RNBQKBNR w KQkq - 1 4"]
+
+4. h4 h5 5. Bd3 Bxd3 6. Qxd3 Qa5+ 7. c3 e6 8. a4 c5 9. dxc5 Qxc5 
+10. Nf3 Ne7 11. O-O Ng6 12. Bg5 Nc6 13. Qe2 Be7 14. Bxe7 Ncxe7 15. Nbd2 Rc8 
+16. g3 Nf5 17. Kg2 Qb6 18. a5 Qxb2 19. Rfb1 Qxc3 20. Rc1 Qxc1 21. Rxc1 Rxc1 
+22. Qb5+ Rc6 23. Qxb7 Nge7 24. Qxa7 O-O 25. Nb3 Rcc8 26. Nc5 d4 27. Qb6 Rfd8 
+28. a6 d3 29. Nd2 Nd5 30. Qa5 Nde7 31. Qa3 Ng6 32. Nxd3 Nfxh4+ 33. Kh2 Nf5 
+34. Ne4 Ra8 35. Nec5 Nfe7 36. Qa4 Ra7 37. Qe4 Rc8 38. Kg2 Nf5 39. Kh3 Nfe7 
+40. Kh2 Nf5 41. Kg2 Nfe7 42. Kh3 Nf5 43. Qa4 Nfe7 44. f4 Rca8 45. Qb5 Nf5 
+46. Qb3 Nfe7 47. Qa4 Nf5 48. Nf2 Rc8 49. Nfd3 Nge7 50. Ne4 Rca8 51. Ndc5 Nd5 
+52. Nd6 Nc7 53. Nce4 Nd5 54. Nxf5 Rxa6 55. Qc4 Ra4 56. Qc6 R4a6 57. Qb5 Ra5 
+58. Qc6 R5a6 59. Qc5 exf5 60. Nd6 Ra5 61. Qc4 g6 62. Qc6 Ne7 63. Qc4 Nd5 
+64. Kh4 Kg7 65. Qc6 Ne7 66. Qc4 Nd5 67. Qc6 Ne7 68. Qc4 Nd5 1/2-1/2
+
+[Event "chess_ai Arena"]
+[Round "49"]
+[White "nnue:nets/h100_v5_v2_1b.nnue:t=4"]
+[Black "sf"]
+[Result "0-1"]
+[SetUp "1"]
+[FEN "rnbqkbnr/pp2pppp/2p5/3P4/3P4/8/PPP2PPP/RNBQKBNR b KQkq - 0 3"]
+
+3... cxd5 4. c4 Nf6 5. cxd5 Nxd5 6. Nf3 Nc6 7. Nc3 Bf5 8. Bc4 e6 9. Bxd5 
+exd5 10. O-O Be7 11. Be3 Be6 12. Ne5 O-O 13. Nxc6 bxc6 14. Qd2 a5 15. Na4 
+Bf5 16. a3 Qb8 17. Rfc1 Bd6 18. Rxc6 Bxh2+ 19. Kh1 Bd7 20. Rb6 Qd8 21. Kxh2 
+Bxa4 22. Rb7 Bc6 23. Rb3 a4 24. Rb4 Re8 25. Rc1 Re6 26. Kg1 h6 27. Rc5 
+Qd7 28. Rb6 Qc7 29. Rb4 Rae8 30. Rxa4 Rg6 31. Bf4 Qd7 32. Ra6 Qg4 33. Bg3 
+Re2 34. Qc3 Rge6 35. Qf3 Re1+ 36. Kh2 Qg6 37. Be5 Bd7 38. Ra8+ Kh7 39. Rc3 
+Re7 40. Ra7 Bg4 41. Rxe7 Bxf3 42. Rxf3 Re4 43. Rb7 Rh4+ 44. Rh3 Rxh3+ 45. Kxh3 
+Qh5+ 46. Kg3 Qg5+ 47. Kf3 Qf5+ 48. Kg3 Qg5+ 49. Kf3 Qh4 50. Bf4 h5 51. g3 
+Qg4+ 52. Ke3 f6 53. f3 Qc8 54. Rc7 Qe6+ 55. Kd3 Qf5+ 56. Ke2 h4 57. a4 
+h3 58. a5 Qb1 59. g4 Qxb2+ 60. Ke3 Qa3+ 61. Ke2 Qa2+ 62. Kd3 Qxa5 63. g5 
+Qa6+ 64. Ke3 Qa3+ 65. Ke2 Qb2+ 66. Ke3 h2 67. Bxh2 Qxh2 68. Rc1 fxg5 69. Rd1 
+Qf4+ 70. Ke2 g4 71. fxg4 Qxg4+ 72. Ke1 Kg6 73. Rd2 Qg1+ 74. Ke2 Kf5 75. Rd3 
+Qg2+ 76. Ke1 Qe4+ 77. Kd2 Qxd3+ 78. Kxd3 Kf4 79. Kd2 Ke4 80. Kc3 g5 81. Kd2 
+Kxd4 82. Kc2 g4 83. Kd2 g3 84. Ke2 Ke4 85. Ke1 d4 86. Kf1 d3 87. Ke1 
+Ke3 88. Kd1 g2 89. Kc1 g1=Q+ 90. Kb2 Kd4 91. Kb3 Qb1+ 92. Ka4 Kc4 93. Ka3 
+Qb3# 0-1
+
+[Event "chess_ai Arena"]
+[Round "50"]
+[White "sf"]
+[Black "nnue:nets/h100_v5_v2_1b.nnue:t=4"]
+[Result "1-0"]
+[SetUp "1"]
+[FEN "rnbqkbnr/pp2pppp/2p5/3P4/3P4/8/PPP2PPP/RNBQKBNR b KQkq - 0 3"]
+
+3... cxd5 4. Nf3 Nc6 5. c4 Nf6 6. Nc3 Bg4 7. Bg5 e6 8. cxd5 exd5 9. Qe2+ 
+Be6 10. Bxf6 gxf6 11. g3 Qd7 12. Bg2 Bh6 13. O-O O-O 14. Nh4 Bg5 15. Nf3 
+Bh6 16. h3 Rad8 17. Ne1 Nxd4 18. Qh5 Bg7 19. Rd1 f5 20. Nd3 b5 21. Nf4 
+Qc6 22. Qh4 b4 23. Nh5 f4 24. Nxg7 bxc3 25. Rxd4 Kxg7 26. Qg5+ Kh8 27. Qf6+ 
+Kg8 28. Qxf4 f6 29. Rc1 c2 30. Bf1 Rf7 31. Bd3 Bxh3 32. Rxc2 Qd7 33. Qf3 
+Be6 34. Re2 Qd6 35. Rh4 Bc8 36. Qh5 f5 37. Re5 Kf8 38. Qg5 Rg7 39. Qe3 
+d4 40. Qf4 Re7 41. Rxe7 Qxf4 42. gxf4 Kxe7 43. Rxh7+ Kd6 44. Rxa7 Bd7 45. Kf1 
+Rh8 46. Ra6+ Ke7 47. Ke2 Rh4 48. a4 Be8 49. a5 Bh5+ 50. Ke1 Bf3 51. Rb6 
+Rh1+ 52. Kd2 Rh2 53. Bxf5 Rxf2+ 54. Kd3 Be2+ 55. Kxd4 Rxf4+ 56. Be4 Bf3 57. Ke3 
+Rxe4+ 58. Kxf3 Rh4 59. b4 Kd7 60. a6 Kc7 61. Rb7+ Kc8 62. Ke3 Rg4 63. Kd3 
+Rf4 64. b5 Ra4 65. Kc3 Ra1 66. Kb4 Re1 67. Ka5 Re8 68. Kb6 Rf8 69. Ka7 
+Kd8 70. b6 Rf1 71. Rh7 Re1 72. b7 Re7 73. Rxe7 Kxe7 74. b8=Q Ke6 75. Kb6 
+Kf5 76. a7 Kf6 77. a8=Q Ke6 78. Qf3 Ke7 79. Qff8+ Ke6 80. Qbd6# 1-0
+
+[Event "chess_ai Arena"]
+[Round "55"]
+[White "nnue:nets/h100_v5_v2_1b.nnue:t=4"]
+[Black "sf"]
+[Result "1/2-1/2"]
+[SetUp "1"]
+[FEN "rnbqkb1r/ppp1pp1p/3p1np1/8/3PP3/2N5/PPP2PPP/R1BQKBNR w KQkq - 0 4"]
+
+4. Nf3 Bg7 5. Bg5 O-O 6. Qd2 d5 7. exd5 Nxd5 8. Bh6 Nxc3 9. Bxg7 Kxg7 
+10. Qxc3 Nd7 11. Bc4 Nf6 12. O-O b6 13. Rfe1 Bb7 14. Ne5 e6 15. Qe3 Qd6 
+16. h4 h6 17. Rad1 Rad8 18. Bb3 Nd7 19. Ng4 Rh8 20. Qc3 Bd5 21. Bxd5 exd5 
+22. h5 Rde8 23. hxg6 fxg6 24. Rd3 Rxe1+ 25. Qxe1 h5 26. Nh2 Nf6 27. Re3 Rf8 
+28. Re6 Qf4 29. Re7+ Rf7 30. Qe6 Ne4 31. Rxf7+ Qxf7 32. Qe5+ Kg8 33. Nf3 b5 
+34. c3 h4 35. a3 a5 36. b3 h3 37. c4 bxc4 38. bxc4 c6 39. Qb8+ Kg7 
+40. cxd5 cxd5 41. Qe5+ Kg8 42. Qh2 hxg2 43. Kxg2 Qf5 44. Qb8+ Kh7 45. Qh2+ Kg8 
+46. Qb8+ Kg7 47. Qc7+ Kh6 48. Qh2+ Kg7 49. Qc7+ Kf6 50. Qd8+ Ke6 51. Qc8+ Ke7 
+52. Qc7+ Qd7 53. Qe5+ Qe6 54. Qf4 Qf5 55. Qc7+ Ke6 56. Qb6+ Nd6 57. Ne5 Qg5+ 
+58. Kf1 Qc1+ 59. Kg2 Qg5+ 60. Kf1 Qc1+ 61. Kg2 Qg5+ 1/2-1/2
+
+[Event "chess_ai Arena"]
+[Round "56"]
+[White "sf"]
+[Black "nnue:nets/h100_v5_v2_1b.nnue:t=4"]
+[Result "1/2-1/2"]
+[SetUp "1"]
+[FEN "rnbqkb1r/ppp1pp1p/3p1np1/8/3PP3/2N5/PPP2PPP/R1BQKBNR w KQkq - 0 4"]
+
+4. f4 Bg7 5. Nf3 O-O 6. Be3 b6 7. e5 Ng4 8. Qe2 Ba6 9. Qd2 Bxf1 
+10. Rxf1 c5 11. O-O-O cxd4 12. Qxd4 Qc8 13. Qe4 dxe5 14. Nxe5 Nxe3 15. Qxe3 Nc6 
+16. Nd5 Kh8 17. Nxc6 Qxc6 18. Qxe7 Rad8 19. Qe4 Rfe8 20. Qd3 Re6 21. Qf3 Red6 
+22. Nc3 Qxf3 23. Rxf3 Bxc3 24. Rxd6 Bxb2+ 25. Kxb2 Rxd6 26. Rd3 Re6 27. Rd7 Re2 
+28. Rxa7 Rxg2 29. Rxf7 Rxh2 30. a4 Rf2 31. Rf6 Kg7 32. Rxb6 Rxf4 33. Rb7+ Kh6 
+34. a5 Ra4 35. Rb5 g5 36. Kb3 Ra1 37. Kb2 Ra4 38. Kb3 Ra1 39. Kb2 Ra4 
+1/2-1/2
+
+[Event "chess_ai Arena"]
+[Round "57"]
+[White "nnue:nets/h100_v5_v2_1b.nnue:t=4"]
+[Black "sf"]
+[Result "1/2-1/2"]
+[SetUp "1"]
+[FEN "rnbqkbnr/ppp1pp1p/3p2p1/8/3PP3/2N5/PPP2PPP/R1BQKBNR b KQkq - 1 3"]
+
+3... Bg7 4. Nf3 Nf6 5. Be3 O-O 6. Qd2 c5 7. dxc5 dxc5 8. Bxc5 Nc6 9. Qxd8 
+Rxd8 10. Bb5 Nd7 11. Be3 Nb6 12. Nd2 Be6 13. Bxc6 bxc6 14. f3 Rdb8 15. Rb1 
+h5 16. Kf2 Rd8 17. Rhd1 Bxc3 18. bxc3 Na4 19. Rb7 Nxc3 20. Ra1 Nxa2 21. c4 
+Nc3 22. Rbxa7 Rxa7 23. Rxa7 Nd1+ 24. Ke2 Nb2 25. Rxe7 Nxc4 26. Bg5 Kg7 27. Nb3 
+Rd7 28. Rxd7 Bxd7 29. Kd3 Be6 30. Nd4 Ne5+ 31. Kc3 Bd7 32. Bf4 Kf6 33. Nb3 
+Be6 34. Nc1 Bc8 35. Bxe5+ Kxe5 36. Nd3+ Kd6 37. Kd4 h4 38. Nc5 f6 39. g3 
+hxg3 40. hxg3 Be6 41. f4 Bc8 42. Na4 Be6 43. Nb2 c5+ 44. Kd3 Bd7 45. Nd1 
+Bb5+ 46. Kd2 c4 47. Ne3 Kc5 48. Ng4 f5 49. exf5 gxf5 50. Ne3 Bd7 51. Kc3 
+Be6 52. Nf1 Kd5 53. Nd2 Kc5 54. Nf1 Bg8 55. Ne3 Be6 56. Nf1 1/2-1/2
+
+[Event "chess_ai Arena"]
+[Round "58"]
+[White "sf"]
+[Black "nnue:nets/h100_v5_v2_1b.nnue:t=4"]
+[Result "1-0"]
+[SetUp "1"]
+[FEN "rnbqkbnr/ppp1pp1p/3p2p1/8/3PP3/2N5/PPP2PPP/R1BQKBNR b KQkq - 1 3"]
+
+3... Nf6 4. f4 Bg7 5. Nf3 O-O 6. Bd3 Nc6 7. h3 Nb4 8. Be2 Nh5 9. Kf2 
+d5 10. e5 f6 11. a3 Nc6 12. g4 fxe5 13. fxe5 Nf4 14. Rf1 Nxh3+ 15. Kg3 
+h5 16. Nh2 Be6 17. Kxh3 Rxf1 18. Nxf1 Qd7 19. Kg2 Rf8 20. Be3 Rf7 21. Nh2 
+Bxe5 22. dxe5 d4 23. Bf2 dxc3 24. Qxd7 Bxd7 25. bxc3 Nxe5 26. Bd4 Nc6 27. Bc4 
+e6 28. Kg3 h4+ 29. Kxh4 Nxd4 30. cxd4 Rf2 31. Nf1 Kg7 32. Ne3 Rf4 33. c3 
+c5 34. Rf1 Re4 35. Nc2 cxd4 36. cxd4 Ba4 37. Bd3 Bxc2 38. Bxe4 Bxe4 39. Kg5 
+a5 40. Rc1 Bc6 41. Rc5 a4 42. Rc2 Kf7 43. Rf2+ Ke7 44. Kxg6 e5 45. dxe5 
+Ke6 46. Rb2 Kxe5 47. g5 Kd4 48. Kf6 Kc3 49. Rb4 Bd5 50. g6 Kc2 51. Ke5 
+Bg8 52. Rxb7 Kd2 53. Rb4 Bb3 54. g7 Bf7 55. Rxa4 Kc3 56. Rf4 Bg8 57. a4 
+Kd3 58. a5 Kc2 59. a6 Kb2 60. a7 Bb3 61. a8=Q Kc2 62. Rf2+ Kc3 63. Qa5+ 
+Kd3 64. Rd2+ Ke3 65. Qc3# 1-0
+
+[Event "chess_ai Arena"]
+[Round "53"]
+[White "nnue:nets/h100_v5_v2_1b.nnue:t=4"]
+[Black "sf"]
+[Result "1/2-1/2"]
+[SetUp "1"]
+[FEN "rnb1kbnr/ppp1pppp/8/3q4/8/2N5/PPPP1PPP/R1BQKBNR b KQkq - 1 3"]
+
+3... Qd8 4. Nf3 g6 5. d4 Bg7 6. Bg5 Nf6 7. Qd2 Bg4 8. Be2 c6 9. O-O 
+Nbd7 10. h3 Bxf3 11. Bxf3 O-O 12. Rad1 Qb6 13. Rfe1 e6 14. Na4 Qa6 15. b3 
+Rfe8 16. c4 Rac8 17. Nc3 Qa5 18. b4 Qxb4 19. Rb1 Qa5 20. Rxb7 h6 21. Bf4 
+Nb6 22. Ne4 Nxc4 23. Qxa5 Nxa5 24. Nxf6+ Bxf6 25. Rxa7 Ra8 26. Rxa8 Rxa8 27. Rb1 
+Bxd4 28. Bxh6 Rc8 29. Kf1 c5 30. Rb5 Nc4 31. a4 Nd6 32. Rb6 Nc4 33. Rb1 
+Nd6 34. a5 c4 35. a6 c3 36. Bc1 e5 37. Bb7 Rc4 38. Rb3 Ra4 39. Ra3 
+Rb4 40. Rxc3 Nxb7 41. Rc8+ Kg7 42. axb7 Rxb7 43. Ke2 g5 44. Bxg5 Rb2+ 45. Bd2 
+Bxf2 46. Kxf2 Rxd2+ 47. Kf3 f5 48. Re8 Rd5 49. g4 Rd3+ 50. Kf2 Rxh3 51. Rxe5 
+fxg4 52. Rg5+ Kf6 53. Rxg4 Ra3 54. Re4 Kf5 55. Re8 Kf4 56. Ke2 Ra4 57. Rh8 
+Ra2+ 58. Kd3 Ra3+ 59. Kc2 Ra1 60. Re8 Kf3 61. Rf8+ Ke3 62. Rg8 Kd4 63. Kb2 
+Ra7 64. Kb3 Rc7 65. Re8 Kc5 66. Rh8 Kb5 67. Rb8+ Kc5 68. Rh8 Kd4 69. Re8 
+Rb7+ 70. Kc2 Rh7 71. Rd8+ Kc5 72. Rc8+ Kd5 73. Kb3 Ra7 74. Rd8+ Ke5 75. Rf8 
+Ra1 76. Re8+ Kd6 77. Rf8 Rb1+ 78. Kc2 Rh1 79. Kb3 Ra1 80. Rh8 Rc1 81. Ra8 
+Kd5 82. Rh8 Rb1+ 83. Kc3 Rc1+ 84. Kb3 Rg1 85. Kc3 Rg3+ 86. Kb4 Rg1 87. Kc3 
+Rb1 88. Kc2 Rf1 89. Kc3 Rb1 90. Kc2 Ra1 91. Rd8+ Kc4 92. Kb2 Rh1 93. Kc2 
+Rh2+ 94. Kb1 Kc5 95. Rc8+ Kb4 96. Rb8+ Ka3 97. Rc8 Kb4 98. Rb8+ Kc5 99. Rc8+ 
+Kb4 1/2-1/2
+
+[Event "chess_ai Arena"]
+[Round "54"]
+[White "sf"]
+[Black "nnue:nets/h100_v5_v2_1b.nnue:t=4"]
+[Result "1-0"]
+[SetUp "1"]
+[FEN "rnb1kbnr/ppp1pppp/8/3q4/8/2N5/PPPP1PPP/R1BQKBNR b KQkq - 1 3"]
+
+3... Qd8 4. d4 Nf6 5. Nf3 e6 6. Bd3 Be7 7. Be3 Nc6 8. a3 a6 9. Ne5 
+Nxe5 10. dxe5 Nd5 11. Qg4 g6 12. O-O Bd7 13. Ne4 h5 14. Qf3 Bc6 15. Rad1 
+Nxe3 16. fxe3 O-O 17. Qf4 Bxe4 18. Bxe4 Qe8 19. Qh6 Rd8 20. Rde1 Bh4 21. g3 
+f5 22. exf6 Bxf6 23. Bxg6 Qe7 24. Qxh5 Rd5 25. Qh3 Rg5 26. Bd3 Rf7 27. Qh6 
+Re5 28. Qg6+ Kf8 29. Qh6+ Kg8 30. Qg6+ Kf8 31. h4 Ke8 32. Rf3 Kd7 33. Ref1 
+Rg7 34. Qxf6 Qxf6 35. Rxf6 Rxg3+ 36. Kf2 Rh3 37. Rf4 Ke7 38. Kg2 Rhxe3 39. Rf7+ 
+Kd6 40. R7f3 Rxf3 41. Kxf3 c5 42. Bg6 c4 43. h5 Rg5 44. Rh1 b6 45. Kf4 
+Rc5 46. h6 Rc8 47. Kg5 c3 48. bxc3 Kc5 49. Rh4 Rh8 50. h7 Kd6 51. Kf6 
+b5 52. Kg7 Rc8 53. h8=Q Rxh8 54. Rxh8 Ke5 55. Rh4 Kd6 56. Kf6 Kd5 57. Rd4+ 
+Kc6 58. Kxe6 a5 59. Rd5 Kb6 60. Kd6 b4 61. Bd3 b3 62. Rb5+ Ka6 63. Kc7 
+a4 64. Rf5+ Ka7 65. Ra5# 1-0
+
+[Event "chess_ai Arena"]
+[Round "59"]
+[White "nnue:nets/h100_v5_v2_1b.nnue:t=4"]
+[Black "sf"]
+[Result "1/2-1/2"]
+[SetUp "1"]
+[FEN "rnbqkb1r/ppp1pppp/3p4/3nP3/3P4/5N2/PPP2PPP/RNBQKB1R b KQkq - 0 4"]
+
+4... dxe5 5. Nxe5 g6 6. Bc4 c6 7. O-O Bg7 8. Re1 Nd7 9. Nf3 N7b6 10. Bb3 
+Bg4 11. c3 a5 12. a4 Bxf3 13. Qxf3 O-O 14. Nd2 Nf6 15. Nf1 e6 16. Bg5 
+Nbd7 17. Nd2 h6 18. Bf4 c5 19. Bd6 Re8 20. dxc5 Nxc5 21. Bxc5 Qxd2 22. Bd4 
+Nh5 23. Qe3 Qxe3 24. Bxe3 Nf6 25. Rad1 Reb8 26. Bb6 Ra6 27. Rd8+ Rxd8 28. Bxd8 
+Ra8 29. Bb6 Nd7 30. Be3 Bf8 31. Rd1 Nc5 32. Bc2 b6 33. g4 g5 34. Rd4 
+Na6 35. Rd7 Nc5 36. Rc7 Rd8 37. Kf1 Nd7 38. Rb7 Bc5 39. Bxc5 Nxc5 40. Rxb6 
+Rd2 41. Rb5 Rxc2 42. Rxc5 Rxb2 43. Rxa5 Kf8 44. Rb5 Rc2 45. Rc5 Ra2 46. a5 
+Ke7 47. Rb5 Kd6 48. Rb7 f5 49. gxf5 exf5 50. Rb5 Ke6 51. h3 Ra3 52. Rc5 
+h5 53. Ke2 Kf6 54. Ke3 Ra2 55. Rb5 Ra4 56. Rb6+ Kg7 57. a6 g4 58. hxg4 
+fxg4 59. Rd6 Ra3 60. Ke2 Rxc3 61. Rd3 Rc7 62. Ra3 Re7+ 63. Kd3 Ra7 64. Kc4 
+h4 65. Kb5 Kg6 66. Kb6 Rxa6+ 67. Rxa6 Kf5 68. Kc7 g3 69. fxg3 hxg3 70. Ra3 
+Kg4 71. Rxg3+ Kxg3 1/2-1/2
+
+[Event "chess_ai Arena"]
+[Round "60"]
+[White "sf"]
+[Black "nnue:nets/h100_v5_v2_1b.nnue:t=4"]
+[Result "1/2-1/2"]
+[SetUp "1"]
+[FEN "rnbqkb1r/ppp1pppp/3p4/3nP3/3P4/5N2/PPP2PPP/RNBQKB1R b KQkq - 0 4"]
+
+4... dxe5 5. Nxe5 g6 6. Bc4 Be6 7. Nd2 Bg7 8. O-O O-O 9. Re1 Nd7 10. Nef3 
+c6 11. c3 Nc7 12. h4 Bd5 13. Qb3 b6 14. h5 Re8 15. Bxd5 cxd5 16. Nf1 
+e5 17. Bg5 Bf6 18. Bxf6 Qxf6 19. Qa4 Qd6 20. dxe5 Nxe5 21. Nxe5 Rxe5 22. Qf4 
+Re6 23. Qd4 Rae8 24. h6 Qf8 25. Rxe6 Rxe6 26. Qf4 Qe7 27. Qa4 Ne8 28. Rd1 
+Re4 29. Rd4 Re1 30. Rd1 Re4 31. Qa6 Nf6 32. Qc8+ Qf8 33. Qh3 Nh5 34. Nd2 
+Re6 35. Nf3 Re2 36. a4 Rxb2 37. Re1 Re2 38. Rxe2 Nf4 39. Qd7 Nxe2+ 40. Kf1 
+Nxc3 41. g3 Ne4 42. Ne5 Nd6 43. Ng4 Ne8 44. Ne5 Nd6 45. Kg2 Nf5 46. Qxa7 
+Nxh6 47. Qxb6 Qe8 48. Qd4 Qe6 49. Nf3 Nf5 50. Qa7 d4 51. Qb8+ Kg7 52. Qb5 
+h5 53. a5 Qa2 54. Qe5+ Kg8 55. Qe8+ Kg7 56. Qe5+ Kg8 57. Qe8+ Kg7 58. Qe5+ 
+1/2-1/2
+

@@ -1,0 +1,35 @@
+Move 10 (10.Nf3 pawn sac)
+  FEN : rnb2rk1/1p1p1ppp/p3pn2/4q1B1/1bPNP3/2NQ4/PP2BPPP/R3K2R w KQ - 9 10
+  SF18: info depth 15 seldepth 30 multipv 1 score cp 23 upperbound nodes 337356 nps 674712 hashfull 28 tbhits 0 time 500 pv h2h4 b8c6
+  Best: bestmove h2h4 ponder b8c6
+
+Move 19 (19.c4! center break)
+  FEN : r1b1r1k1/1p4pp/p1n2p2/3p1qB1/4n3/2PBQN2/P4PPP/3RR1K1 w - - 0 19
+  SF18: info depth 18 seldepth 32 multipv 1 score cp 11 lowerbound nodes 350996 nps 700590 hashfull 33 tbhits 0 time 501 pv c3c4
+  Best: bestmove c3c4 ponder c6e5
+
+Move 21 (21.f4! attack)
+  FEN : r1b1r1k1/1p4pp/p4p2/3pN1q1/2P1n3/3BQ3/P4PPP/3RR1K1 w - - 0 21
+  SF18: info depth 19 seldepth 33 multipv 1 score cp 10 nodes 402331 nps 804662 hashfull 38 tbhits 0 time 500 pv f2f4 g5h6 e3d4 f6e5 d4d5 c8e6 d5e4 e5f4 e4b7 h6h5 h2h3 a8b8 b7e4 e6h3 e4f4 h3g4 d1b1
+  Best: bestmove f2f4 ponder g5h6
+
+Move 31...Kf8? (SF18 mistake)
+  FEN : 3r2k1/1Q3bpp/p7/2q5/2P2p2/3B3P/P2R2PK/8 b - - 2 31
+  SF18: info depth 35 seldepth 15 multipv 1 score cp 0 nodes 474057 nps 948114 hashfull 40 tbhits 0 time 500 pv c5e5 d3h7 g8h7 d2d8 f4f3 h2h1 e5e1 h1h2
+  Best: bestmove c5e5 ponder d3h7
+
+Move 32 (32.Bg6!! tactic)
+  FEN : 3r1k2/1Q3bpp/p7/2q5/2P2p2/3B3P/P2R2PK/8 w - - 3 32
+  SF18: info depth 18 seldepth 30 multipv 1 score cp 529 nodes 517946 nps 1035892 hashfull 46 tbhits 0 time 500 pv d3g6 f7g6 d2d8 g6e8 b7e4 c5e7 e4f4 f8g8 f4b8 g8f7 b8d6 a6a5 d6e7 f7e7 d8d2 a5a4 c4c5 e8f7 c5c6 f7a2 d2a2 e7d8
+  Best: bestmove d3g6 ponder f7g6
+
+Move 34 (34.Qe4! domination)
+  FEN : 3Rbk2/1Q4p1/p5p1/2q5/2P2p2/7P/P5PK/8 w - - 1 34
+  SF18: info depth 18 seldepth 39 multipv 1 score cp 576 nodes 537906 nps 1075812 hashfull 41 tbhits 0 time 500 pv b7e4 c5e7 e4f4 f8g8 f4d6 g8f7 c4c5 e7e4 d6d5 e4d5 d8d5 f7e6 d5d6 e6e5 h3h4 e8b5 h2g3 b5c4 a2a3
+  Best: bestmove b7e4 ponder c5e7
+
+Move 47 (47.Rxa4!! pawn race)
+  FEN : 8/8/8/1k6/b5R1/6KP/P5P1/8 w - - 3 47
+  SF18: info depth 26 seldepth 66 multipv 1 score cp 1520 nodes 2219980 nps 4439960 hashfull 39 tbhits 0 time 500 pv g4a4 b5a4 h3h4 a4a3 h4h5 a3b4 h5h6 b4c3 g3f4 c3d3 h6h7 d3c4 h7h8q c4c5 g2g4 c5c6 h8d8 c6b5 d8e8 b5b4 f4f5 b4c3 e8h8 c3d2 h8e5 d2c1 a2a4 c1d2 a4a5 d2d3 f5f6 d3c2 g4g5 c2b3 g5g6 b3a4 a5a6 a4b3 a6a7 b3b4 g6g7 b4a4 a7a8q a4b3 a8g8 b3b4 g8b8 b4a4 e5d4 a4a3 b8a8 a3b3
+  Best: bestmove g4a4 ponder b5a4
+

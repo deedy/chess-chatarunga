@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            rustflags: "-C target-feature=+avx2,+bmi2,+popcnt"
+          - os: windows-latest
+            rustflags: "-C target-feature=+avx2,+bmi2,+popcnt"
+          - os: macos-latest
+            rustflags: ""
+
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Run release test suite (incl. bit-exact SIMD verification)
+        env:
+          RUSTFLAGS: ${{ matrix.rustflags }}
+        run: cargo test --release
+      - name: Build Chatarunga binary & run bench smoke test
+        env:
+          RUSTFLAGS: ${{ matrix.rustflags }}
+        run: |
+          cargo build --release --bin chatarunga
+          ./target/release/chatarunga bench 8
