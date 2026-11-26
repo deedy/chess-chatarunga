@@ -47,7 +47,7 @@ pub fn run_uci(initial_eval: EvalMode, name: &str) {
         match tokens[0] {
             "uci" => {
                 writeln!(stdout, "id name {name}").ok();
-                writeln!(stdout, "id author Debarghya Das").ok();
+                writeln!(stdout, "id author Deedy Das").ok();
                 writeln!(
                     stdout,
                     "option name Hash type spin default 64 min 1 max 4096"

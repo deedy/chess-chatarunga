@@ -2,7 +2,7 @@
 name = "chatarunga"
 version = "1.0.0"
 edition = "2021"
-authors = ["Debarghya Das <deedy@users.noreply.github.com>"]
+authors = ["Deedy Das <deedy@users.noreply.github.com>"]
 description = "Chatarunga — a zero-dependency Rust UCI chess engine with SIMD NNUE (~3,390 1CPU / ~3,467 4CPU CCRL)"
 license = "MIT"
 repository = "https://github.com/deedy/chess-chatarunga"
