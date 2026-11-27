@@ -38,14 +38,7 @@ pub enum Piece {
 }
 
 impl Piece {
-    pub const ALL: [Piece; 6] = [
-        Piece::Pawn,
-        Piece::Knight,
-        Piece::Bishop,
-        Piece::Rook,
-        Piece::Queen,
-        Piece::King,
-    ];
+    pub const ALL: [Piece; 6] = [Piece::Pawn, Piece::Knight, Piece::Bishop, Piece::Rook, Piece::Queen, Piece::King];
 
     #[inline(always)]
     pub const fn idx(self) -> usize {
@@ -294,20 +287,27 @@ impl fmt::Display for Move {
     }
 }
 
-/// Stack-allocated move list (no heap allocation on hot path).
-#[derive(Clone)]
+/// Stack-allocated move list (zero-init overhead via `MaybeUninit`, no heap allocation on hot path).
 pub struct MoveList {
-    moves: [Move; MAX_MOVES],
+    moves: [std::mem::MaybeUninit<Move>; MAX_MOVES],
     len: usize,
+}
+
+impl Clone for MoveList {
+    fn clone(&self) -> Self {
+        let mut out = Self::new();
+        out.len = self.len;
+        for i in 0..self.len {
+            out.moves[i] = self.moves[i];
+        }
+        out
+    }
 }
 
 impl MoveList {
     #[inline(always)]
     pub const fn new() -> Self {
-        Self {
-            moves: [Move::NONE; MAX_MOVES],
-            len: 0,
-        }
+        Self { moves: [const { std::mem::MaybeUninit::uninit() }; MAX_MOVES], len: 0 }
     }
 
     #[inline(always)]
@@ -318,7 +318,10 @@ impl MoveList {
     #[inline(always)]
     pub fn push(&mut self, m: Move) {
         debug_assert!(self.len < MAX_MOVES);
-        self.moves[self.len] = m;
+        // SAFETY: `self.len < MAX_MOVES` (max legal chess moves <= 218 < 256).
+        unsafe {
+            self.moves.get_unchecked_mut(self.len).write(m);
+        }
         self.len += 1;
     }
 
@@ -334,16 +337,19 @@ impl MoveList {
 
     #[inline(always)]
     pub fn as_slice(&self) -> &[Move] {
-        &self.moves[..self.len]
+        // SAFETY: elements `0..self.len` are initialized by `push`, and `MaybeUninit<Move>` has identical layout to `Move`.
+        unsafe { std::slice::from_raw_parts(self.moves.as_ptr() as *const Move, self.len) }
     }
 
     #[inline(always)]
     pub fn as_mut_slice(&mut self) -> &mut [Move] {
-        &mut self.moves[..self.len]
+        // SAFETY: elements `0..self.len` are initialized by `push`.
+        unsafe { std::slice::from_raw_parts_mut(self.moves.as_mut_ptr() as *mut Move, self.len) }
     }
 
     #[inline(always)]
     pub fn swap(&mut self, a: usize, b: usize) {
+        debug_assert!(a < self.len && b < self.len);
         self.moves.swap(a, b);
     }
 }
@@ -358,14 +364,18 @@ impl std::ops::Index<usize> for MoveList {
     type Output = Move;
     #[inline(always)]
     fn index(&self, i: usize) -> &Move {
-        &self.moves[i]
+        debug_assert!(i < self.len);
+        // SAFETY: caller indexes `i < self.len`, which is initialized.
+        unsafe { self.moves.get_unchecked(i).assume_init_ref() }
     }
 }
 
 impl std::ops::IndexMut<usize> for MoveList {
     #[inline(always)]
     fn index_mut(&mut self, i: usize) -> &mut Move {
-        &mut self.moves[i]
+        debug_assert!(i < self.len);
+        // SAFETY: caller indexes `i < self.len`, which is initialized.
+        unsafe { self.moves.get_unchecked_mut(i).assume_init_mut() }
     }
 }
 

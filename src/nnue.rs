@@ -849,11 +849,18 @@ impl AccStack {
     }
 
     /// Differential refresh of `(ply, persp)` using the Finny Table cache (plus active threats if v3).
+    /// Fused register-tiled pass: loads `entry.acc` ONCE into SIMD registers, applies all added/removed
+    /// features in-register, and writes both `entry.acc` and `self.buf[ply]` in a single pass.
     fn finny_refresh(&mut self, net: &NnueNet, ply: usize, persp: Color, b: &Board) {
         let ksq = b.king_sq(persp);
         let (kb, mirror) = king_bucket_and_mirror_v(net.version, net.king_buckets, persp, ksq);
         let slot = (persp.idx() * net.king_buckets + kb) * 2 + usize::from(mirror);
         let entry = &mut self.finny[slot];
+
+        let mut added_f = [0usize; 32];
+        let mut removed_f = [0usize; 32];
+        let mut n_add = 0usize;
+        let mut n_rem = 0usize;
 
         for c_idx in 0..2 {
             let color = if c_idx == 0 { Color::White } else { Color::Black };
@@ -865,13 +872,13 @@ impl AccStack {
                 let mut removed = prev_bb & !curr_bb;
                 while added != 0 {
                     let sq = pop_lsb(&mut added);
-                    let f = feature_index_bm(kb, mirror, persp, color, piece, sq);
-                    vec_add_assign(&mut entry.acc, net.ft_row(f));
+                    added_f[n_add] = feature_index_bm(kb, mirror, persp, color, piece, sq);
+                    n_add += 1;
                 }
                 while removed != 0 {
                     let sq = pop_lsb(&mut removed);
-                    let f = feature_index_bm(kb, mirror, persp, color, piece, sq);
-                    vec_sub_assign(&mut entry.acc, net.ft_row(f));
+                    removed_f[n_rem] = feature_index_bm(kb, mirror, persp, color, piece, sq);
+                    n_rem += 1;
                 }
             }
         }
@@ -879,7 +886,14 @@ impl AccStack {
         entry.colors = b.colors;
 
         let off = (ply * 2 + persp.idx()) * self.hl;
-        self.buf[off..off + self.hl].copy_from_slice(&entry.acc);
+        finny_apply_fused(
+            &mut entry.acc,
+            &mut self.buf[off..off + self.hl],
+            &net.ft_w,
+            self.hl,
+            &added_f[..n_add],
+            &removed_f[..n_rem],
+        );
 
         if net.has_threats {
             if !self.threat_states[ply].computed {
@@ -1039,58 +1053,57 @@ impl AccStack {
         let from = d.m.from();
         let to = d.m.to();
         let flag = d.m.flag();
-        let ver = net.version;
-        let kb = net.king_buckets;
+        let (kb, mirror) = king_bucket_and_mirror_v(net.version, net.king_buckets, persp, ksq);
 
         let (src, dst) = self.split_prev_curr(ply, ci);
         match flag {
             FLAG_QUIET | FLAG_DOUBLE_PUSH => {
-                let sub = feature_index_v(ver, kb, persp, ksq, us, moved_p, from);
-                let add = feature_index_v(ver, kb, persp, ksq, us, moved_p, to);
+                let sub = feature_index_bm(kb, mirror, persp, us, moved_p, from);
+                let add = feature_index_bm(kb, mirror, persp, us, moved_p, to);
                 vec_add1_sub1(dst, src, net.ft_row(add), net.ft_row(sub));
             }
             FLAG_CAPTURE => {
                 let cap_p = Piece::from_u8(d.cap_piece);
-                let sub1 = feature_index_v(ver, kb, persp, ksq, us, moved_p, from);
-                let sub2 = feature_index_v(ver, kb, persp, ksq, them, cap_p, to);
-                let add1 = feature_index_v(ver, kb, persp, ksq, us, moved_p, to);
+                let sub1 = feature_index_bm(kb, mirror, persp, us, moved_p, from);
+                let sub2 = feature_index_bm(kb, mirror, persp, them, cap_p, to);
+                let add1 = feature_index_bm(kb, mirror, persp, us, moved_p, to);
                 vec_add1_sub2(dst, src, net.ft_row(add1), net.ft_row(sub1), net.ft_row(sub2));
             }
             FLAG_EP => {
                 let cap_sq = if us == Color::White { to - 8 } else { to + 8 };
-                let sub1 = feature_index_v(ver, kb, persp, ksq, us, Piece::Pawn, from);
-                let sub2 = feature_index_v(ver, kb, persp, ksq, them, Piece::Pawn, cap_sq);
-                let add1 = feature_index_v(ver, kb, persp, ksq, us, Piece::Pawn, to);
+                let sub1 = feature_index_bm(kb, mirror, persp, us, Piece::Pawn, from);
+                let sub2 = feature_index_bm(kb, mirror, persp, them, Piece::Pawn, cap_sq);
+                let add1 = feature_index_bm(kb, mirror, persp, us, Piece::Pawn, to);
                 vec_add1_sub2(dst, src, net.ft_row(add1), net.ft_row(sub1), net.ft_row(sub2));
             }
             FLAG_CASTLE_K => {
                 let (r_from, r_to) = if us == Color::White { (H1, F1) } else { (H8, F8) };
-                let sub1 = feature_index_v(ver, kb, persp, ksq, us, Piece::King, from);
-                let sub2 = feature_index_v(ver, kb, persp, ksq, us, Piece::Rook, r_from);
-                let add1 = feature_index_v(ver, kb, persp, ksq, us, Piece::King, to);
-                let add2 = feature_index_v(ver, kb, persp, ksq, us, Piece::Rook, r_to);
+                let sub1 = feature_index_bm(kb, mirror, persp, us, Piece::King, from);
+                let sub2 = feature_index_bm(kb, mirror, persp, us, Piece::Rook, r_from);
+                let add1 = feature_index_bm(kb, mirror, persp, us, Piece::King, to);
+                let add2 = feature_index_bm(kb, mirror, persp, us, Piece::Rook, r_to);
                 vec_add2_sub2(dst, src, net.ft_row(add1), net.ft_row(add2), net.ft_row(sub1), net.ft_row(sub2));
             }
             FLAG_CASTLE_Q => {
                 let (r_from, r_to) = if us == Color::White { (A1, D1) } else { (A8, D8) };
-                let sub1 = feature_index_v(ver, kb, persp, ksq, us, Piece::King, from);
-                let sub2 = feature_index_v(ver, kb, persp, ksq, us, Piece::Rook, r_from);
-                let add1 = feature_index_v(ver, kb, persp, ksq, us, Piece::King, to);
-                let add2 = feature_index_v(ver, kb, persp, ksq, us, Piece::Rook, r_to);
+                let sub1 = feature_index_bm(kb, mirror, persp, us, Piece::King, from);
+                let sub2 = feature_index_bm(kb, mirror, persp, us, Piece::Rook, r_from);
+                let add1 = feature_index_bm(kb, mirror, persp, us, Piece::King, to);
+                let add2 = feature_index_bm(kb, mirror, persp, us, Piece::Rook, r_to);
                 vec_add2_sub2(dst, src, net.ft_row(add1), net.ft_row(add2), net.ft_row(sub1), net.ft_row(sub2));
             }
             FLAG_PROMO_N | FLAG_PROMO_B | FLAG_PROMO_R | FLAG_PROMO_Q => {
                 let promo = d.m.promo_piece().unwrap();
-                let sub = feature_index_v(ver, kb, persp, ksq, us, Piece::Pawn, from);
-                let add = feature_index_v(ver, kb, persp, ksq, us, promo, to);
+                let sub = feature_index_bm(kb, mirror, persp, us, Piece::Pawn, from);
+                let add = feature_index_bm(kb, mirror, persp, us, promo, to);
                 vec_add1_sub1(dst, src, net.ft_row(add), net.ft_row(sub));
             }
             FLAG_PROMO_CAP_N | FLAG_PROMO_CAP_B | FLAG_PROMO_CAP_R | FLAG_PROMO_CAP_Q => {
                 let promo = d.m.promo_piece().unwrap();
                 let cap_p = Piece::from_u8(d.cap_piece);
-                let sub1 = feature_index_v(ver, kb, persp, ksq, us, Piece::Pawn, from);
-                let sub2 = feature_index_v(ver, kb, persp, ksq, them, cap_p, to);
-                let add1 = feature_index_v(ver, kb, persp, ksq, us, promo, to);
+                let sub1 = feature_index_bm(kb, mirror, persp, us, Piece::Pawn, from);
+                let sub2 = feature_index_bm(kb, mirror, persp, them, cap_p, to);
+                let add1 = feature_index_bm(kb, mirror, persp, us, promo, to);
                 vec_add1_sub2(dst, src, net.ft_row(add1), net.ft_row(sub1), net.ft_row(sub2));
             }
             _ => unreachable!(),
@@ -1164,6 +1177,149 @@ pub fn vec_add_assign(dst: &mut [i16], src: &[i16]) {
     #[allow(unreachable_code)]
     for (d, &s) in dst.iter_mut().zip(src.iter()) {
         *d = d.wrapping_add(s);
+    }
+}
+
+#[inline]
+fn finny_apply_fused(
+    cache_acc: &mut [i16],
+    dst_acc: &mut [i16],
+    ft_w: &[i16],
+    hl: usize,
+    added: &[usize],
+    removed: &[usize],
+) {
+    debug_assert_eq!(cache_acc.len(), hl);
+    debug_assert_eq!(dst_acc.len(), hl);
+    #[cfg(target_arch = "aarch64")]
+    unsafe {
+        use std::arch::aarch64::*;
+        let cp = cache_acc.as_mut_ptr();
+        let dp = dst_acc.as_mut_ptr();
+        let wp = ft_w.as_ptr();
+        let mut i = 0usize;
+        while i + 64 <= hl {
+            let mut v0 = vld1q_s16(cp.add(i));
+            let mut v1 = vld1q_s16(cp.add(i + 8));
+            let mut v2 = vld1q_s16(cp.add(i + 16));
+            let mut v3 = vld1q_s16(cp.add(i + 24));
+            let mut v4 = vld1q_s16(cp.add(i + 32));
+            let mut v5 = vld1q_s16(cp.add(i + 40));
+            let mut v6 = vld1q_s16(cp.add(i + 48));
+            let mut v7 = vld1q_s16(cp.add(i + 56));
+            for &f in added {
+                let rp = wp.add(f * hl + i);
+                v0 = vaddq_s16(v0, vld1q_s16(rp));
+                v1 = vaddq_s16(v1, vld1q_s16(rp.add(8)));
+                v2 = vaddq_s16(v2, vld1q_s16(rp.add(16)));
+                v3 = vaddq_s16(v3, vld1q_s16(rp.add(24)));
+                v4 = vaddq_s16(v4, vld1q_s16(rp.add(32)));
+                v5 = vaddq_s16(v5, vld1q_s16(rp.add(40)));
+                v6 = vaddq_s16(v6, vld1q_s16(rp.add(48)));
+                v7 = vaddq_s16(v7, vld1q_s16(rp.add(56)));
+            }
+            for &f in removed {
+                let rp = wp.add(f * hl + i);
+                v0 = vsubq_s16(v0, vld1q_s16(rp));
+                v1 = vsubq_s16(v1, vld1q_s16(rp.add(8)));
+                v2 = vsubq_s16(v2, vld1q_s16(rp.add(16)));
+                v3 = vsubq_s16(v3, vld1q_s16(rp.add(24)));
+                v4 = vsubq_s16(v4, vld1q_s16(rp.add(32)));
+                v5 = vsubq_s16(v5, vld1q_s16(rp.add(40)));
+                v6 = vsubq_s16(v6, vld1q_s16(rp.add(48)));
+                v7 = vsubq_s16(v7, vld1q_s16(rp.add(56)));
+            }
+            vst1q_s16(cp.add(i), v0);
+            vst1q_s16(cp.add(i + 8), v1);
+            vst1q_s16(cp.add(i + 16), v2);
+            vst1q_s16(cp.add(i + 24), v3);
+            vst1q_s16(cp.add(i + 32), v4);
+            vst1q_s16(cp.add(i + 40), v5);
+            vst1q_s16(cp.add(i + 48), v6);
+            vst1q_s16(cp.add(i + 56), v7);
+            vst1q_s16(dp.add(i), v0);
+            vst1q_s16(dp.add(i + 8), v1);
+            vst1q_s16(dp.add(i + 16), v2);
+            vst1q_s16(dp.add(i + 24), v3);
+            vst1q_s16(dp.add(i + 32), v4);
+            vst1q_s16(dp.add(i + 40), v5);
+            vst1q_s16(dp.add(i + 48), v6);
+            vst1q_s16(dp.add(i + 56), v7);
+            i += 64;
+        }
+        while i < hl {
+            let mut v = *cp.add(i);
+            for &f in added {
+                v = v.wrapping_add(*wp.add(f * hl + i));
+            }
+            for &f in removed {
+                v = v.wrapping_sub(*wp.add(f * hl + i));
+            }
+            *cp.add(i) = v;
+            *dp.add(i) = v;
+            i += 1;
+        }
+        return;
+    }
+    #[cfg(all(target_arch = "x86_64", target_feature = "avx2"))]
+    unsafe {
+        use std::arch::x86_64::*;
+        let cp = cache_acc.as_mut_ptr();
+        let dp = dst_acc.as_mut_ptr();
+        let wp = ft_w.as_ptr();
+        let mut i = 0usize;
+        while i + 64 <= hl {
+            let mut v0 = _mm256_loadu_si256(cp.add(i) as *const __m256i);
+            let mut v1 = _mm256_loadu_si256(cp.add(i + 16) as *const __m256i);
+            let mut v2 = _mm256_loadu_si256(cp.add(i + 32) as *const __m256i);
+            let mut v3 = _mm256_loadu_si256(cp.add(i + 48) as *const __m256i);
+            for &f in added {
+                let rp = wp.add(f * hl + i);
+                v0 = _mm256_add_epi16(v0, _mm256_loadu_si256(rp as *const __m256i));
+                v1 = _mm256_add_epi16(v1, _mm256_loadu_si256(rp.add(16) as *const __m256i));
+                v2 = _mm256_add_epi16(v2, _mm256_loadu_si256(rp.add(32) as *const __m256i));
+                v3 = _mm256_add_epi16(v3, _mm256_loadu_si256(rp.add(48) as *const __m256i));
+            }
+            for &f in removed {
+                let rp = wp.add(f * hl + i);
+                v0 = _mm256_sub_epi16(v0, _mm256_loadu_si256(rp as *const __m256i));
+                v1 = _mm256_sub_epi16(v1, _mm256_loadu_si256(rp.add(16) as *const __m256i));
+                v2 = _mm256_sub_epi16(v2, _mm256_loadu_si256(rp.add(32) as *const __m256i));
+                v3 = _mm256_sub_epi16(v3, _mm256_loadu_si256(rp.add(48) as *const __m256i));
+            }
+            _mm256_storeu_si256(cp.add(i) as *mut __m256i, v0);
+            _mm256_storeu_si256(cp.add(i + 16) as *mut __m256i, v1);
+            _mm256_storeu_si256(cp.add(i + 32) as *mut __m256i, v2);
+            _mm256_storeu_si256(cp.add(i + 48) as *mut __m256i, v3);
+            _mm256_storeu_si256(dp.add(i) as *mut __m256i, v0);
+            _mm256_storeu_si256(dp.add(i + 16) as *mut __m256i, v1);
+            _mm256_storeu_si256(dp.add(i + 32) as *mut __m256i, v2);
+            _mm256_storeu_si256(dp.add(i + 48) as *mut __m256i, v3);
+            i += 64;
+        }
+        while i < hl {
+            let mut v = *cp.add(i);
+            for &f in added {
+                v = v.wrapping_add(*wp.add(f * hl + i));
+            }
+            for &f in removed {
+                v = v.wrapping_sub(*wp.add(f * hl + i));
+            }
+            *cp.add(i) = v;
+            *dp.add(i) = v;
+            i += 1;
+        }
+        return;
+    }
+    #[allow(unreachable_code)]
+    {
+        for &f in added {
+            vec_add_assign(cache_acc, &ft_w[f * hl..(f + 1) * hl]);
+        }
+        for &f in removed {
+            vec_sub_assign(cache_acc, &ft_w[f * hl..(f + 1) * hl]);
+        }
+        dst_acc.copy_from_slice(cache_acc);
     }
 }
 
@@ -1667,16 +1823,46 @@ pub fn screlu_dot_simd(acc: &[i16], w: &[i16], qa: i16) -> i64 {
     unsafe {
         use std::arch::aarch64::*;
         let n = acc.len();
+        let pa = acc.as_ptr();
+        let pw = w.as_ptr();
         let zero = vdupq_n_s16(0);
         let vmax = vdupq_n_s16(qa);
         let mut total = 0i64;
         let mut i = 0;
+        // 4 independent int32x4_t accumulators (16 lanes) over 256-element chunks:
+        // each lane accumulates 16 terms -> max |lane| <= 16 * 255 * 32767 = 133M << i32::MAX (2.14B).
+        while i + 256 <= n {
+            let mut s0 = vdupq_n_s32(0);
+            let mut s1 = vdupq_n_s32(0);
+            let mut s2 = vdupq_n_s32(0);
+            let mut s3 = vdupq_n_s32(0);
+            for _ in 0..16 {
+                let x0 = vld1q_s16(pa.add(i));
+                let w0 = vld1q_s16(pw.add(i));
+                let x1 = vld1q_s16(pa.add(i + 8));
+                let w1 = vld1q_s16(pw.add(i + 8));
+                let c0 = vminq_s16(vmaxq_s16(x0, zero), vmax);
+                let c1 = vminq_s16(vmaxq_s16(x1, zero), vmax);
+                let cw0 = vmulq_s16(c0, w0);
+                let cw1 = vmulq_s16(c1, w1);
+                s0 = vmlal_s16(s0, vget_low_s16(c0), vget_low_s16(cw0));
+                s1 = vmlal_high_s16(s1, c0, cw0);
+                s2 = vmlal_s16(s2, vget_low_s16(c1), vget_low_s16(cw1));
+                s3 = vmlal_high_s16(s3, c1, cw1);
+                i += 16;
+            }
+            let sum64 = vaddq_s64(
+                vaddq_s64(vpaddlq_s32(s0), vpaddlq_s32(s1)),
+                vaddq_s64(vpaddlq_s32(s2), vpaddlq_s32(s3)),
+            );
+            total += vgetq_lane_s64(sum64, 0) + vgetq_lane_s64(sum64, 1);
+        }
         while i + 64 <= n {
             let mut s0 = vdupq_n_s32(0);
             let mut s1 = vdupq_n_s32(0);
             for _ in 0..8 {
-                let x = vld1q_s16(acc.as_ptr().add(i));
-                let wt = vld1q_s16(w.as_ptr().add(i));
+                let x = vld1q_s16(pa.add(i));
+                let wt = vld1q_s16(pw.add(i));
                 let c = vminq_s16(vmaxq_s16(x, zero), vmax);
                 let cw = vmulq_s16(c, wt);
                 s0 = vmlal_s16(s0, vget_low_s16(c), vget_low_s16(cw));

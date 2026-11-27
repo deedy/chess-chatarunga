@@ -622,9 +622,9 @@ struct MovePicker {
     k1: Move,
     cm: Move,
     ml: MoveList,
-    scores: [i32; MAX_MOVES],
+    scores: [std::mem::MaybeUninit<i32>; MAX_MOVES],
     idx: usize,
-    bad_caps: [Move; 64],
+    bad_caps: [std::mem::MaybeUninit<Move>; 64],
     bad_len: usize,
     bad_idx: usize,
 }
@@ -648,9 +648,9 @@ impl MovePicker {
             k1,
             cm,
             ml: MoveList::new(),
-            scores: [0; MAX_MOVES],
+            scores: [const { std::mem::MaybeUninit::uninit() }; MAX_MOVES],
             idx: 0,
-            bad_caps: [Move::NONE; 64],
+            bad_caps: [const { std::mem::MaybeUninit::uninit() }; 64],
             bad_len: 0,
             bad_idx: 0,
         }
@@ -658,25 +658,30 @@ impl MovePicker {
 
     #[inline(always)]
     fn pick_best(&mut self) -> Option<(Move, i32)> {
-        if self.idx >= self.ml.len() {
+        let n = self.ml.len();
+        if self.idx >= n {
             return None;
         }
-        let mut best_i = self.idx;
-        let mut best_s = self.scores[self.idx];
-        for j in (self.idx + 1)..self.ml.len() {
-            if self.scores[j] > best_s {
-                best_s = self.scores[j];
-                best_i = j;
+        // SAFETY: `scores[0..n]` are initialized in `GenTacticals`, `GenQuiets`, or `EvasionsInit` before `pick_best`.
+        unsafe {
+            let mut best_i = self.idx;
+            let mut best_s = self.scores.get_unchecked(self.idx).assume_init();
+            for j in (self.idx + 1)..n {
+                let s = self.scores.get_unchecked(j).assume_init();
+                if s > best_s {
+                    best_s = s;
+                    best_i = j;
+                }
             }
+            if best_i != self.idx {
+                self.ml.swap(self.idx, best_i);
+                self.scores.swap(self.idx, best_i);
+            }
+            let m = self.ml[self.idx];
+            let sc = self.scores.get_unchecked(self.idx).assume_init();
+            self.idx += 1;
+            Some((m, sc))
         }
-        if best_i != self.idx {
-            self.ml.swap(self.idx, best_i);
-            self.scores.swap(self.idx, best_i);
-        }
-        let m = self.ml[self.idx];
-        let sc = self.scores[self.idx];
-        self.idx += 1;
-        Some((m, sc))
     }
 
     /// Returns `Some((move, is_good_or_non_bad_cap, cached_quiet_hist_or_min))`.
@@ -702,7 +707,7 @@ impl MovePicker {
                         } else {
                             0
                         };
-                        self.scores[i] = mvv + ch;
+                        self.scores[i].write(mvv + ch);
                     }
                     self.idx = 0;
                     self.stage = PickStage::GoodTacticals;
@@ -715,7 +720,7 @@ impl MovePicker {
                         if see_ge(b, m, 0) {
                             return Some((m, true, i32::MIN));
                         } else if self.bad_len < self.bad_caps.len() {
-                            self.bad_caps[self.bad_len] = m;
+                            self.bad_caps[self.bad_len].write(m);
                             self.bad_len += 1;
                         }
                     }
@@ -765,7 +770,7 @@ impl MovePicker {
                     let tm = *threat_map.get_or_insert_with(|| b.enemy_attacks());
                     for (i, &m) in self.ml.as_slice().iter().enumerate() {
                         let mp = mb_piece(b.mailbox[m.from() as usize]).idx();
-                        self.scores[i] = s.quiet_history(b, ply, m, mp, tm);
+                        self.scores[i].write(s.quiet_history(b, ply, m, mp, tm));
                     }
                     self.idx = 0;
                     self.stage = PickStage::Quiets;
@@ -781,7 +786,8 @@ impl MovePicker {
                 }
                 PickStage::BadTacticals => {
                     if self.bad_idx < self.bad_len {
-                        let m = self.bad_caps[self.bad_idx];
+                        // SAFETY: `bad_caps[0..bad_len]` were initialized in `GoodTacticals`.
+                        let m = unsafe { self.bad_caps.get_unchecked(self.bad_idx).assume_init() };
                         self.bad_idx += 1;
                         return Some((m, false, i32::MIN));
                     }
@@ -794,8 +800,8 @@ impl MovePicker {
                     let c = b.side.idx();
                     let tm = *threat_map.get_or_insert_with(|| b.enemy_attacks());
                     for (i, &m) in self.ml.as_slice().iter().enumerate() {
-                        if m == self.tt_move {
-                            self.scores[i] = 2_000_000;
+                        let sc = if m == self.tt_move {
+                            2_000_000
                         } else if m.is_tactical() {
                             let mvv = score_capture(b, m);
                             let ch = if m.is_capture() {
@@ -804,11 +810,12 @@ impl MovePicker {
                             } else {
                                 0
                             };
-                            self.scores[i] = if see_ge(b, m, 0) { 1_000_000 + mvv + ch } else { -100_000 + mvv + ch };
+                            if see_ge(b, m, 0) { 1_000_000 + mvv + ch } else { -100_000 + mvv + ch }
                         } else {
                             let mp = mb_piece(b.mailbox[m.from() as usize]).idx();
-                            self.scores[i] = s.quiet_history(b, ply, m, mp, tm);
-                        }
+                            s.quiet_history(b, ply, m, mp, tm)
+                        };
+                        self.scores[i].write(sc);
                     }
                     self.idx = 0;
                     self.stage = PickStage::Evasions;
@@ -1959,7 +1966,7 @@ impl Searcher {
                 b.tactical_moves(&mut tml);
                 let see_thresh = (prob_beta - raw_eval).max(0);
                 // Order ProbCut tacticals by MVV-LVA + capture history so cutoffs trigger on the first capture
-                let mut pc_scores = [0i32; MAX_MOVES];
+                let mut pc_scores = [const { std::mem::MaybeUninit::<i32>::uninit() }; MAX_MOVES];
                 let pc_c = b.side.idx();
                 for (i, &m) in tml.as_slice().iter().enumerate() {
                     let ch = if m.is_capture() {
@@ -1968,20 +1975,24 @@ impl Searcher {
                     } else {
                         0
                     };
-                    pc_scores[i] = score_capture(b, m) + ch;
+                    pc_scores[i].write(score_capture(b, m) + ch);
                 }
                 for idx in 0..tml.len() {
-                    let mut best_i = idx;
-                    let mut best_s = pc_scores[idx];
-                    for j in (idx + 1)..tml.len() {
-                        if pc_scores[j] > best_s {
-                            best_s = pc_scores[j];
-                            best_i = j;
+                    // SAFETY: `pc_scores[0..tml.len()]` initialized immediately above.
+                    unsafe {
+                        let mut best_i = idx;
+                        let mut best_s = pc_scores.get_unchecked(idx).assume_init();
+                        for j in (idx + 1)..tml.len() {
+                            let sc = pc_scores.get_unchecked(j).assume_init();
+                            if sc > best_s {
+                                best_s = sc;
+                                best_i = j;
+                            }
                         }
-                    }
-                    if best_i != idx {
-                        tml.swap(idx, best_i);
-                        pc_scores.swap(idx, best_i);
+                        if best_i != idx {
+                            tml.swap(idx, best_i);
+                            pc_scores.swap(idx, best_i);
+                        }
                     }
                     let m = tml[idx];
                     if !see_ge(b, m, see_thresh) {
@@ -2018,9 +2029,9 @@ impl Searcher {
 
         let mut best_move = Move::NONE;
         let mut best_score = -INF;
-        let mut quiet_tried = [(Move::NONE, 0usize); 64];
+        let mut quiet_tried = [const { std::mem::MaybeUninit::<(Move, u8)>::uninit() }; 64];
         let mut quiet_cnt = 0usize;
-        let mut cap_tried = [(Move::NONE, 0usize, 0usize); 32];
+        let mut cap_tried = [const { std::mem::MaybeUninit::<(Move, u8, u8)>::uninit() }; 32];
         let mut cap_cnt = 0usize;
         let mut searched = 0usize;
         let mut skipped_tt = Move::NONE;
@@ -2122,10 +2133,10 @@ impl Searcher {
                 }
             }
             if is_quiet {
-                quiet_tried[0] = (m, moved_p);
+                quiet_tried[0].write((m, moved_p as u8));
                 quiet_cnt = 1;
             } else if m.is_capture() {
-                cap_tried[0] = (m, moved_p, captured_piece_idx(b, m));
+                cap_tried[0].write((m, moved_p as u8, captured_piece_idx(b, m) as u8));
                 cap_cnt = 1;
             }
         }
@@ -2319,22 +2330,26 @@ impl Searcher {
                             }
                             let tm = *threat_map.get_or_insert_with(|| b.enemy_attacks());
                             self.update_quiet_histories(c, b.pawn_hash, ply, m, moved_p, tm, bonus);
-                            for &(qm, qp) in &quiet_tried[..quiet_cnt] {
-                                self.update_quiet_histories(c, b.pawn_hash, ply, qm, qp, tm, malus);
+                            for i in 0..quiet_cnt {
+                                let (qm, qp) = unsafe { quiet_tried.get_unchecked(i).assume_init() };
+                                self.update_quiet_histories(c, b.pawn_hash, ply, qm, qp as usize, tm, malus);
                             }
-                            for &(cm, cp, cv) in &cap_tried[..cap_cnt] {
-                                update_history(&mut self.cap_hist[c * 6 + cp][cm.to() as usize][cv], malus);
+                            for i in 0..cap_cnt {
+                                let (cm, cp, cv) = unsafe { cap_tried.get_unchecked(i).assume_init() };
+                                update_history(&mut self.cap_hist[c * 6 + cp as usize][cm.to() as usize][cv as usize], malus);
                             }
                         } else if m.is_capture() {
                             let vic = captured_piece_idx(b, m);
                             update_history(&mut self.cap_hist[c * 6 + moved_p][m.to() as usize][vic], bonus);
-                            for &(cm, cp, cv) in &cap_tried[..cap_cnt] {
-                                update_history(&mut self.cap_hist[c * 6 + cp][cm.to() as usize][cv], malus);
+                            for i in 0..cap_cnt {
+                                let (cm, cp, cv) = unsafe { cap_tried.get_unchecked(i).assume_init() };
+                                update_history(&mut self.cap_hist[c * 6 + cp as usize][cm.to() as usize][cv as usize], malus);
                             }
                             if quiet_cnt > 0 {
                                 let tm = *threat_map.get_or_insert_with(|| b.enemy_attacks());
-                                for &(qm, qp) in &quiet_tried[..quiet_cnt] {
-                                    self.update_quiet_histories(c, b.pawn_hash, ply, qm, qp, tm, malus);
+                                for i in 0..quiet_cnt {
+                                    let (qm, qp) = unsafe { quiet_tried.get_unchecked(i).assume_init() };
+                                    self.update_quiet_histories(c, b.pawn_hash, ply, qm, qp as usize, tm, malus);
                                 }
                             }
                         }
@@ -2345,11 +2360,11 @@ impl Searcher {
 
             if is_quiet {
                 if quiet_cnt < quiet_tried.len() {
-                    quiet_tried[quiet_cnt] = (m, moved_p);
+                    quiet_tried[quiet_cnt].write((m, moved_p as u8));
                     quiet_cnt += 1;
                 }
             } else if m.is_capture() && cap_cnt < cap_tried.len() {
-                cap_tried[cap_cnt] = (m, moved_p, captured_piece_idx(b, m));
+                cap_tried[cap_cnt].write((m, moved_p as u8, captured_piece_idx(b, m) as u8));
                 cap_cnt += 1;
             }
         }
@@ -2449,12 +2464,12 @@ impl Searcher {
             return if in_check { -MATE_SCORE + ply as i32 } else { best_score };
         }
 
-        let mut scores = [0i32; MAX_MOVES];
+        let mut scores = [const { std::mem::MaybeUninit::<i32>::uninit() }; MAX_MOVES];
         let c = b.side.idx();
         for i in 0..ml.len() {
             let m = ml[i];
-            if m == tt_move {
-                scores[i] = 2_000_000;
+            let sc = if m == tt_move {
+                2_000_000
             } else {
                 let mvv = score_capture(b, m);
                 let ch = if m.is_capture() {
@@ -2463,24 +2478,29 @@ impl Searcher {
                 } else {
                     0
                 };
-                scores[i] = mvv + ch;
-            }
+                mvv + ch
+            };
+            scores[i].write(sc);
         }
 
         let mut best_move = Move::NONE;
         let mut qs_searched = 0usize;
         for idx in 0..ml.len() {
-            let mut best_i = idx;
-            let mut best_s = scores[idx];
-            for j in (idx + 1)..ml.len() {
-                if scores[j] > best_s {
-                    best_s = scores[j];
-                    best_i = j;
+            // SAFETY: `scores[0..ml.len()]` initialized immediately above.
+            unsafe {
+                let mut best_i = idx;
+                let mut best_s = scores.get_unchecked(idx).assume_init();
+                for j in (idx + 1)..ml.len() {
+                    let sc = scores.get_unchecked(j).assume_init();
+                    if sc > best_s {
+                        best_s = sc;
+                        best_i = j;
+                    }
                 }
-            }
-            if best_i != idx {
-                ml.swap(idx, best_i);
-                scores.swap(idx, best_i);
+                if best_i != idx {
+                    ml.swap(idx, best_i);
+                    scores.swap(idx, best_i);
+                }
             }
 
             let m = ml[idx];
