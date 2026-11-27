@@ -18,14 +18,14 @@ pub fn run_uci(initial_eval: EvalMode, name: &str) {
     let mut tt_mb = 64usize;
     let mut smp_threads = 1usize;
     let mut move_overhead_ms = 10u64;
-    let mut searcher: Option<Searcher> = Some(Searcher::new(initial_eval, tt_mb));
+    let mut searcher: Option<Box<Searcher>> = Some(Box::new(Searcher::new(initial_eval, tt_mb)));
     if let Some(s) = searcher.as_mut() {
         s.set_uci_info(true);
     }
-    let mut running: Option<(Arc<AtomicBool>, JoinHandle<Searcher>)> = None;
+    let mut running: Option<(Arc<AtomicBool>, JoinHandle<Box<Searcher>>)> = None;
 
-    let finish_search = |running: &mut Option<(Arc<AtomicBool>, JoinHandle<Searcher>)>,
-                         searcher: &mut Option<Searcher>,
+    let finish_search = |running: &mut Option<(Arc<AtomicBool>, JoinHandle<Box<Searcher>>)>,
+                         searcher: &mut Option<Box<Searcher>>,
                          force_stop: bool| {
         if let Some((stop, handle)) = running.take() {
             if force_stop {
@@ -98,7 +98,7 @@ pub fn run_uci(initial_eval: EvalMode, name: &str) {
                             tt_mb = mb.clamp(1, 4096);
                             if let Some(s) = searcher.as_mut() {
                                 let eval = s.eval.clone();
-                                let mut ns = Searcher::new(eval, tt_mb);
+                                let mut ns = Box::new(Searcher::new(eval, tt_mb));
                                 ns.set_threads(smp_threads);
                                 ns.set_uci_info(true);
                                 *s = ns;
@@ -117,13 +117,14 @@ pub fn run_uci(initial_eval: EvalMode, name: &str) {
                         }
                     } else if opt_name.eq_ignore_ascii_case("EvalFile") {
                         if opt_val.is_empty() || opt_val == "<empty>" || opt_val == "classical" {
-                            let mut ns = Searcher::new(EvalMode::Classical, tt_mb);
+                            let mut ns = Box::new(Searcher::new(EvalMode::Classical, tt_mb));
                             ns.set_threads(smp_threads);
                             ns.set_uci_info(true);
                             searcher = Some(ns);
                         } else if opt_val != "<embedded>" {
                             if let Ok(net) = NnueNet::load(&opt_val) {
-                                let mut ns = Searcher::new(EvalMode::Nnue(Arc::new(net)), tt_mb);
+                                let mut ns =
+                                    Box::new(Searcher::new(EvalMode::Nnue(Arc::new(net)), tt_mb));
                                 ns.set_threads(smp_threads);
                                 ns.set_uci_info(true);
                                 searcher = Some(ns);
@@ -172,13 +173,16 @@ pub fn run_uci(initial_eval: EvalMode, name: &str) {
                     let history = game.history.clone();
                     let stop = Arc::new(AtomicBool::new(false));
                     let stop_c = Arc::clone(&stop);
-                    let handle = std::thread::spawn(move || {
-                        let res = s.search_with_stop(&board, &history, limits, Some(stop_c));
-                        let mut out = io::stdout();
-                        writeln!(out, "bestmove {}", res.best_move.to_uci()).ok();
-                        out.flush().ok();
-                        s
-                    });
+                    let handle = std::thread::Builder::new()
+                        .stack_size(8 * 1024 * 1024)
+                        .spawn(move || {
+                            let res = s.search_with_stop(&board, &history, limits, Some(stop_c));
+                            let mut out = io::stdout();
+                            writeln!(out, "bestmove {}", res.best_move.to_uci()).ok();
+                            out.flush().ok();
+                            s
+                        })
+                        .expect("failed to spawn UCI search thread");
                     running = Some((stop, handle));
                 }
             }

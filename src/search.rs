@@ -1085,6 +1085,22 @@ pub struct Searcher {
     uci_info: bool,
 }
 
+/// Allocate a zero-initialized value directly on the heap with zero stack footprint.
+/// Critical on Windows where the default main-thread stack is 1 MB.
+#[inline]
+fn box_zeroed<T>() -> Box<T> {
+    let layout = std::alloc::Layout::new::<T>();
+    assert!(layout.size() > 0);
+    // SAFETY: Used exclusively for plain integer / nested array tables where all-zero bits are valid.
+    unsafe {
+        let ptr = std::alloc::alloc_zeroed(layout) as *mut T;
+        if ptr.is_null() {
+            std::alloc::handle_alloc_error(layout);
+        }
+        Box::from_raw(ptr)
+    }
+}
+
 fn build_lmr_table(params: &SearchParams) -> [[i32; 64]; 64] {
     // 1024-scale fixed-point LMR table for smooth fractional adjustments
     let base = params.lmr_base as f64 / 100.0;
@@ -1136,26 +1152,26 @@ impl Searcher {
             acc,
             small_acc,
             killers: [[Move::NONE; 2]; MAX_PLY],
-            history: Box::new([[[[0; 4]; 64]; 64]; 2]),
-            pawn_hist: Box::new([[[0; 64]; 6]; 512]),
-            cap_hist: Box::new([[[0; 6]; 64]; 12]),
-            cont_hist: Box::new([[[[0; 64]; 6]; 64]; 6]),
-            follow_hist: Box::new([[[[0; 64]; 6]; 64]; 6]),
-            follow4_hist: Box::new([[[[0; 64]; 6]; 64]; 6]),
-            follow6_hist: Box::new([[[[0; 64]; 6]; 64]; 6]),
-            pawn_corrhist: Box::new([[0; CORR_SIZE]; 2]),
-            wnp_corrhist: Box::new([[0; CORR_SIZE]; 2]),
-            bnp_corrhist: Box::new([[0; CORR_SIZE]; 2]),
-            minor_corrhist: Box::new([[0; CORR_SIZE]; 2]),
-            major_corrhist: Box::new([[0; CORR_SIZE]; 2]),
-            cont_corrhist: Box::new([[[0; 64]; 6]; 2]),
-            cont2_corrhist: Box::new([[[0; 64]; 6]; 2]),
+            history: box_zeroed(),
+            pawn_hist: box_zeroed(),
+            cap_hist: box_zeroed(),
+            cont_hist: box_zeroed(),
+            follow_hist: box_zeroed(),
+            follow4_hist: box_zeroed(),
+            follow6_hist: box_zeroed(),
+            pawn_corrhist: box_zeroed(),
+            wnp_corrhist: box_zeroed(),
+            bnp_corrhist: box_zeroed(),
+            minor_corrhist: box_zeroed(),
+            major_corrhist: box_zeroed(),
+            cont_corrhist: box_zeroed(),
+            cont2_corrhist: box_zeroed(),
             countermoves: [[Move::NONE; 64]; 64],
             static_evals: [0; MAX_PLY],
             move_stack: [Move::NONE; MAX_PLY],
             piece_stack: [6; MAX_PLY],
             excluded: [Move::NONE; MAX_PLY],
-            root_nodes: Box::new([[0; 64]; 64]),
+            root_nodes: box_zeroed(),
             pv_table: [[Move::NONE; MAX_PLY]; MAX_PLY],
             pv_len: [0; MAX_PLY],
             rep_history: Vec::with_capacity(512),
@@ -1289,15 +1305,19 @@ impl Searcher {
             for h in helpers.iter_mut() {
                 let stop_c = Arc::clone(&stop);
                 let nodes_c = Arc::clone(&tot_nodes);
-                handles.push(s.spawn(move || {
-                    h.search_worker(
-                        board,
-                        game_history,
-                        helper_limits,
-                        Some(stop_c),
-                        Some(nodes_c),
-                    )
-                }));
+                let jh = std::thread::Builder::new()
+                    .stack_size(8 * 1024 * 1024)
+                    .spawn_scoped(s, move || {
+                        h.search_worker(
+                            board,
+                            game_history,
+                            helper_limits,
+                            Some(stop_c),
+                            Some(nodes_c),
+                        )
+                    })
+                    .expect("failed to spawn SMP helper thread");
+                handles.push(jh);
             }
             let main_res = self.search_worker(
                 board,

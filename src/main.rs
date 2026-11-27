@@ -1,4 +1,4 @@
-//! Chatarunga — Zero-dependency Rust UCI chess engine with embedded 1B-position Pairwise-CReLU NNUE.
+//! Chatarunga — Zero-dependency Rust UCI chess engine with embedded 6.0B-step 16x1024 SCReLU NNUE.
 //!
 //! Usage:
 //!   `chatarunga`                          Run UCI protocol with embedded NNUE (default)
