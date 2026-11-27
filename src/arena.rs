@@ -15,28 +15,10 @@ use std::thread;
 
 #[derive(Clone)]
 pub enum PlayerSpec {
-    Classical {
-        tt_mb: usize,
-        smp_threads: usize,
-        params: SearchParams,
-    },
-    Nnue {
-        net: Arc<NnueNet>,
-        tt_mb: usize,
-        smp_threads: usize,
-        params: SearchParams,
-    },
-    DualNnue {
-        small: Arc<NnueNet>,
-        big: Arc<NnueNet>,
-        tt_mb: usize,
-        smp_threads: usize,
-        params: SearchParams,
-    },
-    ExternalUci {
-        cmd: String,
-        options: Vec<(String, String)>,
-    },
+    Classical { tt_mb: usize, smp_threads: usize, params: SearchParams },
+    Nnue { net: Arc<NnueNet>, tt_mb: usize, smp_threads: usize, params: SearchParams },
+    DualNnue { small: Arc<NnueNet>, big: Arc<NnueNet>, tt_mb: usize, smp_threads: usize, params: SearchParams },
+    ExternalUci { cmd: String, options: Vec<(String, String)> },
 }
 
 impl PlayerSpec {
@@ -44,29 +26,19 @@ impl PlayerSpec {
     /// (e.g. `nnue:nets/h100_v3.nnue:t=4`, `dual:nets/small_128_1b.nnue+nets/h100_v4.nnue:t=4`, `sf:3190:t=4`).
     pub fn parse(spec: &str) -> Result<Self, String> {
         let (base, smp_threads) = if let Some((head, tail)) = spec.rsplit_once(":t=") {
-            let t: usize = tail
-                .parse()
-                .map_err(|_| format!("invalid thread count in {spec}"))?;
+            let t: usize = tail.parse().map_err(|_| format!("invalid thread count in {spec}"))?;
             (head, t.clamp(1, 64))
         } else {
             (spec, 1usize)
         };
-        let default_tt = if smp_threads > 1 {
-            64 * smp_threads.min(4)
-        } else {
-            32
-        };
+        let default_tt = if smp_threads > 1 { 64 * smp_threads.min(4) } else { 32 };
         if base == "classical" || base == "hce" {
-            return Ok(PlayerSpec::Classical {
-                tt_mb: default_tt,
-                smp_threads,
-                params: SearchParams::default(),
-            });
+            return Ok(PlayerSpec::Classical { tt_mb: default_tt, smp_threads, params: SearchParams::default() });
         }
         if let Some(rest) = base.strip_prefix("dual:") {
-            let (small_p, big_p) = rest.split_once('+').ok_or_else(|| {
-                format!("dual spec requires dual:<small>+<big>[:t=N], got {spec}")
-            })?;
+            let (small_p, big_p) = rest
+                .split_once('+')
+                .ok_or_else(|| format!("dual spec requires dual:<small>+<big>[:t=N], got {spec}"))?;
             let small = Arc::new(NnueNet::load(small_p)?);
             let big = Arc::new(NnueNet::load(big_p)?);
             return Ok(PlayerSpec::DualNnue {
@@ -87,9 +59,7 @@ impl PlayerSpec {
             });
         }
         if let Some(rest) = base.strip_prefix("sf:") {
-            let elo: u32 = rest
-                .parse()
-                .map_err(|_| format!("invalid sf elo: {rest}"))?;
+            let elo: u32 = rest.parse().map_err(|_| format!("invalid sf elo: {rest}"))?;
             return Ok(PlayerSpec::ExternalUci {
                 cmd: "stockfish".to_string(),
                 options: vec![
@@ -103,17 +73,15 @@ impl PlayerSpec {
         if base == "sf" || base == "stockfish" {
             return Ok(PlayerSpec::ExternalUci {
                 cmd: "stockfish".to_string(),
-                options: vec![
-                    ("Threads".into(), smp_threads.to_string()),
-                    ("Hash".into(), default_tt.to_string()),
-                ],
+                options: vec![("Threads".into(), smp_threads.to_string()), ("Hash".into(), default_tt.to_string())],
             });
         }
         if let Some(path) = base.strip_prefix("uci:") {
-            return Ok(PlayerSpec::ExternalUci {
-                cmd: path.to_string(),
-                options: vec![],
-            });
+            let mut options = vec![("Hash".into(), default_tt.to_string())];
+            if smp_threads > 1 {
+                options.push(("Threads".into(), smp_threads.to_string()));
+            }
+            return Ok(PlayerSpec::ExternalUci { cmd: path.to_string(), options });
         }
         Err(format!("unknown player spec: {spec} (use classical | nnue:<path>[:t=N] | sf[:<elo>][:t=N] | uci:<bin>)"))
     }
@@ -154,11 +122,7 @@ impl UciProcess {
             .map_err(|e| format!("spawn {cmd}: {e}"))?;
         let stdin = child.stdin.take().unwrap();
         let stdout = BufReader::new(child.stdout.take().unwrap());
-        let mut p = Self {
-            child,
-            stdin,
-            stdout,
-        };
+        let mut p = Self { child, stdin, stdout };
         p.send("uci")?;
         p.wait_for("uciok")?;
         for (k, v) in options {
@@ -178,10 +142,7 @@ impl UciProcess {
         let mut line = String::new();
         loop {
             line.clear();
-            let n = self
-                .stdout
-                .read_line(&mut line)
-                .map_err(|e| format!("uci read: {e}"))?;
+            let n = self.stdout.read_line(&mut line).map_err(|e| format!("uci read: {e}"))?;
             if n == 0 {
                 return Err(format!("uci EOF waiting for {token}"));
             }
@@ -198,19 +159,11 @@ impl UciProcess {
         Ok(())
     }
 
-    fn choose(
-        &mut self,
-        start_fen: &str,
-        uci_moves: &[String],
-        tc: TimeControl,
-    ) -> Result<String, String> {
+    fn choose(&mut self, start_fen: &str, uci_moves: &[String], tc: TimeControl) -> Result<String, String> {
         if uci_moves.is_empty() {
             self.send(&format!("position fen {start_fen}"))?;
         } else {
-            self.send(&format!(
-                "position fen {start_fen} moves {}",
-                uci_moves.join(" ")
-            ))?;
+            self.send(&format!("position fen {start_fen} moves {}", uci_moves.join(" ")))?;
         }
         match tc {
             TimeControl::MoveTimeMs(ms) => self.send(&format!("go movetime {ms}"))?,
@@ -240,46 +193,26 @@ enum EngineSlot {
 impl EngineSlot {
     fn from_spec(spec: &PlayerSpec) -> Result<Self, String> {
         match spec {
-            PlayerSpec::Classical {
-                tt_mb,
-                smp_threads,
-                params,
-            } => {
+            PlayerSpec::Classical { tt_mb, smp_threads, params } => {
                 let mut s = Searcher::with_params(EvalMode::Classical, *tt_mb, *params);
                 s.set_threads(*smp_threads);
                 Ok(EngineSlot::Internal(s))
             }
-            PlayerSpec::Nnue {
-                net,
-                tt_mb,
-                smp_threads,
-                params,
-            } => {
+            PlayerSpec::Nnue { net, tt_mb, smp_threads, params } => {
                 let mut s = Searcher::with_params(EvalMode::Nnue(Arc::clone(net)), *tt_mb, *params);
                 s.set_threads(*smp_threads);
                 Ok(EngineSlot::Internal(s))
             }
-            PlayerSpec::DualNnue {
-                small,
-                big,
-                tt_mb,
-                smp_threads,
-                params,
-            } => {
+            PlayerSpec::DualNnue { small, big, tt_mb, smp_threads, params } => {
                 let mut s = Searcher::with_params(
-                    EvalMode::DualNnue {
-                        small: Arc::clone(small),
-                        big: Arc::clone(big),
-                    },
+                    EvalMode::DualNnue { small: Arc::clone(small), big: Arc::clone(big) },
                     *tt_mb,
                     *params,
                 );
                 s.set_threads(*smp_threads);
                 Ok(EngineSlot::Internal(s))
             }
-            PlayerSpec::ExternalUci { cmd, options } => {
-                Ok(EngineSlot::External(UciProcess::spawn(cmd, options)?))
-            }
+            PlayerSpec::ExternalUci { cmd, options } => Ok(EngineSlot::External(UciProcess::spawn(cmd, options)?)),
         }
     }
 
@@ -293,29 +226,15 @@ impl EngineSlot {
         }
     }
 
-    fn choose(
-        &mut self,
-        game: &Game,
-        start_fen: &str,
-        uci_moves: &[String],
-        tc: TimeControl,
-    ) -> Result<Move, String> {
+    fn choose(&mut self, game: &Game, start_fen: &str, uci_moves: &[String], tc: TimeControl) -> Result<Move, String> {
         match self {
             EngineSlot::Internal(s) => {
                 let limits = match tc {
-                    TimeControl::MoveTimeMs(ms) => SearchLimits {
-                        soft_ms: Some(ms),
-                        hard_ms: Some(ms),
-                        ..Default::default()
-                    },
-                    TimeControl::FixedNodes(n) => SearchLimits {
-                        max_nodes: n,
-                        ..Default::default()
-                    },
-                    TimeControl::FixedDepth(d) => SearchLimits {
-                        max_depth: d,
-                        ..Default::default()
-                    },
+                    TimeControl::MoveTimeMs(ms) => {
+                        SearchLimits { soft_ms: Some(ms), hard_ms: Some(ms), ..Default::default() }
+                    }
+                    TimeControl::FixedNodes(n) => SearchLimits { max_nodes: n, ..Default::default() },
+                    TimeControl::FixedDepth(d) => SearchLimits { max_depth: d, ..Default::default() },
                 };
                 Ok(s.search(&game.board, &game.history, limits).best_move)
             }
@@ -339,19 +258,9 @@ pub fn play_internal_game(
     black.clear();
     let mut game = Game::from_board(Board::from_fen(start_fen)?);
     let limits = match tc {
-        TimeControl::MoveTimeMs(ms) => SearchLimits {
-            soft_ms: Some(ms),
-            hard_ms: Some(ms),
-            ..Default::default()
-        },
-        TimeControl::FixedNodes(n) => SearchLimits {
-            max_nodes: n,
-            ..Default::default()
-        },
-        TimeControl::FixedDepth(d) => SearchLimits {
-            max_depth: d,
-            ..Default::default()
-        },
+        TimeControl::MoveTimeMs(ms) => SearchLimits { soft_ms: Some(ms), hard_ms: Some(ms), ..Default::default() },
+        TimeControl::FixedNodes(n) => SearchLimits { max_nodes: n, ..Default::default() },
+        TimeControl::FixedDepth(d) => SearchLimits { max_depth: d, ..Default::default() },
     };
     let mut adjudicate_win = 0i32;
     let mut adjudicate_draw = 0i32;
@@ -369,11 +278,7 @@ pub fn play_internal_game(
             return Ok(Outcome::Win(game.board.side.flip()));
         }
         // Fast win/draw adjudication for SPSA/internal games (standard Fishtest thresholds)
-        let white_score = if game.board.side == Color::White {
-            res.score
-        } else {
-            -res.score
-        };
+        let white_score = if game.board.side == Color::White { res.score } else { -res.score };
         if white_score >= 1000 {
             adjudicate_win = (adjudicate_win + 1).max(1);
             if adjudicate_win >= 6 {
@@ -429,10 +334,7 @@ fn play_one_game(
         uci_moves.push(m.to_uci());
         game.apply_move(m);
     }
-    Ok((
-        Outcome::Draw(crate::types::DrawReason::FiftyMove),
-        san_moves,
-    ))
+    Ok((Outcome::Draw(crate::types::DrawReason::FiftyMove), san_moves))
 }
 
 fn format_pgn_game(
@@ -449,15 +351,9 @@ fn format_pgn_game(
         Outcome::Draw(_) => "1/2-1/2",
     };
     let mut out = String::with_capacity(512);
-    out.push_str(&format!(
-        "[Event \"chess_ai Arena\"]\n[Round \"{round}\"]\n"
-    ));
-    out.push_str(&format!(
-        "[White \"{white_name}\"]\n[Black \"{black_name}\"]\n"
-    ));
-    out.push_str(&format!(
-        "[Result \"{res}\"]\n[SetUp \"1\"]\n[FEN \"{start_fen}\"]\n\n"
-    ));
+    out.push_str(&format!("[Event \"chess_ai Arena\"]\n[Round \"{round}\"]\n"));
+    out.push_str(&format!("[White \"{white_name}\"]\n[Black \"{black_name}\"]\n"));
+    out.push_str(&format!("[Result \"{res}\"]\n[SetUp \"1\"]\n[FEN \"{start_fen}\"]\n\n"));
     let start_board = Board::from_fen(start_fen).unwrap_or_else(|_| Board::startpos());
     let mut move_no = start_board.fullmove as usize;
     let mut white_to_move = start_board.side == Color::White;
@@ -517,9 +413,9 @@ pub fn run_match_with_book_pgn(
     let stop_flag = Arc::new(AtomicBool::new(false));
     let book_arc: Option<Arc<Vec<String>>> = book.map(|b| Arc::new(b.to_vec()));
     let pgn_file: Option<Arc<Mutex<std::fs::File>>> = match pgn_path {
-        Some(path) => Some(Arc::new(Mutex::new(
-            std::fs::File::create(path).map_err(|e| format!("create pgn {path}: {e}"))?,
-        ))),
+        Some(path) => {
+            Some(Arc::new(Mutex::new(std::fs::File::create(path).map_err(|e| format!("create pgn {path}: {e}"))?)))
+        }
         None => None,
     };
     let p1_label = Arc::new(p1_name.to_string());
@@ -559,22 +455,16 @@ pub fn run_match_with_book_pgn(
                     BOOK_FENS[(book_offset + pi) % BOOK_FENS.len()].to_string()
                 };
                 let (o1, san1) = play_one_game(&mut e1, &mut e2, &fen_str, tc1, tc2)?;
-                let g2 = if pi * 2 + 1 < games {
-                    Some(play_one_game(&mut e2, &mut e1, &fen_str, tc2, tc1)?)
-                } else {
-                    None
-                };
+                let g2 =
+                    if pi * 2 + 1 < games { Some(play_one_game(&mut e2, &mut e1, &fen_str, tc2, tc1)?) } else { None };
 
                 if let Some(pf) = &pgn_file {
                     let mut f = pf.lock().unwrap();
-                    let _ = f.write_all(
-                        format_pgn_game(pi * 2 + 1, &p1_label, &p2_label, &fen_str, o1, &san1)
-                            .as_bytes(),
-                    );
+                    let _ =
+                        f.write_all(format_pgn_game(pi * 2 + 1, &p1_label, &p2_label, &fen_str, o1, &san1).as_bytes());
                     if let Some((o2, ref san2)) = g2 {
                         let _ = f.write_all(
-                            format_pgn_game(pi * 2 + 2, &p2_label, &p1_label, &fen_str, o2, san2)
-                                .as_bytes(),
+                            format_pgn_game(pi * 2 + 2, &p2_label, &p1_label, &fen_str, o2, san2).as_bytes(),
                         );
                     }
                     let _ = f.flush();
@@ -602,10 +492,7 @@ pub fn run_match_with_book_pgn(
                         stop_flag.store(true, Ordering::Relaxed);
                     }
                 }
-                if verbose
-                    && (st.total() % 20 == 0
-                        || st.total() == games as u64
-                        || stop_flag.load(Ordering::Relaxed))
+                if verbose && (st.total() % 20 == 0 || st.total() == games as u64 || stop_flag.load(Ordering::Relaxed))
                 {
                     let (elo, ci, los) = st.elo_ci();
                     eprintln!(
@@ -627,8 +514,7 @@ pub fn run_match_with_book_pgn(
     }
 
     for h in handles {
-        h.join()
-            .map_err(|_| "worker thread panicked".to_string())??;
+        h.join().map_err(|_| "worker thread panicked".to_string())??;
     }
     let final_stats = *stats.lock().unwrap();
     Ok(final_stats)
@@ -648,21 +534,7 @@ pub fn run_match_with_book(
     sprt: Option<SprtConfig>,
     verbose: bool,
 ) -> Result<MatchStats, String> {
-    run_match_with_book_pgn(
-        p1,
-        p2,
-        "p1",
-        "p2",
-        games,
-        tc1,
-        tc2,
-        threads,
-        book,
-        book_offset,
-        sprt,
-        None,
-        verbose,
-    )
+    run_match_with_book_pgn(p1, p2, "p1", "p2", games, tc1, tc2, threads, book, book_offset, sprt, None, verbose)
 }
 
 /// Backward-compatible wrapper using the built-in 60-opening ECO book.

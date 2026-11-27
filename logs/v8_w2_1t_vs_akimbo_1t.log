@@ -1,0 +1,2 @@
+Match: nnue:nets/h100_v7_screlu_1024_6b.nnue vs uci:/tmp/ccrl_rivals/akimbo/target/release/akimbo | 60 games | tc1=MoveTimeMs(100) tc2=MoveTimeMs(100) | 10 threads | book=built-in 60 ECO
+RESULT nnue:nets/h100_v7_screlu_1024_6b.nnue vs uci:/tmp/ccrl_rivals/akimbo/target/release/akimbo: +13 =34 -13 (penta [2, 6, 13, 8, 1]) | score 50.00% | Elo -0.0 ± 58.4 | LOS 50.0%

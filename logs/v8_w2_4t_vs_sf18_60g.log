@@ -1,0 +1,2 @@
+Match: nnue:nets/h100_v7_screlu_1024_6b.nnue:t=4 vs sf | 60 games | tc1=MoveTimeMs(150) tc2=MoveTimeMs(150) | 3 threads | book=built-in 60 ECO
+RESULT nnue:nets/h100_v7_screlu_1024_6b.nnue:t=4 vs sf: +4 =36 -20 (penta [1, 16, 11, 2, 0]) | score 36.67% | Elo -94.9 ± 45.1 | LOS 0.0%

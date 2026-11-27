@@ -1,0 +1,2 @@
+Match: nnue:nets/h200_v8_asym16_1024_s1s2_10b.nnue vs nnue:nets/h100_v7_screlu_1024_6b.nnue | 120 games | tc1=MoveTimeMs(50) tc2=MoveTimeMs(50) | 10 threads | book=241670 FENs
+RESULT nnue:nets/h200_v8_asym16_1024_s1s2_10b.nnue vs nnue:nets/h100_v7_screlu_1024_6b.nnue: +38 =59 -23 (penta [1, 4, 37, 15, 3]) | score 56.25% | Elo +43.7 ± 32.3 | LOS 99.6%

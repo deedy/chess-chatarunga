@@ -13,10 +13,9 @@ use crate::bitboard::{
 };
 use crate::board::{mb_color, mb_piece, Board, EMPTY_MAILBOX};
 use crate::types::{
-    sq_file, sq_flip, sq_mirror, sq_rank, Color, Move, Piece, Square, A1, A8, D1, D8, F1, F8,
-    FLAG_CAPTURE, FLAG_CASTLE_K, FLAG_CASTLE_Q, FLAG_DOUBLE_PUSH, FLAG_EP, FLAG_PROMO_B,
-    FLAG_PROMO_CAP_B, FLAG_PROMO_CAP_N, FLAG_PROMO_CAP_Q, FLAG_PROMO_CAP_R, FLAG_PROMO_N,
-    FLAG_PROMO_Q, FLAG_PROMO_R, FLAG_QUIET, H1, H8,
+    sq_file, sq_flip, sq_mirror, sq_rank, Color, Move, Piece, Square, A1, A8, D1, D8, F1, F8, FLAG_CAPTURE,
+    FLAG_CASTLE_K, FLAG_CASTLE_Q, FLAG_DOUBLE_PUSH, FLAG_EP, FLAG_PROMO_B, FLAG_PROMO_CAP_B, FLAG_PROMO_CAP_N,
+    FLAG_PROMO_CAP_Q, FLAG_PROMO_CAP_R, FLAG_PROMO_N, FLAG_PROMO_Q, FLAG_PROMO_R, FLAG_QUIET, H1, H8,
 };
 use std::fs::File;
 use std::io::{BufReader, BufWriter, Read, Write};
@@ -26,6 +25,7 @@ pub const MAGIC: &[u8; 4] = b"CHNN";
 pub const VERSION_SCRELU: u32 = 1;
 pub const VERSION_PAIRWISE: u32 = 2;
 pub const VERSION_DEEP_THREATS: u32 = 3;
+pub const VERSION_SCRELU_ASYM: u32 = 4;
 pub const DEFAULT_QA: i32 = 255;
 pub const DEFAULT_QB: i32 = 64;
 pub const DEFAULT_SCALE: i32 = 400;
@@ -56,22 +56,38 @@ const BUCKET_8: [usize; 32] = [
     7, 7, 7, 7,
 ];
 
+/// Asymmetric 16-bucket layout (CHNN v4): dedicated bucket for EVERY square on ranks 1-2 (where
+/// kings spend >92% of chess games), wing/center pairs on ranks 3-8. Same memory & NPS as uniform 16.
+#[rustfmt::skip]
+const BUCKET_16_ASYM: [usize; 32] = [
+     0,  1,  2,  3,
+     4,  5,  6,  7,
+     8,  8,  9,  9,
+    10, 10, 11, 11,
+    12, 12, 13, 13,
+    12, 12, 13, 13,
+    14, 14, 15, 15,
+    14, 14, 15, 15,
+];
+
 #[inline(always)]
 pub fn king_bucket_and_mirror(king_buckets: usize, persp: Color, ksq: Square) -> (usize, bool) {
+    king_bucket_and_mirror_v(VERSION_SCRELU, king_buckets, persp, ksq)
+}
+
+#[inline(always)]
+pub fn king_bucket_and_mirror_v(version: u32, king_buckets: usize, persp: Color, ksq: Square) -> (usize, bool) {
     if king_buckets <= 1 {
         return (0, false);
     }
-    let ksq_p = if persp == Color::White {
-        ksq
-    } else {
-        sq_flip(ksq)
-    };
+    let ksq_p = if persp == Color::White { ksq } else { sq_flip(ksq) };
     let mirror = sq_file(ksq_p) >= 4;
     let km = if mirror { sq_mirror(ksq_p) } else { ksq_p };
     let idx32 = (sq_rank(km) as usize) * 4 + (sq_file(km) as usize);
     let b = match king_buckets {
         4 => BUCKET_4[idx32],
         8 => BUCKET_8[idx32],
+        16 if version == VERSION_SCRELU_ASYM => BUCKET_16_ASYM[idx32],
         16 => (sq_rank(km) as usize / 2) * 4 + (sq_file(km) as usize),
         _ => idx32 % king_buckets,
     };
@@ -87,12 +103,21 @@ pub fn feature_index(
     piece: Piece,
     sq: Square,
 ) -> usize {
-    let (kb, mirror) = king_bucket_and_mirror(king_buckets, persp, ksq);
-    let mut sq_p = if persp == Color::White {
-        sq
-    } else {
-        sq_flip(sq)
-    };
+    feature_index_v(VERSION_SCRELU, king_buckets, persp, ksq, piece_color, piece, sq)
+}
+
+#[inline(always)]
+pub fn feature_index_v(
+    version: u32,
+    king_buckets: usize,
+    persp: Color,
+    ksq: Square,
+    piece_color: Color,
+    piece: Piece,
+    sq: Square,
+) -> usize {
+    let (kb, mirror) = king_bucket_and_mirror_v(version, king_buckets, persp, ksq);
+    let mut sq_p = if persp == Color::White { sq } else { sq_flip(sq) };
     if mirror {
         sq_p = sq_mirror(sq_p);
     }
@@ -101,19 +126,8 @@ pub fn feature_index(
 }
 
 #[inline(always)]
-pub fn feature_index_bm(
-    kb: usize,
-    mirror: bool,
-    persp: Color,
-    piece_color: Color,
-    piece: Piece,
-    sq: Square,
-) -> usize {
-    let mut sq_p = if persp == Color::White {
-        sq
-    } else {
-        sq_flip(sq)
-    };
+pub fn feature_index_bm(kb: usize, mirror: bool, persp: Color, piece_color: Color, piece: Piece, sq: Square) -> usize {
+    let mut sq_p = if persp == Color::White { sq } else { sq_flip(sq) };
     if mirror {
         sq_p = sq_mirror(sq_p);
     }
@@ -229,8 +243,7 @@ pub fn pack_l1_w_transposed(l1_w: &[i8], ob: usize, hl: usize) -> Vec<i8> {
             let dst_base = (b * chunks + c) * 64;
             for j in 0..16 {
                 let src_base = (b * 16 + j) * hl + c * 4;
-                out[dst_base + j * 4..dst_base + j * 4 + 4]
-                    .copy_from_slice(&l1_w[src_base..src_base + 4]);
+                out[dst_base + j * 4..dst_base + j * 4 + 4].copy_from_slice(&l1_w[src_base..src_base + 4]);
             }
         }
     }
@@ -259,9 +272,7 @@ impl NnueNet {
         w.write_all(&self.qb.to_le_bytes())?;
         w.write_all(&self.scale.to_le_bytes())?;
         if self.version == VERSION_DEEP_THREATS {
-            let flags: u32 = u32::from(self.has_threats)
-                | ((self.l1_size as u32) << 8)
-                | ((self.l2_size as u32) << 16);
+            let flags: u32 = u32::from(self.has_threats) | ((self.l1_size as u32) << 8) | ((self.l2_size as u32) << 16);
             w.write_all(&flags.to_le_bytes())?;
         }
         for &v in &self.ft_w {
@@ -301,8 +312,7 @@ impl NnueNet {
     }
 
     pub fn load<P: AsRef<Path>>(path: P) -> Result<Self, String> {
-        let f = File::open(path.as_ref())
-            .map_err(|e| format!("open {}: {e}", path.as_ref().display()))?;
+        let f = File::open(path.as_ref()).map_err(|e| format!("open {}: {e}", path.as_ref().display()))?;
         let mut r = BufReader::new(f);
         Self::from_reader(&mut r)
     }
@@ -314,8 +324,7 @@ impl NnueNet {
 
     pub fn from_reader<R: Read>(r: &mut R) -> Result<Self, String> {
         let mut hdr = [0u8; 32];
-        r.read_exact(&mut hdr)
-            .map_err(|e| format!("read header: {e}"))?;
+        r.read_exact(&mut hdr).map_err(|e| format!("read header: {e}"))?;
         if &hdr[0..4] != MAGIC {
             return Err("invalid NNUE magic".to_string());
         }
@@ -323,6 +332,7 @@ impl NnueNet {
         if version != VERSION_SCRELU
             && version != VERSION_PAIRWISE
             && version != VERSION_DEEP_THREATS
+            && version != VERSION_SCRELU_ASYM
         {
             return Err(format!("unsupported NNUE version {version}"));
         }
@@ -335,16 +345,13 @@ impl NnueNet {
 
         if version == VERSION_DEEP_THREATS {
             let mut fbuf = [0u8; 4];
-            r.read_exact(&mut fbuf)
-                .map_err(|e| format!("read v3 flags: {e}"))?;
+            r.read_exact(&mut fbuf).map_err(|e| format!("read v3 flags: {e}"))?;
             let flags = u32::from_le_bytes(fbuf);
             let has_threats = (flags & 1) != 0;
             let l1_size = ((flags >> 8) & 0xFF) as usize;
             let l2_size = ((flags >> 16) & 0xFF) as usize;
             if l1_size != 16 || l2_size != 32 {
-                return Err(format!(
-                    "unsupported v3 head dims l1={l1_size} l2={l2_size} (expected 16, 32)"
-                ));
+                return Err(format!("unsupported v3 head dims l1={l1_size} l2={l2_size} (expected 16, 32)"));
             }
             let n_ft_rows = (king_buckets + if has_threats { 3 } else { 0 }) * 768;
             let ft_w = read_i16_vec(r, n_ft_rows * hl)?;
@@ -382,11 +389,7 @@ impl NnueNet {
         }
 
         let n_ft_w = king_buckets * 768 * hl;
-        let n_out_w = if version == VERSION_PAIRWISE {
-            output_buckets * hl
-        } else {
-            output_buckets * 2 * hl
-        };
+        let n_out_w = if version == VERSION_PAIRWISE { output_buckets * hl } else { output_buckets * 2 * hl };
         let ft_w = read_i16_vec(r, n_ft_w)?;
         let ft_b = read_i16_vec(r, hl)?;
         let out_w = read_i16_vec(r, n_out_w)?;
@@ -431,7 +434,7 @@ impl NnueNet {
             let sq = pop_lsb(&mut occ);
             let v = b.mailbox[sq as usize];
             debug_assert!(v != EMPTY_MAILBOX);
-            let feat = feature_index(self.king_buckets, persp, ksq, mb_color(v), mb_piece(v), sq);
+            let feat = feature_index_v(self.version, self.king_buckets, persp, ksq, mb_color(v), mb_piece(v), sq);
             vec_add_assign(acc, self.ft_row(feat));
         }
     }
@@ -445,10 +448,8 @@ impl NnueNet {
         if threatened == 0 {
             return;
         }
-        let (_, mir_w) =
-            king_bucket_and_mirror(self.king_buckets, Color::White, b.king_sq(Color::White));
-        let (_, mir_b) =
-            king_bucket_and_mirror(self.king_buckets, Color::Black, b.king_sq(Color::Black));
+        let (_, mir_w) = king_bucket_and_mirror(self.king_buckets, Color::White, b.king_sq(Color::White));
+        let (_, mir_b) = king_bucket_and_mirror(self.king_buckets, Color::Black, b.king_sq(Color::Black));
         let threat_off = self.king_buckets * 768;
 
         while threatened != 0 {
@@ -515,14 +516,12 @@ impl NnueNet {
             let base = ob * hl;
             let w_stm = &self.out_w[base..base + half];
             let w_opp = &self.out_w[base + half..base + hl];
-            pairwise_dot_simd(stm_acc, w_stm, self.qa as i16)
-                + pairwise_dot_simd(opp_acc, w_opp, self.qa as i16)
+            pairwise_dot_simd(stm_acc, w_stm, self.qa as i16) + pairwise_dot_simd(opp_acc, w_opp, self.qa as i16)
         } else {
             let base = ob * 2 * hl;
             let w_stm = &self.out_w[base..base + hl];
             let w_opp = &self.out_w[base + hl..base + 2 * hl];
-            screlu_dot_simd(stm_acc, w_stm, self.qa as i16)
-                + screlu_dot_simd(opp_acc, w_opp, self.qa as i16)
+            screlu_dot_simd(stm_acc, w_stm, self.qa as i16) + screlu_dot_simd(opp_acc, w_opp, self.qa as i16)
         };
         let total = sum / self.qa as i64 + self.out_b[ob] as i64;
         ((total * self.scale as i64) / (self.qa as i64 * self.qb as i64)) as i32
@@ -539,14 +538,12 @@ impl NnueNet {
             let base = ob * hl;
             let w_stm = &self.out_w[base..base + half];
             let w_opp = &self.out_w[base + half..base + hl];
-            pairwise_dot_scalar(stm_acc, w_stm, self.qa as i16)
-                + pairwise_dot_scalar(opp_acc, w_opp, self.qa as i16)
+            pairwise_dot_scalar(stm_acc, w_stm, self.qa as i16) + pairwise_dot_scalar(opp_acc, w_opp, self.qa as i16)
         } else {
             let base = ob * 2 * hl;
             let w_stm = &self.out_w[base..base + hl];
             let w_opp = &self.out_w[base + hl..base + 2 * hl];
-            screlu_dot_scalar(stm_acc, w_stm, self.qa as i16)
-                + screlu_dot_scalar(opp_acc, w_opp, self.qa as i16)
+            screlu_dot_scalar(stm_acc, w_stm, self.qa as i16) + screlu_dot_scalar(opp_acc, w_opp, self.qa as i16)
         };
         let total = sum / self.qa as i64 + self.out_b[ob] as i64;
         ((total * self.scale as i64) / (self.qa as i64 * self.qb as i64)) as i32
@@ -562,8 +559,7 @@ impl NnueNet {
         #[repr(align(16))]
         struct AlignedI8([std::mem::MaybeUninit<i8>; 2048]);
         let mut ft_buf = AlignedI8([std::mem::MaybeUninit::uninit(); 2048]);
-        let ft_slice =
-            unsafe { std::slice::from_raw_parts_mut(ft_buf.0.as_mut_ptr() as *mut i8, hl) };
+        let ft_slice = unsafe { std::slice::from_raw_parts_mut(ft_buf.0.as_mut_ptr() as *mut i8, hl) };
         pairwise_quantize_simd(stm_acc, &mut ft_slice[..half], self.qa as i16);
         pairwise_quantize_simd(opp_acc, &mut ft_slice[half..hl], self.qa as i16);
         self.eval_v3_from_ft_q(ft_slice, ob)
@@ -667,15 +663,13 @@ impl NnueNet {
 
 fn read_i8_vec<R: Read>(r: &mut R, n: usize) -> Result<Vec<i8>, String> {
     let mut bytes = vec![0u8; n];
-    r.read_exact(&mut bytes)
-        .map_err(|e| format!("read i8[{n}]: {e}"))?;
+    r.read_exact(&mut bytes).map_err(|e| format!("read i8[{n}]: {e}"))?;
     Ok(bytes.into_iter().map(|b| b as i8).collect())
 }
 
 fn read_i16_vec<R: Read>(r: &mut R, n: usize) -> Result<Vec<i16>, String> {
     let mut bytes = vec![0u8; n * 2];
-    r.read_exact(&mut bytes)
-        .map_err(|e| format!("read i16[{n}]: {e}"))?;
+    r.read_exact(&mut bytes).map_err(|e| format!("read i16[{n}]: {e}"))?;
     let mut out = Vec::with_capacity(n);
     for chunk in bytes.chunks_exact(2) {
         out.push(i16::from_le_bytes([chunk[0], chunk[1]]));
@@ -685,8 +679,7 @@ fn read_i16_vec<R: Read>(r: &mut R, n: usize) -> Result<Vec<i16>, String> {
 
 fn read_i32_vec<R: Read>(r: &mut R, n: usize) -> Result<Vec<i32>, String> {
     let mut bytes = vec![0u8; n * 4];
-    r.read_exact(&mut bytes)
-        .map_err(|e| format!("read i32[{n}]: {e}"))?;
+    r.read_exact(&mut bytes).map_err(|e| format!("read i32[{n}]: {e}"))?;
     let mut out = Vec::with_capacity(n);
     for chunk in bytes.chunks_exact(4) {
         out.push(i32::from_le_bytes([chunk[0], chunk[1], chunk[2], chunk[3]]));
@@ -724,11 +717,7 @@ struct ThreatState {
 
 impl Default for ThreatState {
     fn default() -> Self {
-        Self {
-            computed: false,
-            mask: 0,
-            codes: [0; 64],
-        }
+        Self { computed: false, mask: 0, codes: [0; 64] }
     }
 }
 
@@ -755,37 +744,17 @@ fn compute_threat_state(b: &Board) -> ThreatState {
         });
         codes[sq as usize] = (v << 3) | (lesser << 2) | (defended << 1) | 1;
     }
-    ThreatState {
-        computed: true,
-        mask,
-        codes,
-    }
+    ThreatState { computed: true, mask, codes }
 }
 
 #[inline(always)]
-fn apply_threat_code(
-    net: &NnueNet,
-    acc: &mut [i16],
-    persp: Color,
-    mirror: bool,
-    sq: Square,
-    code: u8,
-    add: bool,
-) {
+fn apply_threat_code(net: &NnueNet, acc: &mut [i16], persp: Color, mirror: bool, sq: Square, code: u8, add: bool) {
     let v = code >> 3;
     let col = mb_color(v);
     let piece = mb_piece(v);
     let rel_c = usize::from(col != persp);
-    let sq_p_raw = if persp == Color::White {
-        sq
-    } else {
-        sq_flip(sq)
-    };
-    let sq_p = if mirror {
-        sq_mirror(sq_p_raw)
-    } else {
-        sq_p_raw
-    } as usize;
+    let sq_p_raw = if persp == Color::White { sq } else { sq_flip(sq) };
+    let sq_p = if mirror { sq_mirror(sq_p_raw) } else { sq_p_raw } as usize;
     let f_base = rel_c * 384 + piece.idx() * 64 + sq_p;
     let threat_off = net.king_buckets * 768;
     let defended = usize::from((code & 2) != 0);
@@ -840,11 +809,7 @@ impl AccStack {
         self.finny.clear();
         self.finny.reserve(slots);
         for _ in 0..slots {
-            self.finny.push(FinnyEntry {
-                pieces: [0; 6],
-                colors: [0; 2],
-                acc: net.ft_b.clone(),
-            });
+            self.finny.push(FinnyEntry { pieces: [0; 6], colors: [0; 2], acc: net.ft_b.clone() });
         }
     }
 
@@ -882,16 +847,12 @@ impl AccStack {
     fn finny_refresh(&mut self, net: &NnueNet, ply: usize, persp: Color) {
         let b = self.boards[ply];
         let ksq = b.king_sq(persp);
-        let (kb, mirror) = king_bucket_and_mirror(net.king_buckets, persp, ksq);
+        let (kb, mirror) = king_bucket_and_mirror_v(net.version, net.king_buckets, persp, ksq);
         let slot = (persp.idx() * net.king_buckets + kb) * 2 + usize::from(mirror);
         let entry = &mut self.finny[slot];
 
         for c_idx in 0..2 {
-            let color = if c_idx == 0 {
-                Color::White
-            } else {
-                Color::Black
-            };
+            let color = if c_idx == 0 { Color::White } else { Color::Black };
             for p_idx in 0..6 {
                 let piece = Piece::from_u8(p_idx as u8);
                 let prev_bb = entry.colors[c_idx] & entry.pieces[p_idx];
@@ -1000,8 +961,8 @@ impl AccStack {
                 && d.moved_color as usize == ci
                 && d.moved_piece == Piece::King as u8
             {
-                let b_prev = king_bucket_and_mirror(net.king_buckets, persp, d.prev_ksq[ci]);
-                let b_next = king_bucket_and_mirror(net.king_buckets, persp, d.ksq[ci]);
+                let b_prev = king_bucket_and_mirror_v(net.version, net.king_buckets, persp, d.prev_ksq[ci]);
+                let b_next = king_bucket_and_mirror_v(net.version, net.king_buckets, persp, d.ksq[ci]);
                 if b_prev != b_next {
                     needs_refresh = true;
                     break;
@@ -1034,8 +995,7 @@ impl AccStack {
                     let curr_ts = self.threat_states[p];
                     let mut diff = prev_ts.mask | curr_ts.mask;
                     if diff != 0 {
-                        let (_, mirror) =
-                            king_bucket_and_mirror(net.king_buckets, persp, d.ksq[ci]);
+                        let (_, mirror) = king_bucket_and_mirror(net.king_buckets, persp, d.ksq[ci]);
                         let acc = self.slice_mut(p, ci);
                         while diff != 0 {
                             let sq = pop_lsb(&mut diff);
@@ -1061,108 +1021,65 @@ impl AccStack {
     fn apply_delta(&mut self, net: &NnueNet, ply: usize, persp: Color, d: MoveDelta) {
         let ci = persp.idx();
         let ksq = d.ksq[ci];
-        let us = if d.moved_color == 0 {
-            Color::White
-        } else {
-            Color::Black
-        };
+        let us = if d.moved_color == 0 { Color::White } else { Color::Black };
         let them = us.flip();
         let moved_p = Piece::from_u8(d.moved_piece);
         let from = d.m.from();
         let to = d.m.to();
         let flag = d.m.flag();
+        let ver = net.version;
         let kb = net.king_buckets;
 
         let (src, dst) = self.split_prev_curr(ply, ci);
         match flag {
             FLAG_QUIET | FLAG_DOUBLE_PUSH => {
-                let sub = feature_index(kb, persp, ksq, us, moved_p, from);
-                let add = feature_index(kb, persp, ksq, us, moved_p, to);
+                let sub = feature_index_v(ver, kb, persp, ksq, us, moved_p, from);
+                let add = feature_index_v(ver, kb, persp, ksq, us, moved_p, to);
                 vec_add1_sub1(dst, src, net.ft_row(add), net.ft_row(sub));
             }
             FLAG_CAPTURE => {
                 let cap_p = Piece::from_u8(d.cap_piece);
-                let sub1 = feature_index(kb, persp, ksq, us, moved_p, from);
-                let sub2 = feature_index(kb, persp, ksq, them, cap_p, to);
-                let add1 = feature_index(kb, persp, ksq, us, moved_p, to);
-                vec_add1_sub2(
-                    dst,
-                    src,
-                    net.ft_row(add1),
-                    net.ft_row(sub1),
-                    net.ft_row(sub2),
-                );
+                let sub1 = feature_index_v(ver, kb, persp, ksq, us, moved_p, from);
+                let sub2 = feature_index_v(ver, kb, persp, ksq, them, cap_p, to);
+                let add1 = feature_index_v(ver, kb, persp, ksq, us, moved_p, to);
+                vec_add1_sub2(dst, src, net.ft_row(add1), net.ft_row(sub1), net.ft_row(sub2));
             }
             FLAG_EP => {
                 let cap_sq = if us == Color::White { to - 8 } else { to + 8 };
-                let sub1 = feature_index(kb, persp, ksq, us, Piece::Pawn, from);
-                let sub2 = feature_index(kb, persp, ksq, them, Piece::Pawn, cap_sq);
-                let add1 = feature_index(kb, persp, ksq, us, Piece::Pawn, to);
-                vec_add1_sub2(
-                    dst,
-                    src,
-                    net.ft_row(add1),
-                    net.ft_row(sub1),
-                    net.ft_row(sub2),
-                );
+                let sub1 = feature_index_v(ver, kb, persp, ksq, us, Piece::Pawn, from);
+                let sub2 = feature_index_v(ver, kb, persp, ksq, them, Piece::Pawn, cap_sq);
+                let add1 = feature_index_v(ver, kb, persp, ksq, us, Piece::Pawn, to);
+                vec_add1_sub2(dst, src, net.ft_row(add1), net.ft_row(sub1), net.ft_row(sub2));
             }
             FLAG_CASTLE_K => {
-                let (r_from, r_to) = if us == Color::White {
-                    (H1, F1)
-                } else {
-                    (H8, F8)
-                };
-                let sub1 = feature_index(kb, persp, ksq, us, Piece::King, from);
-                let sub2 = feature_index(kb, persp, ksq, us, Piece::Rook, r_from);
-                let add1 = feature_index(kb, persp, ksq, us, Piece::King, to);
-                let add2 = feature_index(kb, persp, ksq, us, Piece::Rook, r_to);
-                vec_add2_sub2(
-                    dst,
-                    src,
-                    net.ft_row(add1),
-                    net.ft_row(add2),
-                    net.ft_row(sub1),
-                    net.ft_row(sub2),
-                );
+                let (r_from, r_to) = if us == Color::White { (H1, F1) } else { (H8, F8) };
+                let sub1 = feature_index_v(ver, kb, persp, ksq, us, Piece::King, from);
+                let sub2 = feature_index_v(ver, kb, persp, ksq, us, Piece::Rook, r_from);
+                let add1 = feature_index_v(ver, kb, persp, ksq, us, Piece::King, to);
+                let add2 = feature_index_v(ver, kb, persp, ksq, us, Piece::Rook, r_to);
+                vec_add2_sub2(dst, src, net.ft_row(add1), net.ft_row(add2), net.ft_row(sub1), net.ft_row(sub2));
             }
             FLAG_CASTLE_Q => {
-                let (r_from, r_to) = if us == Color::White {
-                    (A1, D1)
-                } else {
-                    (A8, D8)
-                };
-                let sub1 = feature_index(kb, persp, ksq, us, Piece::King, from);
-                let sub2 = feature_index(kb, persp, ksq, us, Piece::Rook, r_from);
-                let add1 = feature_index(kb, persp, ksq, us, Piece::King, to);
-                let add2 = feature_index(kb, persp, ksq, us, Piece::Rook, r_to);
-                vec_add2_sub2(
-                    dst,
-                    src,
-                    net.ft_row(add1),
-                    net.ft_row(add2),
-                    net.ft_row(sub1),
-                    net.ft_row(sub2),
-                );
+                let (r_from, r_to) = if us == Color::White { (A1, D1) } else { (A8, D8) };
+                let sub1 = feature_index_v(ver, kb, persp, ksq, us, Piece::King, from);
+                let sub2 = feature_index_v(ver, kb, persp, ksq, us, Piece::Rook, r_from);
+                let add1 = feature_index_v(ver, kb, persp, ksq, us, Piece::King, to);
+                let add2 = feature_index_v(ver, kb, persp, ksq, us, Piece::Rook, r_to);
+                vec_add2_sub2(dst, src, net.ft_row(add1), net.ft_row(add2), net.ft_row(sub1), net.ft_row(sub2));
             }
             FLAG_PROMO_N | FLAG_PROMO_B | FLAG_PROMO_R | FLAG_PROMO_Q => {
                 let promo = d.m.promo_piece().unwrap();
-                let sub = feature_index(kb, persp, ksq, us, Piece::Pawn, from);
-                let add = feature_index(kb, persp, ksq, us, promo, to);
+                let sub = feature_index_v(ver, kb, persp, ksq, us, Piece::Pawn, from);
+                let add = feature_index_v(ver, kb, persp, ksq, us, promo, to);
                 vec_add1_sub1(dst, src, net.ft_row(add), net.ft_row(sub));
             }
             FLAG_PROMO_CAP_N | FLAG_PROMO_CAP_B | FLAG_PROMO_CAP_R | FLAG_PROMO_CAP_Q => {
                 let promo = d.m.promo_piece().unwrap();
                 let cap_p = Piece::from_u8(d.cap_piece);
-                let sub1 = feature_index(kb, persp, ksq, us, Piece::Pawn, from);
-                let sub2 = feature_index(kb, persp, ksq, them, cap_p, to);
-                let add1 = feature_index(kb, persp, ksq, us, promo, to);
-                vec_add1_sub2(
-                    dst,
-                    src,
-                    net.ft_row(add1),
-                    net.ft_row(sub1),
-                    net.ft_row(sub2),
-                );
+                let sub1 = feature_index_v(ver, kb, persp, ksq, us, Piece::Pawn, from);
+                let sub2 = feature_index_v(ver, kb, persp, ksq, them, cap_p, to);
+                let add1 = feature_index_v(ver, kb, persp, ksq, us, promo, to);
+                vec_add1_sub2(dst, src, net.ft_row(add1), net.ft_row(sub1), net.ft_row(sub2));
             }
             _ => unreachable!(),
         }
@@ -1197,10 +1114,7 @@ pub fn vec_add_assign(dst: &mut [i16], src: &[i16]) {
             i += 32;
         }
         while i + 8 <= n {
-            vst1q_s16(
-                dp.add(i),
-                vaddq_s16(vld1q_s16(dp.add(i)), vld1q_s16(sp.add(i))),
-            );
+            vst1q_s16(dp.add(i), vaddq_s16(vld1q_s16(dp.add(i)), vld1q_s16(sp.add(i))));
             i += 8;
         }
         while i < n {
@@ -1219,23 +1133,14 @@ pub fn vec_add_assign(dst: &mut [i16], src: &[i16]) {
             let b0 = _mm256_loadu_si256(src.as_ptr().add(i) as *const __m256i);
             let a1 = _mm256_loadu_si256(dst.as_ptr().add(i + 16) as *const __m256i);
             let b1 = _mm256_loadu_si256(src.as_ptr().add(i + 16) as *const __m256i);
-            _mm256_storeu_si256(
-                dst.as_mut_ptr().add(i) as *mut __m256i,
-                _mm256_add_epi16(a0, b0),
-            );
-            _mm256_storeu_si256(
-                dst.as_mut_ptr().add(i + 16) as *mut __m256i,
-                _mm256_add_epi16(a1, b1),
-            );
+            _mm256_storeu_si256(dst.as_mut_ptr().add(i) as *mut __m256i, _mm256_add_epi16(a0, b0));
+            _mm256_storeu_si256(dst.as_mut_ptr().add(i + 16) as *mut __m256i, _mm256_add_epi16(a1, b1));
             i += 32;
         }
         while i + 16 <= n {
             let a = _mm256_loadu_si256(dst.as_ptr().add(i) as *const __m256i);
             let b = _mm256_loadu_si256(src.as_ptr().add(i) as *const __m256i);
-            _mm256_storeu_si256(
-                dst.as_mut_ptr().add(i) as *mut __m256i,
-                _mm256_add_epi16(a, b),
-            );
+            _mm256_storeu_si256(dst.as_mut_ptr().add(i) as *mut __m256i, _mm256_add_epi16(a, b));
             i += 16;
         }
         while i < n {
@@ -1276,10 +1181,7 @@ pub fn vec_sub_assign(dst: &mut [i16], src: &[i16]) {
             i += 32;
         }
         while i + 8 <= n {
-            vst1q_s16(
-                dp.add(i),
-                vsubq_s16(vld1q_s16(dp.add(i)), vld1q_s16(sp.add(i))),
-            );
+            vst1q_s16(dp.add(i), vsubq_s16(vld1q_s16(dp.add(i)), vld1q_s16(sp.add(i))));
             i += 8;
         }
         while i < n {
@@ -1298,23 +1200,14 @@ pub fn vec_sub_assign(dst: &mut [i16], src: &[i16]) {
             let b0 = _mm256_loadu_si256(src.as_ptr().add(i) as *const __m256i);
             let a1 = _mm256_loadu_si256(dst.as_ptr().add(i + 16) as *const __m256i);
             let b1 = _mm256_loadu_si256(src.as_ptr().add(i + 16) as *const __m256i);
-            _mm256_storeu_si256(
-                dst.as_mut_ptr().add(i) as *mut __m256i,
-                _mm256_sub_epi16(a0, b0),
-            );
-            _mm256_storeu_si256(
-                dst.as_mut_ptr().add(i + 16) as *mut __m256i,
-                _mm256_sub_epi16(a1, b1),
-            );
+            _mm256_storeu_si256(dst.as_mut_ptr().add(i) as *mut __m256i, _mm256_sub_epi16(a0, b0));
+            _mm256_storeu_si256(dst.as_mut_ptr().add(i + 16) as *mut __m256i, _mm256_sub_epi16(a1, b1));
             i += 32;
         }
         while i + 16 <= n {
             let a = _mm256_loadu_si256(dst.as_ptr().add(i) as *const __m256i);
             let b = _mm256_loadu_si256(src.as_ptr().add(i) as *const __m256i);
-            _mm256_storeu_si256(
-                dst.as_mut_ptr().add(i) as *mut __m256i,
-                _mm256_sub_epi16(a, b),
-            );
+            _mm256_storeu_si256(dst.as_mut_ptr().add(i) as *mut __m256i, _mm256_sub_epi16(a, b));
             i += 16;
         }
         while i < n {
@@ -1341,22 +1234,12 @@ fn vec_add1_sub1(dst: &mut [i16], src: &[i16], add: &[i16], sub: &[i16]) {
         let bp = sub.as_ptr();
         let mut i = 0;
         while i + 32 <= n {
-            let r0 = vsubq_s16(
-                vaddq_s16(vld1q_s16(sp.add(i)), vld1q_s16(ap.add(i))),
-                vld1q_s16(bp.add(i)),
-            );
-            let r1 = vsubq_s16(
-                vaddq_s16(vld1q_s16(sp.add(i + 8)), vld1q_s16(ap.add(i + 8))),
-                vld1q_s16(bp.add(i + 8)),
-            );
-            let r2 = vsubq_s16(
-                vaddq_s16(vld1q_s16(sp.add(i + 16)), vld1q_s16(ap.add(i + 16))),
-                vld1q_s16(bp.add(i + 16)),
-            );
-            let r3 = vsubq_s16(
-                vaddq_s16(vld1q_s16(sp.add(i + 24)), vld1q_s16(ap.add(i + 24))),
-                vld1q_s16(bp.add(i + 24)),
-            );
+            let r0 = vsubq_s16(vaddq_s16(vld1q_s16(sp.add(i)), vld1q_s16(ap.add(i))), vld1q_s16(bp.add(i)));
+            let r1 = vsubq_s16(vaddq_s16(vld1q_s16(sp.add(i + 8)), vld1q_s16(ap.add(i + 8))), vld1q_s16(bp.add(i + 8)));
+            let r2 =
+                vsubq_s16(vaddq_s16(vld1q_s16(sp.add(i + 16)), vld1q_s16(ap.add(i + 16))), vld1q_s16(bp.add(i + 16)));
+            let r3 =
+                vsubq_s16(vaddq_s16(vld1q_s16(sp.add(i + 24)), vld1q_s16(ap.add(i + 24))), vld1q_s16(bp.add(i + 24)));
             vst1q_s16(dp.add(i), r0);
             vst1q_s16(dp.add(i + 8), r1);
             vst1q_s16(dp.add(i + 16), r2);
@@ -1366,10 +1249,7 @@ fn vec_add1_sub1(dst: &mut [i16], src: &[i16], add: &[i16], sub: &[i16]) {
         while i + 8 <= n {
             vst1q_s16(
                 dp.add(i),
-                vsubq_s16(
-                    vaddq_s16(vld1q_s16(sp.add(i)), vld1q_s16(ap.add(i))),
-                    vld1q_s16(bp.add(i)),
-                ),
+                vsubq_s16(vaddq_s16(vld1q_s16(sp.add(i)), vld1q_s16(ap.add(i))), vld1q_s16(bp.add(i))),
             );
             i += 8;
         }
@@ -1405,10 +1285,7 @@ fn vec_add1_sub1(dst: &mut [i16], src: &[i16], add: &[i16], sub: &[i16]) {
             let s = _mm256_loadu_si256(src.as_ptr().add(i) as *const __m256i);
             let a = _mm256_loadu_si256(add.as_ptr().add(i) as *const __m256i);
             let b = _mm256_loadu_si256(sub.as_ptr().add(i) as *const __m256i);
-            _mm256_storeu_si256(
-                dst.as_mut_ptr().add(i) as *mut __m256i,
-                _mm256_sub_epi16(_mm256_add_epi16(s, a), b),
-            );
+            _mm256_storeu_si256(dst.as_mut_ptr().add(i) as *mut __m256i, _mm256_sub_epi16(_mm256_add_epi16(s, a), b));
             i += 16;
         }
         while i < n {
@@ -1441,10 +1318,7 @@ fn vec_add1_sub2(dst: &mut [i16], src: &[i16], add1: &[i16], sub1: &[i16], sub2:
                 let a1 = vld1q_s16(a1p.add(i + k));
                 let b1 = vld1q_s16(b1p.add(i + k));
                 let b2 = vld1q_s16(b2p.add(i + k));
-                vst1q_s16(
-                    dp.add(i + k),
-                    vsubq_s16(vsubq_s16(vaddq_s16(s, a1), b1), b2),
-                );
+                vst1q_s16(dp.add(i + k), vsubq_s16(vsubq_s16(vaddq_s16(s, a1), b1), b2));
             }
             i += 32;
         }
@@ -1457,10 +1331,7 @@ fn vec_add1_sub2(dst: &mut [i16], src: &[i16], add1: &[i16], sub1: &[i16], sub2:
             i += 8;
         }
         while i < n {
-            dst[i] = src[i]
-                .wrapping_add(add1[i])
-                .wrapping_sub(sub1[i])
-                .wrapping_sub(sub2[i]);
+            dst[i] = src[i].wrapping_add(add1[i]).wrapping_sub(sub1[i]).wrapping_sub(sub2[i]);
             i += 1;
         }
         return;
@@ -1480,32 +1351,19 @@ fn vec_add1_sub2(dst: &mut [i16], src: &[i16], add1: &[i16], sub1: &[i16], sub2:
             i += 16;
         }
         while i < n {
-            dst[i] = src[i]
-                .wrapping_add(add1[i])
-                .wrapping_sub(sub1[i])
-                .wrapping_sub(sub2[i]);
+            dst[i] = src[i].wrapping_add(add1[i]).wrapping_sub(sub1[i]).wrapping_sub(sub2[i]);
             i += 1;
         }
         return;
     }
     #[allow(unreachable_code)]
     for i in 0..dst.len() {
-        dst[i] = src[i]
-            .wrapping_add(add1[i])
-            .wrapping_sub(sub1[i])
-            .wrapping_sub(sub2[i]);
+        dst[i] = src[i].wrapping_add(add1[i]).wrapping_sub(sub1[i]).wrapping_sub(sub2[i]);
     }
 }
 
 #[inline]
-fn vec_add2_sub2(
-    dst: &mut [i16],
-    src: &[i16],
-    add1: &[i16],
-    add2: &[i16],
-    sub1: &[i16],
-    sub2: &[i16],
-) {
+fn vec_add2_sub2(dst: &mut [i16], src: &[i16], add1: &[i16], add2: &[i16], sub1: &[i16], sub2: &[i16]) {
     #[cfg(target_arch = "aarch64")]
     unsafe {
         use std::arch::aarch64::*;
@@ -1517,18 +1375,11 @@ fn vec_add2_sub2(
             let a2 = vld1q_s16(add2.as_ptr().add(i));
             let b1 = vld1q_s16(sub1.as_ptr().add(i));
             let b2 = vld1q_s16(sub2.as_ptr().add(i));
-            vst1q_s16(
-                dst.as_mut_ptr().add(i),
-                vsubq_s16(vsubq_s16(vaddq_s16(vaddq_s16(s, a1), a2), b1), b2),
-            );
+            vst1q_s16(dst.as_mut_ptr().add(i), vsubq_s16(vsubq_s16(vaddq_s16(vaddq_s16(s, a1), a2), b1), b2));
             i += 8;
         }
         while i < n {
-            dst[i] = src[i]
-                .wrapping_add(add1[i])
-                .wrapping_add(add2[i])
-                .wrapping_sub(sub1[i])
-                .wrapping_sub(sub2[i]);
+            dst[i] = src[i].wrapping_add(add1[i]).wrapping_add(add2[i]).wrapping_sub(sub1[i]).wrapping_sub(sub2[i]);
             i += 1;
         }
         return;
@@ -1544,30 +1395,19 @@ fn vec_add2_sub2(
             let a2 = _mm256_loadu_si256(add2.as_ptr().add(i) as *const __m256i);
             let b1 = _mm256_loadu_si256(sub1.as_ptr().add(i) as *const __m256i);
             let b2 = _mm256_loadu_si256(sub2.as_ptr().add(i) as *const __m256i);
-            let r = _mm256_sub_epi16(
-                _mm256_sub_epi16(_mm256_add_epi16(_mm256_add_epi16(s, a1), a2), b1),
-                b2,
-            );
+            let r = _mm256_sub_epi16(_mm256_sub_epi16(_mm256_add_epi16(_mm256_add_epi16(s, a1), a2), b1), b2);
             _mm256_storeu_si256(dst.as_mut_ptr().add(i) as *mut __m256i, r);
             i += 16;
         }
         while i < n {
-            dst[i] = src[i]
-                .wrapping_add(add1[i])
-                .wrapping_add(add2[i])
-                .wrapping_sub(sub1[i])
-                .wrapping_sub(sub2[i]);
+            dst[i] = src[i].wrapping_add(add1[i]).wrapping_add(add2[i]).wrapping_sub(sub1[i]).wrapping_sub(sub2[i]);
             i += 1;
         }
         return;
     }
     #[allow(unreachable_code)]
     for i in 0..dst.len() {
-        dst[i] = src[i]
-            .wrapping_add(add1[i])
-            .wrapping_add(add2[i])
-            .wrapping_sub(sub1[i])
-            .wrapping_sub(sub2[i]);
+        dst[i] = src[i].wrapping_add(add1[i]).wrapping_add(add2[i]).wrapping_sub(sub1[i]).wrapping_sub(sub2[i]);
     }
 }
 
@@ -1588,10 +1428,8 @@ fn pairwise_quantize_simd(acc: &[i16], out: &mut [i8], qa: i16) {
         while i + 16 <= half {
             let a0 = vreinterpretq_u16_s16(vminq_s16(vmaxq_s16(vld1q_s16(p_a.add(i)), zero), vmax));
             let b0 = vreinterpretq_u16_s16(vminq_s16(vmaxq_s16(vld1q_s16(p_b.add(i)), zero), vmax));
-            let a1 =
-                vreinterpretq_u16_s16(vminq_s16(vmaxq_s16(vld1q_s16(p_a.add(i + 8)), zero), vmax));
-            let b1 =
-                vreinterpretq_u16_s16(vminq_s16(vmaxq_s16(vld1q_s16(p_b.add(i + 8)), zero), vmax));
+            let a1 = vreinterpretq_u16_s16(vminq_s16(vmaxq_s16(vld1q_s16(p_a.add(i + 8)), zero), vmax));
+            let b1 = vreinterpretq_u16_s16(vminq_s16(vmaxq_s16(vld1q_s16(p_b.add(i + 8)), zero), vmax));
             let s0 = vshrn_n_u16::<8>(vmulq_u16(a0, b0));
             let s1 = vshrn_n_u16::<8>(vmulq_u16(a1, b1));
             let comb = vshr_n_u8::<1>(s0);
@@ -1722,12 +1560,8 @@ fn l1_matmul_nnz_simd(ft_q: &[i8], l1_w_t: &[i8], l1_b: &[i32], out: &mut [i32; 
         out.copy_from_slice(&l1_b[..16]);
         for c in 0..chunks {
             let base = c * 4;
-            let (x0, x1, x2, x3) = (
-                ft_q[base] as i32,
-                ft_q[base + 1] as i32,
-                ft_q[base + 2] as i32,
-                ft_q[base + 3] as i32,
-            );
+            let (x0, x1, x2, x3) =
+                (ft_q[base] as i32, ft_q[base + 1] as i32, ft_q[base + 2] as i32, ft_q[base + 3] as i32);
             if (x0 | x1 | x2 | x3) == 0 {
                 continue;
             }
@@ -1947,14 +1781,10 @@ pub fn pairwise_dot_simd(acc: &[i16], w: &[i16], qa: i16) -> i64 {
         while i + 64 <= half {
             let mut s = _mm256_setzero_si256();
             for _ in 0..4 {
-                let a = _mm256_min_epi16(
-                    _mm256_max_epi16(_mm256_loadu_si256(p_a.add(i) as *const __m256i), zero),
-                    vmax,
-                );
-                let b = _mm256_min_epi16(
-                    _mm256_max_epi16(_mm256_loadu_si256(p_b.add(i) as *const __m256i), zero),
-                    vmax,
-                );
+                let a =
+                    _mm256_min_epi16(_mm256_max_epi16(_mm256_loadu_si256(p_a.add(i) as *const __m256i), zero), vmax);
+                let b =
+                    _mm256_min_epi16(_mm256_max_epi16(_mm256_loadu_si256(p_b.add(i) as *const __m256i), zero), vmax);
                 let wt = _mm256_loadu_si256(p_w.add(i) as *const __m256i);
                 let aw = _mm256_mullo_epi16(a, wt);
                 s = _mm256_add_epi32(s, _mm256_madd_epi16(b, aw));

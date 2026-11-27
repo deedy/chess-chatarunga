@@ -1,0 +1,2 @@
+Match: nnue:nets/h100_v7_screlu_1024_6b.nnue vs uci:/tmp/ccrl_rivals/motor/motor | 60 games | tc1=MoveTimeMs(100) tc2=MoveTimeMs(100) | 10 threads | book=built-in 60 ECO
+RESULT nnue:nets/h100_v7_screlu_1024_6b.nnue vs uci:/tmp/ccrl_rivals/motor/motor: +4 =30 -26 (penta [6, 12, 10, 2, 0]) | score 31.67% | Elo -133.6 ± 62.2 | LOS 0.0%

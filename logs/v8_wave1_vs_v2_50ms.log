@@ -1,0 +1,2 @@
+Match: nnue:nets/h100_v7_screlu_1024_6b.nnue vs uci:/tmp/chatarunga_v2 | 120 games | tc1=MoveTimeMs(50) tc2=MoveTimeMs(50) | 10 threads | book=241670 FENs
+RESULT nnue:nets/h100_v7_screlu_1024_6b.nnue vs uci:/tmp/chatarunga_v2: +40 =52 -28 (penta [2, 8, 28, 20, 2]) | score 55.00% | Elo +34.9 ± 37.1 | LOS 96.9%

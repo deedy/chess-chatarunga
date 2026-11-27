@@ -1,0 +1,2 @@
+Match: nnue:nets/h100_v7_screlu_1024_6b.nnue:t=4 vs uci:/tmp/ccrl_rivals/velvet/target/release/velvet:t=4 | 60 games | tc1=MoveTimeMs(100) tc2=MoveTimeMs(100) | 2 threads | book=built-in 60 ECO
+RESULT nnue:nets/h100_v7_screlu_1024_6b.nnue:t=4 vs uci:/tmp/ccrl_rivals/velvet/target/release/velvet:t=4: +14 =37 -9 (penta [1, 3, 17, 8, 1]) | score 54.17% | Elo +29.0 ± 49.0 | LOS 88.0%
