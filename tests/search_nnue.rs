@@ -232,3 +232,43 @@ fn nnue_save_load_roundtrip_and_packed_pos() {
     assert_eq!(kings[0], b.king_sq(chatarunga::Color::White));
     assert_eq!(kings[1], b.king_sq(chatarunga::Color::Black));
 }
+
+#[test]
+fn ponder_control_and_extract_ponder_move() {
+    use chatarunga::search::PonderControl;
+    use std::sync::atomic::AtomicBool;
+    use std::sync::Arc;
+    use std::time::{Duration, Instant};
+
+    let b = Board::startpos();
+    let mut s = Searcher::new(EvalMode::Classical, 8);
+    // 1. Verify extract_ponder_move yields a strictly legal reply after best_move
+    let res = s.search(&b, &[b.hash], SearchLimits { max_depth: 5, ..Default::default() });
+    let pm = s.extract_ponder_move(&b, &res).expect("expected legal ponder move from depth-5 search");
+    let after = b.make_move(res.best_move);
+    let mut legal = chatarunga::MoveList::new();
+    after.legal_moves(&mut legal);
+    assert!(legal.as_slice().contains(&pm), "ponder move must be legal on post-bestmove board");
+
+    // 2. Verify go ponder holds past hard_ms until ponderhit fires, then finishes cleanly
+    let pc = Arc::new(PonderControl::new_active());
+    let pc_bg = Arc::clone(&pc);
+    let stop = Arc::new(AtomicBool::new(false));
+    let t0 = Instant::now();
+    let hitter = std::thread::spawn(move || {
+        std::thread::sleep(Duration::from_millis(80));
+        pc_bg.hit();
+    });
+    let res2 = s.search_with_control(
+        &b,
+        &[b.hash],
+        SearchLimits { max_depth: 64, max_nodes: u64::MAX, soft_ms: Some(25), hard_ms: Some(40) },
+        Some(stop),
+        Some(pc),
+    );
+    hitter.join().unwrap();
+    let elapsed = t0.elapsed().as_millis();
+    assert!(!res2.best_move.is_none());
+    assert!(elapsed >= 75, "ponder search returned too early before ponderhit ({elapsed}ms)");
+    assert!(elapsed < 500, "ponder search failed to stop after ponderhit ({elapsed}ms)");
+}

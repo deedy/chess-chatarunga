@@ -556,6 +556,46 @@ pub struct SearchResult {
     pub pv: Vec<Move>,
 }
 
+/// Shared coordination state for UCI `go ponder` and `ponderhit`.
+pub struct PonderControl {
+    pub pondering: AtomicBool,
+    pub hit_elapsed_ms: AtomicU64,
+    pub start: Instant,
+}
+
+impl PonderControl {
+    pub fn new_active() -> Self {
+        Self {
+            pondering: AtomicBool::new(true),
+            hit_elapsed_ms: AtomicU64::new(0),
+            start: Instant::now(),
+        }
+    }
+
+    /// Transition from pondering to normal timed search on `ponderhit`.
+    pub fn hit(&self) {
+        let elapsed = self.start.elapsed().as_millis() as u64;
+        self.hit_elapsed_ms.store(elapsed, Ordering::Release);
+        self.pondering.store(false, Ordering::Release);
+    }
+
+    /// Clear pondering flag on `stop` so a finished ponder search can exit immediately.
+    pub fn cancel(&self) {
+        self.pondering.store(false, Ordering::Release);
+    }
+
+    #[inline(always)]
+    pub fn is_pondering(&self) -> bool {
+        self.pondering.load(Ordering::Acquire)
+    }
+
+    #[inline(always)]
+    pub fn elapsed_since_hit_ms(&self) -> u64 {
+        let hit = self.hit_elapsed_ms.load(Ordering::Acquire);
+        self.start.elapsed().as_millis().saturating_sub(hit as u128) as u64
+    }
+}
+
 #[derive(Clone, Copy, PartialEq, Eq)]
 enum PickStage {
     TtMove,
@@ -837,6 +877,7 @@ pub struct Searcher {
     stopped: bool,
     start: Instant,
     limits: SearchLimits,
+    ponder: Option<Arc<PonderControl>>,
     uci_info: bool,
 }
 
@@ -930,6 +971,7 @@ impl Searcher {
             stopped: false,
             start: Instant::now(),
             limits: SearchLimits::default(),
+            ponder: None,
             uci_info: false,
         }
     }
@@ -1014,7 +1056,7 @@ impl Searcher {
     }
 
     pub fn search(&mut self, board: &Board, game_history: &[u64], limits: SearchLimits) -> SearchResult {
-        self.search_with_stop(board, game_history, limits, None)
+        self.search_with_control(board, game_history, limits, None, None)
     }
 
     pub fn search_with_stop(
@@ -1024,9 +1066,20 @@ impl Searcher {
         limits: SearchLimits,
         external_stop: Option<Arc<AtomicBool>>,
     ) -> SearchResult {
+        self.search_with_control(board, game_history, limits, external_stop, None)
+    }
+
+    pub fn search_with_control(
+        &mut self,
+        board: &Board,
+        game_history: &[u64],
+        limits: SearchLimits,
+        external_stop: Option<Arc<AtomicBool>>,
+        ponder: Option<Arc<PonderControl>>,
+    ) -> SearchResult {
         self.tt.new_search();
         if self.threads <= 1 || self.helpers.is_empty() {
-            return self.search_worker(board, game_history, limits, external_stop, None);
+            return self.search_worker(board, game_history, limits, external_stop, None, ponder);
         }
 
         let stop = external_stop.unwrap_or_else(|| Arc::new(AtomicBool::new(false)));
@@ -1045,16 +1098,23 @@ impl Searcher {
             for h in helpers.iter_mut() {
                 let stop_c = Arc::clone(&stop);
                 let nodes_c = Arc::clone(&tot_nodes);
+                let ponder_c = ponder.clone();
                 let jh = std::thread::Builder::new()
                     .stack_size(8 * 1024 * 1024)
                     .spawn_scoped(s, move || {
-                        h.search_worker(board, game_history, helper_limits, Some(stop_c), Some(nodes_c))
+                        h.search_worker(board, game_history, helper_limits, Some(stop_c), Some(nodes_c), ponder_c)
                     })
                     .expect("failed to spawn SMP helper thread");
                 handles.push(jh);
             }
-            let main_res =
-                self.search_worker(board, game_history, limits, Some(Arc::clone(&stop)), Some(Arc::clone(&tot_nodes)));
+            let main_res = self.search_worker(
+                board,
+                game_history,
+                limits,
+                Some(Arc::clone(&stop)),
+                Some(Arc::clone(&tot_nodes)),
+                ponder,
+            );
             stop.store(true, Ordering::Relaxed);
             let mut hres = Vec::with_capacity(handles.len());
             for jh in handles {
@@ -1110,6 +1170,51 @@ impl Searcher {
         chosen
     }
 
+    /// Extract a strictly legal ponder move for `bestmove <m> ponder <p>` from the PV or TT.
+    pub fn extract_ponder_move(&self, board: &Board, res: &SearchResult) -> Option<Move> {
+        if res.best_move.is_none() {
+            return None;
+        }
+        let after = board.make_move(res.best_move);
+        let mut legal = MoveList::new();
+        after.legal_moves(&mut legal);
+        if legal.is_empty() {
+            return None;
+        }
+        if let Some(&pv1) = res.pv.get(1) {
+            if !pv1.is_none() && legal.as_slice().contains(&pv1) {
+                return Some(pv1);
+            }
+        }
+        if let Some(e) = self.tt.probe(after.hash) {
+            if !e.best_move.is_none() && legal.as_slice().contains(&e.best_move) {
+                return Some(e.best_move);
+            }
+        }
+        None
+    }
+
+    #[inline(always)]
+    fn is_pondering(&self) -> bool {
+        self.ponder.as_ref().is_some_and(|p| p.is_pondering())
+    }
+
+    #[inline(always)]
+    fn external_stopped(&self) -> bool {
+        self.shared_stop.as_ref().is_some_and(|s| s.load(Ordering::Relaxed))
+    }
+
+    #[inline(always)]
+    fn clock_elapsed_ms(&self) -> u64 {
+        if let Some(p) = &self.ponder {
+            if p.is_pondering() {
+                return 0;
+            }
+            return p.elapsed_since_hit_ms();
+        }
+        self.start.elapsed().as_millis() as u64
+    }
+
     fn search_worker(
         &mut self,
         board: &Board,
@@ -1117,12 +1222,14 @@ impl Searcher {
         limits: SearchLimits,
         shared_stop: Option<Arc<AtomicBool>>,
         shared_nodes: Option<Arc<AtomicU64>>,
+        ponder: Option<Arc<PonderControl>>,
     ) -> SearchResult {
         self.nodes = 0;
         self.flushed_nodes = 0;
         self.stopped = false;
         self.shared_stop = shared_stop;
         self.shared_nodes = shared_nodes;
+        self.ponder = ponder;
         self.start = Instant::now();
         self.limits = limits;
         self.killers = [[Move::NONE; 2]; MAX_PLY];
@@ -1167,8 +1274,14 @@ impl Searcher {
         let mut root_moves = MoveList::new();
         board.legal_moves(&mut root_moves);
         if root_moves.is_empty() {
+            if self.thread_id == 0 {
+                while self.is_pondering() && !self.external_stopped() {
+                    std::thread::sleep(std::time::Duration::from_millis(1));
+                }
+            }
             self.shared_stop = None;
             self.shared_nodes = None;
+            self.ponder = None;
             return SearchResult {
                 best_move: Move::NONE,
                 score: if board.in_check() { -MATE_SCORE } else { 0 },
@@ -1280,35 +1393,37 @@ impl Searcher {
                 if best_score.abs() >= MATE_BOUND && depth >= 4 {
                     break;
                 }
-                if root_moves.len() == 1 && limits.soft_ms.is_some() && depth >= 4 {
-                    break;
-                }
-                if let Some(soft) = limits.soft_ms {
-                    let eff_soft = if is_clock_mode && depth >= 6 && self.nodes > 0 {
-                        let bm_nodes = self.root_nodes[best_move.from() as usize][best_move.to() as usize];
-                        let frac = bm_nodes as f64 / self.nodes as f64;
-                        let node_scale = (1.45 - frac).clamp(0.45, 1.50);
-                        // Best-move stability & eval-drop panic scaling
-                        let stab_scale = match bm_stability {
-                            0 => 1.25,
-                            1 => 1.10,
-                            2..=4 => 1.00,
-                            5..=7 => 0.86,
-                            _ => 0.74,
-                        };
-                        let drop_scale = if score_drop > 50 {
-                            1.50
-                        } else if score_drop > 25 {
-                            1.25
-                        } else {
-                            1.00
-                        };
-                        ((soft as f64) * (node_scale * stab_scale * drop_scale).clamp(0.40, 2.00)) as u64
-                    } else {
-                        soft
-                    };
-                    if self.start.elapsed().as_millis() as u64 >= eff_soft {
+                if !self.is_pondering() {
+                    if root_moves.len() == 1 && limits.soft_ms.is_some() && depth >= 4 {
                         break;
+                    }
+                    if let Some(soft) = limits.soft_ms {
+                        let eff_soft = if is_clock_mode && depth >= 6 && self.nodes > 0 {
+                            let bm_nodes = self.root_nodes[best_move.from() as usize][best_move.to() as usize];
+                            let frac = bm_nodes as f64 / self.nodes as f64;
+                            let node_scale = (1.45 - frac).clamp(0.45, 1.50);
+                            // Best-move stability & eval-drop panic scaling
+                            let stab_scale = match bm_stability {
+                                0 => 1.25,
+                                1 => 1.10,
+                                2..=4 => 1.00,
+                                5..=7 => 0.86,
+                                _ => 0.74,
+                            };
+                            let drop_scale = if score_drop > 50 {
+                                1.50
+                            } else if score_drop > 25 {
+                                1.25
+                            } else {
+                                1.00
+                            };
+                            ((soft as f64) * (node_scale * stab_scale * drop_scale).clamp(0.40, 2.00)) as u64
+                        } else {
+                            soft
+                        };
+                        if self.clock_elapsed_ms() >= eff_soft {
+                            break;
+                        }
                     }
                 }
             }
@@ -1322,6 +1437,13 @@ impl Searcher {
             }
         }
 
+        // Per UCI spec, never emit `bestmove` during `go ponder` until `ponderhit` or `stop` arrives.
+        if is_main {
+            while self.is_pondering() && !self.external_stopped() {
+                std::thread::sleep(std::time::Duration::from_millis(1));
+            }
+        }
+
         if let Some(sn) = &self.shared_nodes {
             let rem = self.nodes - self.flushed_nodes;
             if rem > 0 {
@@ -1331,6 +1453,7 @@ impl Searcher {
         }
         self.shared_stop = None;
         self.shared_nodes = None;
+        self.ponder = None;
 
         SearchResult {
             best_move,
@@ -1349,9 +1472,9 @@ impl Searcher {
                 self.stopped = true;
                 return true;
             }
-            if (self.nodes & 2047) == 0 {
+            if (self.nodes & 2047) == 0 && !self.is_pondering() {
                 if let Some(hard) = self.limits.hard_ms {
-                    if self.start.elapsed().as_millis() as u64 >= hard {
+                    if self.clock_elapsed_ms() >= hard {
                         self.stopped = true;
                         return true;
                     }
@@ -1378,13 +1501,15 @@ impl Searcher {
                     return true;
                 }
             }
-            if let Some(hard) = self.limits.hard_ms {
-                if self.start.elapsed().as_millis() as u64 >= hard {
-                    self.stopped = true;
-                    if let Some(stop) = &self.shared_stop {
-                        stop.store(true, Ordering::Relaxed);
+            if !self.is_pondering() {
+                if let Some(hard) = self.limits.hard_ms {
+                    if self.clock_elapsed_ms() >= hard {
+                        self.stopped = true;
+                        if let Some(stop) = &self.shared_stop {
+                            stop.store(true, Ordering::Relaxed);
+                        }
+                        return true;
                     }
-                    return true;
                 }
             }
         }

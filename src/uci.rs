@@ -3,13 +3,15 @@
 use crate::board::{Board, Game};
 use crate::eval::evaluate_classical;
 use crate::nnue::NnueNet;
-use crate::search::{EvalMode, SearchLimits, Searcher};
+use crate::search::{EvalMode, PonderControl, SearchLimits, Searcher};
 use crate::types::Color;
 use std::io::{self, BufRead, Write};
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
 use std::thread::JoinHandle;
 use std::time::Instant;
+
+type RunningSearch = (Arc<AtomicBool>, Option<Arc<PonderControl>>, JoinHandle<Box<Searcher>>);
 
 pub fn run_uci(initial_eval: EvalMode, name: &str) {
     let stdin = io::stdin();
@@ -22,20 +24,22 @@ pub fn run_uci(initial_eval: EvalMode, name: &str) {
     if let Some(s) = searcher.as_mut() {
         s.set_uci_info(true);
     }
-    let mut running: Option<(Arc<AtomicBool>, JoinHandle<Box<Searcher>>)> = None;
+    let mut running: Option<RunningSearch> = None;
 
-    let finish_search = |running: &mut Option<(Arc<AtomicBool>, JoinHandle<Box<Searcher>>)>,
-                         searcher: &mut Option<Box<Searcher>>,
-                         force_stop: bool| {
-        if let Some((stop, handle)) = running.take() {
-            if force_stop {
-                stop.store(true, Ordering::Relaxed);
+    let finish_search =
+        |running: &mut Option<RunningSearch>, searcher: &mut Option<Box<Searcher>>, force_stop: bool| {
+            if let Some((stop, ponder, handle)) = running.take() {
+                if force_stop {
+                    stop.store(true, Ordering::Release);
+                    if let Some(pc) = ponder {
+                        pc.cancel();
+                    }
+                }
+                if let Ok(s) = handle.join() {
+                    *searcher = Some(s);
+                }
             }
-            if let Ok(s) = handle.join() {
-                *searcher = Some(s);
-            }
-        }
-    };
+        };
 
     for line in stdin.lock().lines() {
         let Ok(line) = line else { break };
@@ -48,31 +52,16 @@ pub fn run_uci(initial_eval: EvalMode, name: &str) {
             "uci" => {
                 writeln!(stdout, "id name {name}").ok();
                 writeln!(stdout, "id author Deedy Das").ok();
-                writeln!(
-                    stdout,
-                    "option name Hash type spin default 64 min 1 max 4096"
-                )
-                .ok();
-                writeln!(
-                    stdout,
-                    "option name Threads type spin default 1 min 1 max 64"
-                )
-                .ok();
-                writeln!(
-                    stdout,
-                    "option name Move Overhead type spin default 10 min 0 max 2000"
-                )
-                .ok();
-                writeln!(
-                    stdout,
-                    "option name EvalFile type string default <embedded>"
-                )
-                .ok();
+                writeln!(stdout, "option name Hash type spin default 64 min 1 max 4096").ok();
+                writeln!(stdout, "option name Threads type spin default 1 min 1 max 64").ok();
+                writeln!(stdout, "option name Ponder type check default false").ok();
+                writeln!(stdout, "option name Move Overhead type spin default 10 min 0 max 2000").ok();
+                writeln!(stdout, "option name EvalFile type string default <embedded>").ok();
                 writeln!(stdout, "uciok").ok();
                 stdout.flush().ok();
             }
             "isready" => {
-                if let Some((_, ref h)) = running {
+                if let Some((_, _, ref h)) = running {
                     if h.is_finished() {
                         finish_search(&mut running, &mut searcher, false);
                     }
@@ -83,15 +72,17 @@ pub fn run_uci(initial_eval: EvalMode, name: &str) {
             "stop" => {
                 finish_search(&mut running, &mut searcher, true);
             }
+            "ponderhit" => {
+                if let Some((_, Some(ref pc), _)) = running {
+                    pc.hit();
+                }
+            }
             "setoption" => {
                 finish_search(&mut running, &mut searcher, true);
                 if let Some(ni) = tokens.iter().position(|&t| t == "name") {
                     let vi = tokens.iter().position(|&t| t == "value");
-                    let opt_name = if let Some(vi) = vi {
-                        tokens[ni + 1..vi].join(" ")
-                    } else {
-                        tokens[ni + 1..].join(" ")
-                    };
+                    let opt_name =
+                        if let Some(vi) = vi { tokens[ni + 1..vi].join(" ") } else { tokens[ni + 1..].join(" ") };
                     let opt_val = vi.map(|vi| tokens[vi + 1..].join(" ")).unwrap_or_default();
                     if opt_name.eq_ignore_ascii_case("Hash") {
                         if let Ok(mb) = opt_val.parse::<usize>() {
@@ -123,8 +114,7 @@ pub fn run_uci(initial_eval: EvalMode, name: &str) {
                             searcher = Some(ns);
                         } else if opt_val != "<embedded>" {
                             if let Ok(net) = NnueNet::load(&opt_val) {
-                                let mut ns =
-                                    Box::new(Searcher::new(EvalMode::Nnue(Arc::new(net)), tt_mb));
+                                let mut ns = Box::new(Searcher::new(EvalMode::Nnue(Arc::new(net)), tt_mb));
                                 ns.set_threads(smp_threads);
                                 ns.set_uci_info(true);
                                 searcher = Some(ns);
@@ -167,23 +157,29 @@ pub fn run_uci(initial_eval: EvalMode, name: &str) {
             }
             "go" => {
                 finish_search(&mut running, &mut searcher, true);
-                let limits = parse_go(&tokens[1..], game.board.side, move_overhead_ms);
+                let (limits, is_ponder) = parse_go(&tokens[1..], game.board.side, move_overhead_ms);
                 if let Some(mut s) = searcher.take() {
                     let board = game.board;
                     let history = game.history.clone();
                     let stop = Arc::new(AtomicBool::new(false));
                     let stop_c = Arc::clone(&stop);
+                    let ponder_ctrl = if is_ponder { Some(Arc::new(PonderControl::new_active())) } else { None };
+                    let ponder_c = ponder_ctrl.clone();
                     let handle = std::thread::Builder::new()
                         .stack_size(8 * 1024 * 1024)
                         .spawn(move || {
-                            let res = s.search_with_stop(&board, &history, limits, Some(stop_c));
+                            let res = s.search_with_control(&board, &history, limits, Some(stop_c), ponder_c);
                             let mut out = io::stdout();
-                            writeln!(out, "bestmove {}", res.best_move.to_uci()).ok();
+                            if let Some(pm) = s.extract_ponder_move(&board, &res) {
+                                writeln!(out, "bestmove {} ponder {}", res.best_move.to_uci(), pm.to_uci()).ok();
+                            } else {
+                                writeln!(out, "bestmove {}", res.best_move.to_uci()).ok();
+                            }
                             out.flush().ok();
                             s
                         })
                         .expect("failed to spawn UCI search thread");
-                    running = Some((stop, handle));
+                    running = Some((stop, ponder_ctrl, handle));
                 }
             }
             "perft" => {
@@ -197,12 +193,7 @@ pub fn run_uci(initial_eval: EvalMode, name: &str) {
                     total += n;
                 }
                 let secs = t0.elapsed().as_secs_f64();
-                writeln!(
-                    stdout,
-                    "\nNodes: {total} ({:.2}M nps)",
-                    total as f64 / secs / 1e6
-                )
-                .ok();
+                writeln!(stdout, "\nNodes: {total} ({:.2}M nps)", total as f64 / secs / 1e6).ok();
                 stdout.flush().ok();
             }
             "eval" => {
@@ -230,7 +221,7 @@ pub fn run_uci(initial_eval: EvalMode, name: &str) {
     finish_search(&mut running, &mut searcher, true);
 }
 
-fn parse_go(args: &[&str], side: Color, move_overhead_ms: u64) -> SearchLimits {
+fn parse_go(args: &[&str], side: Color, move_overhead_ms: u64) -> (SearchLimits, bool) {
     let mut limits = SearchLimits::default();
     let mut wtime: Option<u64> = None;
     let mut btime: Option<u64> = None;
@@ -238,10 +229,15 @@ fn parse_go(args: &[&str], side: Color, move_overhead_ms: u64) -> SearchLimits {
     let mut binc: u64 = 0;
     let mut movetime: Option<u64> = None;
     let mut movestogo: Option<u64> = None;
+    let mut is_ponder = false;
 
     let mut i = 0;
     while i < args.len() {
         match args[i] {
+            "ponder" => {
+                is_ponder = true;
+                i += 1;
+            }
             "depth" if i + 1 < args.len() => {
                 limits.max_depth = args[i + 1].parse().unwrap_or(64);
                 i += 2;
@@ -293,13 +289,15 @@ fn parse_go(args: &[&str], side: Color, move_overhead_ms: u64) -> SearchLimits {
         let safe_rem = rem.saturating_sub(move_overhead_ms).max(5);
         let mtg = movestogo.unwrap_or(28).max(1);
         let base = (safe_rem / mtg + inc * 3 / 4).max(5);
-        let hard = (safe_rem / 3)
-            .max(base * 2)
-            .min(safe_rem.saturating_sub(5).max(5));
-        limits.soft_ms = Some((base * 3 / 4).max(5).min(hard));
+        let hard = (safe_rem / 3).max(base * 2).min(safe_rem.saturating_sub(5).max(5));
+        let mut soft = (base * 3 / 4).max(5).min(hard);
+        if is_ponder {
+            soft = (soft * 5 / 4).min(hard);
+        }
+        limits.soft_ms = Some(soft);
         limits.hard_ms = Some(hard);
     }
-    limits
+    (limits, is_ponder)
 }
 
 /// Quick bench helper for standard benchmark FENs.
@@ -318,14 +316,7 @@ pub fn run_bench(eval: EvalMode, depth: i32) -> (u64, f64) {
     for fen in fens {
         s.clear();
         let b = Board::from_fen(fen).unwrap();
-        let res = s.search(
-            &b,
-            &[b.hash],
-            SearchLimits {
-                max_depth: depth,
-                ..Default::default()
-            },
-        );
+        let res = s.search(&b, &[b.hash], SearchLimits { max_depth: depth, ..Default::default() });
         total_nodes += res.nodes;
     }
     (total_nodes, t0.elapsed().as_secs_f64())

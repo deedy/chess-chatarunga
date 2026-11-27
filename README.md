@@ -71,6 +71,7 @@ cargo test --release
 |---|---|---|---|---|
 | `Hash` | spin | `64` | `1..4096` | Lockless 4-way clustered transposition table size (MB) |
 | `Threads` | spin | `1` | `1..64` | Depth-guarded Lazy SMP search threads |
+| `Ponder` | check | `false` | `true/false` | Full UCI `go ponder` / `ponderhit` / `bestmove <m> ponder <p>` support |
 | `Move Overhead` | spin | `10` | `0..2000` | Safety buffer subtracted from clock allocations (ms) |
 | `EvalFile` | string | `<embedded>` | path / `classical` | Override embedded NNUE with external CHNN file or classical PeSTO |
 
