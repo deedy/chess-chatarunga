@@ -1,0 +1,2 @@
+Match: uci:/tmp/chatarunga_v9_tm:t=4 vs sf | 60 games | tc1=Clock { base_ms: 10000, inc_ms: 100 } tc2=Clock { base_ms: 10000, inc_ms: 100 } | 2 threads | book=built-in 60 ECO
+RESULT uci:/tmp/chatarunga_v9_tm:t=4 vs sf: +0 =40 -20 (penta [2, 16, 12, 0, 0]) | score 33.33% | Elo -120.4 ± 42.0 | LOS 0.0%

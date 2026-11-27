@@ -24,10 +24,7 @@ pub fn load_epd_book(path: &str) -> Result<Vec<String>, String> {
         if toks.len() >= 6 {
             out.push(toks[..6].join(" "));
         } else if toks.len() >= 4 {
-            out.push(format!(
-                "{} {} {} {} 0 1",
-                toks[0], toks[1], toks[2], toks[3]
-            ));
+            out.push(format!("{} {} {} {} 0 1", toks[0], toks[1], toks[2], toks[3]));
         }
     }
     if out.is_empty() {
@@ -98,7 +95,7 @@ pub const BOOK_FENS: &[&str] = &[
     "rnbqkbnr/pppp1ppp/8/4p3/2P5/2N5/PP1PPPPP/R1BQKBNR b KQkq - 1 2",
     "rnbqkb1r/pp2pppp/3p1n2/2p5/2P5/2N3P1/PP1PPP1P/R1BQKBNR w KQkq - 0 4",
     "rnbqkb1r/pppp1ppp/4pn2/8/2P5/5NP1/PP1PPP1P/RNBQKB1R b KQkq - 0 3",
-    "rnbqkb1r/ppp1pppp/4pn2/3p4/3P1B2/5N2/PPP1PPPP/RN1QKB1R b KQkq - 3 3",
+    "rnbqkb1r/ppp2ppp/4pn2/3p4/3P1B2/5N2/PPP1PPPP/RN1QKB1R b KQkq - 3 3",
     "rnbqkb1r/ppp1pppp/5n2/3p2B1/3P4/8/PPP1PPPP/RN1QKBNR b KQkq - 2 2",
     "rnbqkb1r/ppp1pppp/5n2/3p4/5P2/5N2/PPPPP1PP/RNBQKB1R b KQkq - 1 2",
     // More varied middlegame-ready openings

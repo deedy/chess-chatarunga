@@ -344,7 +344,7 @@ impl TtEntry {
     }
 }
 
-/// Lockless 16-byte atomic TT slot (Hyatt/Stockfish XOR-key integrity check).
+/// Lockless 16-byte atomic TT slot (Hyatt/Stockfish XOR-key integrity check, zero key collisions).
 #[repr(C)]
 struct AtomicTtSlot {
     key_xor_data: AtomicU64,
@@ -363,6 +363,8 @@ struct TtCluster {
     entries: [AtomicTtSlot; 4],
 }
 
+const _: () = assert!(std::mem::size_of::<TtCluster>() == 64);
+
 pub struct TranspositionTable {
     clusters: Vec<TtCluster>,
     mask: usize,
@@ -372,8 +374,8 @@ pub struct TranspositionTable {
 impl TranspositionTable {
     pub fn new_mb(mb: usize) -> Self {
         let bytes = mb.max(1) * 1024 * 1024;
-        let count = (bytes / std::mem::size_of::<TtCluster>()).next_power_of_two() >> 1;
-        let count = count.max(256);
+        let raw_count = (bytes / std::mem::size_of::<TtCluster>()).max(256);
+        let count = if raw_count.is_power_of_two() { raw_count } else { raw_count.next_power_of_two() >> 1 };
         let mut clusters = Vec::with_capacity(count);
         for _ in 0..count {
             clusters.push(TtCluster {
@@ -396,6 +398,23 @@ impl TranspositionTable {
     pub fn new_search(&self) {
         let prev = self.age.load(Ordering::Relaxed);
         self.age.store(prev.wrapping_add(1) & 31, Ordering::Relaxed);
+    }
+
+    /// Estimate TT fill ratio in permille (0..=1000) over the first 1,000 clusters.
+    pub fn hashfull(&self) -> u32 {
+        let cur_age = self.age.load(Ordering::Relaxed);
+        let sample = self.clusters.len().min(1000);
+        let mut used = 0u32;
+        for c in &self.clusters[..sample] {
+            for s in &c.entries {
+                let d = s.data.load(Ordering::Relaxed);
+                let flags = ((d >> 40) & 0xFF) as u8;
+                if (flags & 3) != 0 && (flags >> 3) == cur_age {
+                    used += 1;
+                }
+            }
+        }
+        used * 1000 / ((sample as u32) * 4)
     }
 
     #[inline(always)]
@@ -477,7 +496,7 @@ impl TranspositionTable {
 
         if !same_key
             || bound == Bound::Exact
-            || depth as i8 + 3 >= replace_entry.depth
+            || depth + 3 >= replace_entry.depth as i32
             || replace_entry.age() != cur_age
         {
             let stored_score = score_to_tt(score, ply) as i16;
@@ -1381,8 +1400,9 @@ impl Searcher {
                 } else {
                     format!("cp {best_score}")
                 };
+                let hf = if depth >= 6 { self.tt.hashfull() } else { 0 };
                 println!(
-                    "info depth {depth} score {score_str} nodes {reported_nodes} nps {nps} time {elapsed} pv {}",
+                    "info depth {depth} score {score_str} nodes {reported_nodes} nps {nps} hashfull {hf} time {elapsed} pv {}",
                     pv_str.join(" ")
                 );
             }
@@ -1821,7 +1841,7 @@ impl Searcher {
             tt_move = e.best_move;
             tt_pv |= e.tt_pv();
             tt_static = e.static_eval;
-            if !is_pv && e.depth as i32 >= depth {
+            if !is_pv && e.depth as i32 >= depth && b.halfmove < 90 {
                 let s = score_from_tt(e.score as i32, ply);
                 match e.bound() {
                     Bound::Exact => return s,
@@ -2425,11 +2445,13 @@ impl Searcher {
             tt_pv = e.tt_pv();
             tt_static = e.static_eval;
             let s = score_from_tt(e.score as i32, ply);
-            match e.bound() {
-                Bound::Exact => return s,
-                Bound::Lower if s >= beta => return s,
-                Bound::Upper if s <= alpha => return s,
-                _ => {}
+            if b.halfmove < 90 {
+                match e.bound() {
+                    Bound::Exact => return s,
+                    Bound::Lower if s >= beta => return s,
+                    Bound::Upper if s <= alpha => return s,
+                    _ => {}
+                }
             }
         }
 

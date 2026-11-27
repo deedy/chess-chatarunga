@@ -12,11 +12,9 @@ fn main() {
     let args: Vec<String> = std::env::args().collect();
     if args.len() < 3 {
         eprintln!(
-            "Usage: arena <p1> <p2> [--games N] [--ms MS | --nodes N | --depth D] [--ms2 MS | --nodes2 N] [--threads T] [--epd PATH] [--offset N] [--sprt E0,E1] [--params1 K=V,...] [--params2 K=V,...] [--pgn PATH]"
+            "Usage: arena <p1> <p2> [--games N] [--ms MS | --tc BASE+INC | --nodes N | --depth D] [--ms2 MS | --tc2 BASE+INC | --nodes2 N] [--threads T] [--epd PATH] [--offset N] [--sprt E0,E1] [--params1 K=V,...] [--params2 K=V,...] [--pgn PATH]"
         );
-        eprintln!(
-            "Specs: classical | nnue:<path> | dual:<small>+<big> | sf:<elo> | sf | uci:<binary>"
-        );
+        eprintln!("Specs: classical | nnue:<path> | dual:<small>+<big> | sf:<elo> | sf | uci:<binary>");
         std::process::exit(1);
     }
     let p1_str = &args[1];
@@ -43,6 +41,13 @@ fn main() {
                 tc1 = TimeControl::MoveTimeMs(args[i + 1].parse().unwrap_or(50));
                 i += 2;
             }
+            "--tc" if i + 1 < args.len() => {
+                tc1 = TimeControl::parse_clock(&args[i + 1]).unwrap_or_else(|e| {
+                    eprintln!("{e}");
+                    std::process::exit(1);
+                });
+                i += 2;
+            }
             "--nodes" if i + 1 < args.len() => {
                 tc1 = TimeControl::FixedNodes(args[i + 1].parse().unwrap_or(20000));
                 i += 2;
@@ -55,10 +60,15 @@ fn main() {
                 tc2 = Some(TimeControl::MoveTimeMs(args[i + 1].parse().unwrap_or(50)));
                 i += 2;
             }
+            "--tc2" if i + 1 < args.len() => {
+                tc2 = Some(TimeControl::parse_clock(&args[i + 1]).unwrap_or_else(|e| {
+                    eprintln!("{e}");
+                    std::process::exit(1);
+                }));
+                i += 2;
+            }
             "--nodes2" if i + 1 < args.len() => {
-                tc2 = Some(TimeControl::FixedNodes(
-                    args[i + 1].parse().unwrap_or(20000),
-                ));
+                tc2 = Some(TimeControl::FixedNodes(args[i + 1].parse().unwrap_or(20000)));
                 i += 2;
             }
             "--threads" if i + 1 < args.len() => {
@@ -159,10 +169,7 @@ fn main() {
         } else {
             "INCONCLUSIVE"
         };
-        format!(
-            " | SPRT({},{}) LLR={llr:+.2} -> {verdict}",
-            cfg.elo0, cfg.elo1
-        )
+        format!(" | SPRT({},{}) LLR={llr:+.2} -> {verdict}", cfg.elo0, cfg.elo1)
     } else {
         String::new()
     };

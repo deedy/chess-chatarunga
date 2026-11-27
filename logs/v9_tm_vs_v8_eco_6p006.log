@@ -1,0 +1,2 @@
+Match: uci:/tmp/chatarunga_v9_tm vs uci:/tmp/chatarunga_v8_opt3b | 120 games | tc1=Clock { base_ms: 6000, inc_ms: 60 } tc2=Clock { base_ms: 6000, inc_ms: 60 } | 4 threads | book=built-in 60 ECO
+RESULT uci:/tmp/chatarunga_v9_tm vs uci:/tmp/chatarunga_v8_opt3b: +19 =89 -12 (penta [0, 7, 39, 14, 0]) | score 52.92% | Elo +20.3 ± 25.6 | LOS 94.0%

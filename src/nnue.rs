@@ -857,8 +857,8 @@ impl AccStack {
         let slot = (persp.idx() * net.king_buckets + kb) * 2 + usize::from(mirror);
         let entry = &mut self.finny[slot];
 
-        let mut added_f = [0usize; 32];
-        let mut removed_f = [0usize; 32];
+        let mut added_f = [0usize; 64];
+        let mut removed_f = [0usize; 64];
         let mut n_add = 0usize;
         let mut n_rem = 0usize;
 

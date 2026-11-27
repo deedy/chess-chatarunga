@@ -1,0 +1,2 @@
+Match: uci:/tmp/chatarunga_v9_tm vs uci:/tmp/ccrl_rivals/velvet/target/release/velvet | 60 games | tc1=Clock { base_ms: 10000, inc_ms: 100 } tc2=Clock { base_ms: 10000, inc_ms: 100 } | 4 threads | book=built-in 60 ECO
+RESULT uci:/tmp/chatarunga_v9_tm vs uci:/tmp/ccrl_rivals/velvet/target/release/velvet: +7 =43 -10 (penta [1, 7, 16, 6, 0]) | score 47.50% | Elo -17.4 ± 46.8 | LOS 23.1%

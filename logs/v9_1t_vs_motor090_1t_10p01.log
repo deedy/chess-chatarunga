@@ -1,0 +1,2 @@
+Match: uci:/tmp/chatarunga_v9_tm vs uci:/tmp/ccrl_rivals/motor/motor | 60 games | tc1=Clock { base_ms: 10000, inc_ms: 100 } tc2=Clock { base_ms: 10000, inc_ms: 100 } | 4 threads | book=built-in 60 ECO
+RESULT uci:/tmp/chatarunga_v9_tm vs uci:/tmp/ccrl_rivals/motor/motor: +0 =36 -24 (penta [5, 14, 11, 0, 0]) | score 30.00% | Elo -147.2 ± 52.6 | LOS 0.0%

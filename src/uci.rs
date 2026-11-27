@@ -1,6 +1,7 @@
 //! Standard UCI (Universal Chess Interface) protocol handler.
 
 use crate::board::{Board, Game};
+use crate::endgame::probe_endgame;
 use crate::eval::evaluate_classical;
 use crate::nnue::NnueNet;
 use crate::search::{EvalMode, PonderControl, SearchLimits, Searcher};
@@ -23,6 +24,10 @@ pub fn run_uci(initial_eval: EvalMode, name: &str) {
     let mut searcher: Option<Box<Searcher>> = Some(Box::new(Searcher::new(initial_eval, tt_mb)));
     if let Some(s) = searcher.as_mut() {
         s.set_uci_info(true);
+    }
+    // Pre-warm KPK endgame bitbase & attack tables before any game clock starts (avoids ~115ms stall on move 1).
+    if let Ok(kpk_board) = Board::from_fen("8/8/8/8/8/4K3/4P3/4k3 w - - 0 1") {
+        let _ = probe_endgame(&kpk_board);
     }
     let mut running: Option<RunningSearch> = None;
 
@@ -287,10 +292,10 @@ fn parse_go(args: &[&str], side: Color, move_overhead_ms: u64) -> (SearchLimits,
     } else if let Some(rem) = if side == Color::White { wtime } else { btime } {
         let inc = if side == Color::White { winc } else { binc };
         let safe_rem = rem.saturating_sub(move_overhead_ms).max(5);
-        let mtg = movestogo.unwrap_or(if inc == 0 { 44 } else { 40 }).max(1);
+        let mtg = movestogo.unwrap_or(if inc == 0 { 42 } else { 26 }).max(1);
         let base = (safe_rem / mtg + inc * 3 / 4).max(5);
-        let hard = (base * 5 / 2).min(safe_rem / 6).max(5).min(safe_rem.saturating_sub(5).max(5));
-        let mut soft = (base * 3 / 4).max(5).min(hard);
+        let hard = (base * 5 / 2).min(safe_rem / 5).max(5).min(safe_rem.saturating_sub(5).max(5));
+        let mut soft = (base * 4 / 5).max(5).min(hard);
         if is_ponder {
             soft = (soft * 5 / 4).min(hard);
         }

@@ -1,0 +1,2 @@
+Match: uci:/Users/debarghya/.gemini/antigravity-cli/brain/81bae241-1e6b-422d-aa07-85e4fe31a753/scratch/chess-chatarunga/target/release/chatarunga vs uci:/tmp/chatarunga_pre_opt | 120 games | tc1=MoveTimeMs(50) tc2=MoveTimeMs(50) | 4 threads | book=built-in 60 ECO
+RESULT uci:/Users/debarghya/.gemini/antigravity-cli/brain/81bae241-1e6b-422d-aa07-85e4fe31a753/scratch/chess-chatarunga/target/release/chatarunga vs uci:/tmp/chatarunga_pre_opt: +27 =75 -18 (penta [0, 8, 36, 15, 1]) | score 53.75% | Elo +26.1 ± 29.0 | LOS 96.2%

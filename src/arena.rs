@@ -104,6 +104,23 @@ pub enum TimeControl {
     MoveTimeMs(u64),
     FixedNodes(u64),
     FixedDepth(i32),
+    Clock { base_ms: u64, inc_ms: u64 },
+}
+
+impl TimeControl {
+    /// Parse `BASE+INC` in seconds (e.g. `10+0.1` -> 10000ms + 100ms, `6+0.06` -> 6000ms + 60ms).
+    pub fn parse_clock(s: &str) -> Result<Self, String> {
+        let (b, inc) = s.split_once('+').ok_or_else(|| format!("invalid clock tc '{s}' (expected BASE+INC)"))?;
+        let base_s: f64 = b.parse().map_err(|_| format!("invalid base seconds '{b}'"))?;
+        let inc_s: f64 = inc.parse().map_err(|_| format!("invalid inc seconds '{inc}'"))?;
+        if base_s <= 0.0 || inc_s < 0.0 {
+            return Err(format!("invalid clock tc '{s}'"));
+        }
+        Ok(TimeControl::Clock {
+            base_ms: (base_s * 1000.0).round().max(10.0) as u64,
+            inc_ms: (inc_s * 1000.0).round().max(0.0) as u64,
+        })
+    }
 }
 
 struct UciProcess {
@@ -117,7 +134,7 @@ impl UciProcess {
         let mut child = Command::new(cmd)
             .stdin(Stdio::piped())
             .stdout(Stdio::piped())
-            .stderr(Stdio::null())
+            .stderr(Stdio::inherit())
             .spawn()
             .map_err(|e| format!("spawn {cmd}: {e}"))?;
         let stdin = child.stdin.take().unwrap();
@@ -159,7 +176,13 @@ impl UciProcess {
         Ok(())
     }
 
-    fn choose(&mut self, start_fen: &str, uci_moves: &[String], tc: TimeControl) -> Result<String, String> {
+    fn choose(
+        &mut self,
+        start_fen: &str,
+        uci_moves: &[String],
+        tc: TimeControl,
+        clock: (u64, u64, u64, u64),
+    ) -> Result<String, String> {
         if uci_moves.is_empty() {
             self.send(&format!("position fen {start_fen}"))?;
         } else {
@@ -169,6 +192,10 @@ impl UciProcess {
             TimeControl::MoveTimeMs(ms) => self.send(&format!("go movetime {ms}"))?,
             TimeControl::FixedNodes(n) => self.send(&format!("go nodes {n}"))?,
             TimeControl::FixedDepth(d) => self.send(&format!("go depth {d}"))?,
+            TimeControl::Clock { .. } => {
+                let (wt, bt, wi, bi) = clock;
+                self.send(&format!("go wtime {wt} btime {bt} winc {wi} binc {bi}"))?;
+            }
         }
         let line = self.wait_for("bestmove")?;
         let mv = line.split_whitespace().nth(1).unwrap_or("0000").to_string();
@@ -226,7 +253,14 @@ impl EngineSlot {
         }
     }
 
-    fn choose(&mut self, game: &Game, start_fen: &str, uci_moves: &[String], tc: TimeControl) -> Result<Move, String> {
+    fn choose(
+        &mut self,
+        game: &Game,
+        start_fen: &str,
+        uci_moves: &[String],
+        tc: TimeControl,
+        clock: (u64, u64, u64, u64),
+    ) -> Result<Move, String> {
         match self {
             EngineSlot::Internal(s) => {
                 let limits = match tc {
@@ -235,11 +269,21 @@ impl EngineSlot {
                     }
                     TimeControl::FixedNodes(n) => SearchLimits { max_nodes: n, ..Default::default() },
                     TimeControl::FixedDepth(d) => SearchLimits { max_depth: d, ..Default::default() },
+                    TimeControl::Clock { .. } => {
+                        let (wt, bt, wi, bi) = clock;
+                        let (rem, inc) = if game.board.side == Color::White { (wt, wi) } else { (bt, bi) };
+                        let safe_rem = rem.saturating_sub(15).max(5);
+                        let mtg = if inc == 0 { 44 } else { 40 };
+                        let base = (safe_rem / mtg + inc * 3 / 4).max(5);
+                        let hard = (base * 5 / 2).min(safe_rem / 6).max(5).min(safe_rem.saturating_sub(5).max(5));
+                        let soft = (base * 3 / 4).max(5).min(hard);
+                        SearchLimits { soft_ms: Some(soft), hard_ms: Some(hard), ..Default::default() }
+                    }
                 };
                 Ok(s.search(&game.board, &game.history, limits).best_move)
             }
             EngineSlot::External(p) => {
-                let s = p.choose(start_fen, uci_moves, tc)?;
+                let s = p.choose(start_fen, uci_moves, tc, clock)?;
                 game.board
                     .parse_uci_move(&s)
                     .ok_or_else(|| format!("illegal UCI move '{s}' at {}", game.board.to_fen()))
@@ -261,6 +305,10 @@ pub fn play_internal_game(
         TimeControl::MoveTimeMs(ms) => SearchLimits { soft_ms: Some(ms), hard_ms: Some(ms), ..Default::default() },
         TimeControl::FixedNodes(n) => SearchLimits { max_nodes: n, ..Default::default() },
         TimeControl::FixedDepth(d) => SearchLimits { max_depth: d, ..Default::default() },
+        TimeControl::Clock { base_ms, inc_ms } => {
+            let ms = (base_ms / 40 + inc_ms * 3 / 4).max(5);
+            SearchLimits { soft_ms: Some(ms), hard_ms: Some(ms * 2), ..Default::default() }
+        }
     };
     let mut adjudicate_win = 0i32;
     let mut adjudicate_draw = 0i32;
@@ -318,15 +366,51 @@ fn play_one_game(
     let mut uci_moves: Vec<String> = Vec::with_capacity(200);
     let mut san_moves: Vec<String> = Vec::with_capacity(200);
 
+    let mut wtime_ms: i64 = match tc_white {
+        TimeControl::Clock { base_ms, .. } => base_ms as i64,
+        _ => 10_000,
+    };
+    let mut btime_ms: i64 = match tc_black {
+        TimeControl::Clock { base_ms, .. } => base_ms as i64,
+        _ => 10_000,
+    };
+    let winc_ms: u64 = match tc_white {
+        TimeControl::Clock { inc_ms, .. } => inc_ms,
+        _ => 0,
+    };
+    let binc_ms: u64 = match tc_black {
+        TimeControl::Clock { inc_ms, .. } => inc_ms,
+        _ => 0,
+    };
+
     for _ in 0..400 {
         if let Some(o) = game.outcome() {
             return Ok((o, san_moves));
         }
-        let m = if game.board.side == Color::White {
-            white.choose(&game, start_fen, &uci_moves, tc_white)?
+        let clock = (wtime_ms.max(1) as u64, btime_ms.max(1) as u64, winc_ms, binc_ms);
+        let t0 = std::time::Instant::now();
+        let is_white = game.board.side == Color::White;
+        let m = if is_white {
+            white.choose(&game, start_fen, &uci_moves, tc_white, clock)?
         } else {
-            black.choose(&game, start_fen, &uci_moves, tc_black)?
+            black.choose(&game, start_fen, &uci_moves, tc_black, clock)?
         };
+        let spent = t0.elapsed().as_millis() as i64;
+        if is_white {
+            if matches!(tc_white, TimeControl::Clock { .. }) {
+                wtime_ms -= spent;
+                if wtime_ms < -150 {
+                    return Ok((Outcome::Win(Color::Black), san_moves));
+                }
+                wtime_ms = (wtime_ms + winc_ms as i64).max(1);
+            }
+        } else if matches!(tc_black, TimeControl::Clock { .. }) {
+            btime_ms -= spent;
+            if btime_ms < -150 {
+                return Ok((Outcome::Win(Color::White), san_moves));
+            }
+            btime_ms = (btime_ms + binc_ms as i64).max(1);
+        }
         if m.is_none() {
             return Ok((Outcome::Win(game.board.side.flip()), san_moves));
         }
