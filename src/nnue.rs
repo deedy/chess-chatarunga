@@ -776,6 +776,7 @@ fn apply_threat_code(net: &NnueNet, acc: &mut [i16], persp: Color, mirror: bool,
 pub struct AccStack {
     hl: usize,
     max_ply: usize,
+    has_threats: bool,
     buf: Vec<i16>,
     computed: Vec<[bool; 2]>,
     deltas: Vec<MoveDelta>,
@@ -790,6 +791,7 @@ impl AccStack {
         Self {
             hl,
             max_ply,
+            has_threats: false,
             buf: vec![0i16; max_ply * 2 * hl],
             computed: vec![[false; 2]; max_ply],
             deltas: vec![MoveDelta::default(); max_ply],
@@ -836,16 +838,18 @@ impl AccStack {
     /// Initialize ply 0 from the root board (using Finny table differential refresh!).
     pub fn init_root(&mut self, net: &NnueNet, b: &Board) {
         self.ensure_finny(net);
-        self.boards[0] = *b;
-        self.threat_states[0].computed = false;
-        self.finny_refresh(net, 0, Color::White);
-        self.finny_refresh(net, 0, Color::Black);
+        self.has_threats = net.has_threats;
+        if self.has_threats {
+            self.boards[0] = *b;
+            self.threat_states[0].computed = false;
+        }
+        self.finny_refresh(net, 0, Color::White, b);
+        self.finny_refresh(net, 0, Color::Black, b);
         self.computed[0] = [true, true];
     }
 
     /// Differential refresh of `(ply, persp)` using the Finny Table cache (plus active threats if v3).
-    fn finny_refresh(&mut self, net: &NnueNet, ply: usize, persp: Color) {
-        let b = self.boards[ply];
+    fn finny_refresh(&mut self, net: &NnueNet, ply: usize, persp: Color, b: &Board) {
         let ksq = b.king_sq(persp);
         let (kb, mirror) = king_bucket_and_mirror_v(net.version, net.king_buckets, persp, ksq);
         let slot = (persp.idx() * net.king_buckets + kb) * 2 + usize::from(mirror);
@@ -879,7 +883,7 @@ impl AccStack {
 
         if net.has_threats {
             if !self.threat_states[ply].computed {
-                self.threat_states[ply] = compute_threat_state(&b);
+                self.threat_states[ply] = compute_threat_state(b);
             }
             let ts = self.threat_states[ply];
             let acc = &mut self.buf[off..off + self.hl];
@@ -903,40 +907,48 @@ impl AccStack {
         } else {
             255
         };
-        self.deltas[nxt] = MoveDelta {
-            moved_color: prev.side as u8,
-            moved_piece: mb_piece(mv) as u8,
-            cap_piece,
-            m,
-            ksq: [next.king_sq(Color::White), next.king_sq(Color::Black)],
-            prev_ksq: [prev.king_sq(Color::White), prev.king_sq(Color::Black)],
-        };
-        self.boards[nxt] = *next;
-        self.computed[nxt] = [false, false];
-        self.threat_states[nxt].computed = false;
+        unsafe {
+            *self.deltas.get_unchecked_mut(nxt) = MoveDelta {
+                moved_color: prev.side as u8,
+                moved_piece: mb_piece(mv) as u8,
+                cap_piece,
+                m,
+                ksq: [next.king_sq(Color::White), next.king_sq(Color::Black)],
+                prev_ksq: [prev.king_sq(Color::White), prev.king_sq(Color::Black)],
+            };
+            *self.computed.get_unchecked_mut(nxt) = [false, false];
+            if self.has_threats {
+                *self.boards.get_unchecked_mut(nxt) = *next;
+                self.threat_states.get_unchecked_mut(nxt).computed = false;
+            }
+        }
     }
 
     #[inline(always)]
     pub fn push_null(&mut self, ply: usize, next: &Board) {
         let nxt = ply + 1;
         debug_assert!(nxt < self.max_ply);
-        self.deltas[nxt] = MoveDelta {
-            moved_color: 0,
-            moved_piece: 0,
-            cap_piece: 255,
-            m: Move::NONE,
-            ksq: [next.king_sq(Color::White), next.king_sq(Color::Black)],
-            prev_ksq: [next.king_sq(Color::White), next.king_sq(Color::Black)],
-        };
-        self.boards[nxt] = *next;
-        self.computed[nxt] = [false, false];
-        self.threat_states[nxt].computed = false;
+        unsafe {
+            *self.deltas.get_unchecked_mut(nxt) = MoveDelta {
+                moved_color: 0,
+                moved_piece: 0,
+                cap_piece: 255,
+                m: Move::NONE,
+                ksq: [next.king_sq(Color::White), next.king_sq(Color::Black)],
+                prev_ksq: [next.king_sq(Color::White), next.king_sq(Color::Black)],
+            };
+            *self.computed.get_unchecked_mut(nxt) = [false, false];
+            if self.has_threats {
+                *self.boards.get_unchecked_mut(nxt) = *next;
+                self.threat_states.get_unchecked_mut(nxt).computed = false;
+            }
+        }
     }
 
     #[inline]
     pub fn evaluate(&mut self, net: &NnueNet, ply: usize, b: &Board) -> i32 {
-        self.ensure_computed(net, ply, Color::White);
-        self.ensure_computed(net, ply, Color::Black);
+        self.ensure_computed(net, ply, Color::White, b);
+        self.ensure_computed(net, ply, Color::Black, b);
         let ob = output_bucket(b, net.output_buckets);
         let w = self.slice(ply, 0);
         let bl = self.slice(ply, 1);
@@ -947,7 +959,7 @@ impl AccStack {
         }
     }
 
-    fn ensure_computed(&mut self, net: &NnueNet, ply: usize, persp: Color) {
+    fn ensure_computed(&mut self, net: &NnueNet, ply: usize, persp: Color, b: &Board) {
         let ci = persp.idx();
         if self.computed[ply][ci] {
             return;
@@ -972,7 +984,7 @@ impl AccStack {
         }
 
         if needs_refresh {
-            self.finny_refresh(net, ply, persp);
+            self.finny_refresh(net, ply, persp, b);
             self.computed[ply][ci] = true;
             return;
         }
