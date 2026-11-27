@@ -287,9 +287,9 @@ fn parse_go(args: &[&str], side: Color, move_overhead_ms: u64) -> (SearchLimits,
     } else if let Some(rem) = if side == Color::White { wtime } else { btime } {
         let inc = if side == Color::White { winc } else { binc };
         let safe_rem = rem.saturating_sub(move_overhead_ms).max(5);
-        let mtg = movestogo.unwrap_or(28).max(1);
+        let mtg = movestogo.unwrap_or(if inc == 0 { 36 } else { 28 }).max(1);
         let base = (safe_rem / mtg + inc * 3 / 4).max(5);
-        let hard = (safe_rem / 3).max(base * 2).min(safe_rem.saturating_sub(5).max(5));
+        let hard = (base * 3).min(safe_rem / 5).max(5).min(safe_rem.saturating_sub(5).max(5));
         let mut soft = (base * 3 / 4).max(5).min(hard);
         if is_ponder {
             soft = (soft * 5 / 4).min(hard);
